@@ -8,3 +8,6 @@ credentials.json
 *.pyc
 .venv/
 venv/
+.vercel
+web/node_modules/
+web/.next/

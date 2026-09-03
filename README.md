@@ -2,19 +2,27 @@
 
 Historical win-rate analysis across Europe’s top football leagues (accumulator-style season view).
 
-## What this is
+## Web dashboard (Vercel)
 
-A Cursor canvas project that explores club season records from **2000** through **2025/26** across **seven** top divisions. Season aggregates live in `canvases/season-data.json` and are embedded/consumed by `canvases/european-accumulator-analysis.canvas.tsx`.
+Production app lives in `web/` (Next.js App Router). Season data: `web/public/data/season-data.json`.
+
+```bash
+cd web
+npm install
+npm run dev
+```
 
 ## Refresh season data
 
 ```bash
 python3 scripts/build_season_data.py
+cp canvases/season-data.json web/public/data/season-data.json
 ```
 
-This downloads league CSVs, builds per-club season records, and writes `canvases/season-data.json`. Re-open or reload the canvas after regenerating data.
+Then commit and push to `main` so Vercel redeploys, or run `npm run build` locally to verify.
 
 ## Layout
 
-- `canvases/` — analysis canvas and season JSON
+- `web/` — deployable Next.js dashboard
+- `canvases/` — Cursor canvas + source `season-data.json`
 - `scripts/build_season_data.py` — data pipeline
