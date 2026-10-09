@@ -75,6 +75,31 @@ body {
   border-color: var(--accent);
 }
 
+.odds-toggle {
+  display: inline-flex;
+  margin-left: auto;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.odds-toggle button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.35rem 0.75rem;
+  cursor: pointer;
+}
+
+.odds-toggle button.active {
+  background: var(--accent);
+  color: #fff;
+}
+
 .club-link {
   color: inherit;
   font-weight: 650;

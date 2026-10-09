@@ -14,8 +14,10 @@ import {
   formatSeasonPart,
   rangePresets,
 } from "../lib/analysis";
+import { formatComboOdds, withOddsQuery } from "../lib/odds-format";
 import { clubSlug } from "../lib/metrics";
 import type { SeasonRecord, ViewTab } from "../lib/types";
+import { useOddsFormat } from "./OddsFormatProvider";
 import SiteNav from "./SiteNav";
 
 type Props = {
@@ -87,6 +89,7 @@ export default function Dashboard({
   coverageNotes,
   hasEuropeanGaps,
 }: Props) {
+  const { format } = useOddsFormat();
   const bounds = dataYearBounds(records);
   const presets = rangePresets(bounds.min, bounds.max);
   const [view, setView] = useState<ViewTab>("rates");
@@ -279,7 +282,10 @@ export default function Dashboard({
                 {clubAggs.map((c) => (
                   <tr key={c.club}>
                     <td>
-                      <Link className="club-link" href={`/team/${clubSlug(c.club)}`}>
+                      <Link
+                        className="club-link"
+                        href={withOddsQuery(`/team/${clubSlug(c.club)}`, format)}
+                      >
                         {c.club}
                       </Link>
                     </td>
@@ -345,7 +351,9 @@ export default function Dashboard({
                         <td className="right">
                           {c.probabilityPct.toFixed(1)}%
                         </td>
-                        <td className="right">{c.odds}</td>
+                        <td className="right">
+                          {formatComboOdds(c.probabilityPct, c.odds, format)}
+                        </td>
                         <td className="right">{c.matches}</td>
                       </tr>
                     ))}
@@ -381,7 +389,9 @@ export default function Dashboard({
                     <td>{c.clubs.join(" + ")}</td>
                     <td>{c.tierCombo}</td>
                     <td className="right">{c.probabilityPct.toFixed(1)}%</td>
-                    <td className="right">{c.odds}</td>
+                    <td className="right">
+                      {formatComboOdds(c.probabilityPct, c.odds, format)}
+                    </td>
                     <td className="right">{c.matches}</td>
                   </tr>
                 ))}

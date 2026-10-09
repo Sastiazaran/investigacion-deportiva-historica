@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --experimental-strip-types --test src/lib/metrics.test.ts"
+    "test": "node --experimental-strip-types --test src/lib/metrics.test.ts src/lib/odds-format.test.ts"
   },
   "dependencies": {
     "next": "16.3.4",
