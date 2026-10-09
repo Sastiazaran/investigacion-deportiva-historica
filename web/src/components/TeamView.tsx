@@ -3,15 +3,16 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { clamp, formatPeriodLabel, formatSeasonPart } from "../lib/analysis";
+import { formatDisplayedOdds, withOddsQuery } from "../lib/odds-format";
 import {
   combineSplits,
-  formatAvgOdds,
   formatProfit,
   formatRoi,
   formatWinPct,
   roiClass,
 } from "../lib/metrics";
 import type { SplitStats, TeamSummary } from "../lib/types";
+import { useOddsFormat } from "./OddsFormatProvider";
 import YearRange from "./YearRange";
 
 type Props = {
@@ -24,6 +25,7 @@ function recordLine(split: SplitStats) {
 }
 
 function SplitCard({ title, split }: { title: string; split: SplitStats }) {
+  const { format } = useOddsFormat();
   return (
     <div className="stat">
       <div className="stat-label">{title}</div>
@@ -31,7 +33,7 @@ function SplitCard({ title, split }: { title: string; split: SplitStats }) {
       <p className="muted small">
         Win {formatWinPct(split.winPct)} ({recordLine(split)})
         <br />
-        {split.bets} bets at avg {formatAvgOdds(split.avgOdds)}
+        {split.bets} bets at avg {formatDisplayedOdds(split.avgOdds, format)}
         <br />
         Profit {formatProfit(split.profit)} units
       </p>
@@ -56,6 +58,7 @@ export default function TeamView({ team }: Props) {
   const home = useMemo(() => combineSplits(inRange.map((row) => row.home)), [inRange]);
   const away = useMemo(() => combineSplits(inRange.map((row) => row.away)), [inRange]);
 
+  const { format } = useOddsFormat();
   const verdict = useMemo(() => {
     if (overall.bets === 0 || overall.roi == null) {
       return `${team.club} has no closing price in this range, so ROI is not defined. Win% still counts every completed match.`;
@@ -63,15 +66,15 @@ export default function TeamView({ team }: Props) {
     const made = overall.roi > 0 ? "made money" : "lost money";
     const homeBit =
       home.bets > 0 && home.avgOdds != null
-        ? ` At home the average closing price was ${home.avgOdds.toFixed(2)} (${formatRoi(home.roi)} ROI).`
+        ? ` At home the average closing price was ${formatDisplayedOdds(home.avgOdds, format)} (${formatRoi(home.roi)} ROI).`
         : "";
-    return `Always betting ${team.club} to win at the closing price — ${overall.bets} bets, average ${formatAvgOdds(overall.avgOdds)} — ${made}: ${formatRoi(overall.roi)} ROI, ${formatProfit(overall.profit)} units.${homeBit}`;
-  }, [home, overall, team.club]);
+    return `Always betting ${team.club} to win at the closing price — ${overall.bets} bets, average ${formatDisplayedOdds(overall.avgOdds, format)} — ${made}: ${formatRoi(overall.roi)} ROI, ${formatProfit(overall.profit)} units.${homeBit}`;
+  }, [format, home, overall, team.club]);
 
   return (
     <>
       <p className="muted small">
-        <Link href="/">All clubs</Link>
+        <Link href={withOddsQuery("/", format)}>All clubs</Link>
       </p>
       <header className="page-header">
         <h1>{team.club}</h1>
@@ -135,7 +138,7 @@ export default function TeamView({ team }: Props) {
                   <span className="muted"> ({row.away.won}/{row.away.played})</span>
                 </td>
                 <td className="right">{row.overall.bets}</td>
-                <td className="right">{formatAvgOdds(row.overall.avgOdds)}</td>
+                <td className="right">{formatDisplayedOdds(row.overall.avgOdds, format)}</td>
                 <td className={`right ${roiClass(row.overall.profit)}`}>
                   {formatProfit(row.overall.profit)}
                 </td>

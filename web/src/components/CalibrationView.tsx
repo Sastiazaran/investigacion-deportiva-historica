@@ -2,8 +2,10 @@
 
 import { useMemo, useState } from "react";
 import { clamp, dataYearBounds, formatPeriodLabel } from "../lib/analysis";
-import { combineBuckets, formatAvgOdds } from "../lib/metrics";
+import { formatDisplayedOdds, formatOddsBucketLabel } from "../lib/odds-format";
+import { combineBuckets } from "../lib/metrics";
 import type { CalibrationSeason } from "../lib/types";
+import { useOddsFormat } from "./OddsFormatProvider";
 import YearRange from "./YearRange";
 
 type Props = {
@@ -32,6 +34,7 @@ export default function CalibrationView({ bySeason }: Props) {
     return combineBuckets(groups);
   }, [bySeason, startYear, endYear]);
 
+  const { format } = useOddsFormat();
   const priced = buckets.reduce((sum, bucket) => sum + bucket.outcomes, 0);
 
   return (
@@ -86,7 +89,9 @@ export default function CalibrationView({ bySeason }: Props) {
               const focus = bucket.minOdds >= 1.2 && bucket.minOdds < 1.5;
               return (
                 <tr key={bucket.id} className={focus ? "bucket-focus" : undefined}>
-                  <td>{bucket.label}</td>
+                  <td>
+                    {formatOddsBucketLabel(bucket.label, bucket.minOdds, bucket.maxOdds, format)}
+                  </td>
                   <td className="right">{bucket.outcomes.toLocaleString("en-GB")}</td>
                   <td className="right">{bucket.wins.toLocaleString("en-GB")}</td>
                   <td className="right">{pct(bucket.actualWinRate)}</td>
@@ -94,7 +99,7 @@ export default function CalibrationView({ bySeason }: Props) {
                   <td className={`right ${points == null ? "" : points > 0 ? "roi-pos" : points < 0 ? "roi-neg" : ""}`}>
                     {points == null ? "—" : `${points > 0 ? "+" : ""}${points.toFixed(1)} pp`}
                   </td>
-                  <td className="right">{formatAvgOdds(bucket.avgOdds)}</td>
+                  <td className="right">{formatDisplayedOdds(bucket.avgOdds, format)}</td>
                 </tr>
               );
             })}
@@ -102,9 +107,9 @@ export default function CalibrationView({ bySeason }: Props) {
         </table>
       </div>
       <p className="muted small">
-        Highlighted rows are the short-favorite band (1.20–1.50). Intervals are
-        half-open: 1.20–1.25 means 1.20 inclusive and 1.25 exclusive. 10.00+ has
-        no upper bound.
+        {format === "american"
+          ? "Highlighted rows are the short-favorite band. Labels are the American equivalents of the decimal bounds, so 1.20–1.25 is -500 to -400. 10.00+ is +900 or longer."
+          : "Highlighted rows are the short-favorite band (1.20–1.50). Intervals are half-open: 1.20–1.25 means 1.20 inclusive and 1.25 exclusive. 10.00+ has no upper bound."}
       </p>
     </>
   );
