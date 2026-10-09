@@ -56,7 +56,25 @@ body {
 .site-nav {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 0.5rem;
+}
+
+.sport-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  flex-basis: 100%;
+}
+
+.slider-block select {
+  margin-top: 0.35rem;
+  width: 100%;
+  font: inherit;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
 }
 
 .site-nav a {
