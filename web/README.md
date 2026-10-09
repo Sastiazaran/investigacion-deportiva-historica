@@ -1,32 +1,27 @@
 # European Accumulator Dashboard
 
-Next.js (App Router) web app for historical club win-rate and accumulator combo analysis.
+Next.js (App Router) app for historical win rates, accumulator combos, home/away splits, and flat-bet ROI at closing odds.
 
 ## Develop
 
 ```bash
 cd web
 npm install
+npm test
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000). Club pages are `/team/[slug]`. Calibration is `/calibration`.
 
 ## Data
 
-Season records are loaded from `public/data/season-data.json` (copied from `../canvases/season-data.json`).
+`public/data/season-data.json` feeds the win% view. `public/data/summary.json` is the public ROI and calibration file (`/data/summary.json`, also `/api/summary`). The schema is `public/data/summary.schema.json`.
 
-To refresh:
+Refresh from the repo root:
 
 ```bash
-# from repo root
 python3 scripts/build_season_data.py
-cp canvases/season-data.json web/public/data/season-data.json
-cd web && npm run build
+cd web && npm test && npm run build
 ```
 
-Then push to `main` (or redeploy) so Vercel picks up the new data.
-
-## Deploy
-
-Vercel root directory: `web`.
+The Friday GitHub Action documented in the root README commits those files. Vercel’s root directory is `web`.

@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://investigacion-deportiva-historica.vercel.app/data/summary.schema.json",
+  "title": "Closing-odds ROI summary",
+  "description": "Per-team flat-bet ROI, home/away splits, and the closing-odds calibration table. Canonical URL: /data/summary.json (also served at /api/summary). schemaVersion 1.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "seasons",
+    "definitions",
+    "leagues",
+    "coverage",
+    "calibration",
+    "calibrationBySeason",
+    "teams"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "generatedAt": { "type": "string", "description": "UTC timestamp of the build." },
+    "seasons": {
+      "type": "object",
+      "required": ["first", "last"],
+      "properties": {
+        "first": { "type": "integer", "description": "First season start year (2000 = 2000/01)." },
+        "last": { "type": "integer", "description": "Last season start year, possibly partial." }
+      }
+    },
+    "definitions": {
+      "type": "object",
+      "description": "Human-readable definitions of roi, closing odds, and calibration. Read this before interpreting numbers."
+    },
+    "leagues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["code", "name"],
+        "properties": {
+          "code": { "type": "string" },
+          "name": { "type": "string" }
+        }
+      }
+    },
+    "coverage": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["league", "leagueName", "season", "matches", "withClosingOdds", "oddsSource", "partial"],
+        "properties": {
+          "league": { "type": "string" },
+          "leagueName": { "type": "string" },
+          "season": { "type": "integer" },
+          "matches": { "type": "integer" },
+          "withClosingOdds": { "type": "integer" },
+          "latestMatchDate": { "type": ["string", "null"] },
+          "partial": { "type": "boolean", "description": "True for the in-progress latest season." },
+          "oddsSource": {
+            "type": "object",
+            "required": ["PSC", "PS", "B365", "none"],
+            "properties": {
+              "PSC": { "type": "integer" },
+              "PS": { "type": "integer" },
+              "B365": { "type": "integer" },
+              "none": { "type": "integer" }
+            }
+          }
+        }
+      }
+    },
+    "calibration": {
+      "type": "array",
+      "description": "All-season calibration. Same bucket ids every week, including empty buckets.",
+      "items": { "$ref": "#/$defs/bucket" }
+    },
+    "calibrationBySeason": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["season", "buckets"],
+        "properties": {
+          "season": { "type": "integer" },
+          "buckets": { "type": "array", "items": { "$ref": "#/$defs/bucket" } }
+        }
+      }
+    },
+    "teams": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["club", "slug", "leagues", "overall", "home", "away", "seasons"],
+        "properties": {
+          "club": { "type": "string" },
+          "slug": { "type": "string" },
+          "leagues": { "type": "array", "items": { "type": "string" } },
+          "overall": { "$ref": "#/$defs/split" },
+          "home": { "$ref": "#/$defs/split" },
+          "away": { "$ref": "#/$defs/split" },
+          "seasons": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["season", "league", "overall", "home", "away"],
+              "properties": {
+                "season": { "type": "integer" },
+                "league": { "type": "string" },
+                "overall": { "$ref": "#/$defs/split" },
+                "home": { "$ref": "#/$defs/split" },
+                "away": { "$ref": "#/$defs/split" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "split": {
+      "type": "object",
+      "required": ["played", "won", "drawn", "lost", "winPct", "bets", "staked", "returned", "profit", "roi", "avgOdds"],
+      "properties": {
+        "played": { "type": "integer" },
+        "won": { "type": "integer" },
+        "drawn": { "type": "integer" },
+        "lost": { "type": "integer" },
+        "winPct": { "type": ["number", "null"], "description": "won/played*100. Null when played is 0." },
+        "bets": { "type": "integer", "description": "Matches with a closing price. May be less than played." },
+        "staked": { "type": "number", "description": "Equals bets. Stake is 1.00 unit." },
+        "returned": { "type": "number", "description": "Sum of decimal odds on winning bets." },
+        "profit": { "type": "number", "description": "returned - staked." },
+        "roi": { "type": ["number", "null"], "description": "profit/staked. 0.05 means +5%. Null when bets is 0." },
+        "avgOdds": { "type": ["number", "null"], "description": "Mean decimal closing odds. Null when bets is 0." }
+      }
+    },
+    "bucket": {
+      "type": "object",
+      "required": ["id", "label", "minOdds", "maxOdds", "outcomes", "wins", "actualWinRate", "sumImpliedProb", "avgImpliedProb", "sumOdds", "avgOdds"],
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "minOdds": { "type": "number", "description": "Inclusive lower bound." },
+        "maxOdds": { "type": ["number", "null"], "description": "Exclusive upper bound. Null on the open-ended 10.00+ bucket." },
+        "outcomes": { "type": "integer", "description": "Home, draw, and away results in this bucket. Not a match count." },
+        "wins": { "type": "integer" },
+        "actualWinRate": { "type": ["number", "null"], "description": "wins/outcomes. Null when outcomes is 0." },
+        "sumImpliedProb": { "type": "number" },
+        "avgImpliedProb": { "type": ["number", "null"], "description": "Mean of 1/odds after removing the 1X2 overround." },
+        "sumOdds": { "type": "number" },
+        "avgOdds": { "type": ["number", "null"] }
+      }
+    }
+  }
+}

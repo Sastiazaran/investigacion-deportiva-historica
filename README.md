@@ -1,28 +1,57 @@
 # Investigación Deportiva Histórica
 
-Historical win-rate analysis across Europe’s top football leagues (accumulator-style season view).
+Historical win-rate, home/away, and closing-odds ROI for Europe’s top leagues plus Liga MX.
 
 ## Web dashboard (Vercel)
 
-Production app lives in `web/` (Next.js App Router). Season data: `web/public/data/season-data.json`.
+Production app lives in `web/` (Next.js App Router).
 
 ```bash
 cd web
 npm install
+npm test
 npm run dev
 ```
 
-## Refresh season data
+| URL | What it is |
+| --- | --- |
+| `/` | Win% , tiers, and accumulator combos |
+| `/team/[slug]` | Home/away record and flat-bet ROI for one club |
+| `/calibration` | Implied probability (overround removed) vs actual win rate |
+| `/data/summary.json` | Public JSON for the Friday reader (canonical) |
+| `/api/summary` | Same file, rewritten |
+| `/data/summary.schema.json` | JSON Schema for that file |
+| `/data/matches.json` | One row per match |
+| `/data/season-data.json` | Club-season W/D/L records used by the win% view |
+
+`summary.json` `schemaVersion` is `1`. Read `definitions` in the file before using the numbers.
+
+- `teams[].overall` / `home` / `away` are all-time. `seasons[]` is the same shape per season.
+- `roi` is profit divided by stakes. Stake is 1.00 unit at the closing decimal odds. `0.05` means +5%. It is `null` when there is no price.
+- `winPct` is `won / played * 100` and includes matches that have no odds.
+- Closing price is Pinnacle `PSCH/PSCD/PSCA` when all three exist, else Pinnacle `PSH/PSD/PSA` (or `PH/PD/PA`), else Bet365 `B365H/B365D/B365A` (or `B365CH/B365CD/B365CA` when the pre-closing columns are missing).
+- `calibration[]` buckets are half-open on decimal odds, 0.05 wide from 1.20 to 1.50. `outcomes` counts home, draw, and away results, not matches. `avgImpliedProb` is `1/odds` divided by the sum of the three raw implied probabilities.
+
+## Refresh the data
+
+Paths are relative to the repo. Nothing writes to a machine-local absolute path.
 
 ```bash
+python3 -m unittest discover -s scripts -p "test_*.py"
 python3 scripts/build_season_data.py
-cp canvases/season-data.json web/public/data/season-data.json
+cd web && npm test && npm run build
 ```
 
-Then commit and push to `main` so Vercel redeploys, or run `npm run build` locally to verify.
+`FD_CACHE=/tmp/fd-cache` reuses CSVs already on disk. `LAST_SEASON=2026` pins the last season start year; otherwise August onward includes the new season.
+
+## Weekly update
+
+`.github/workflows/update-football-data.yml` runs every Friday at 06:00 UTC (and on demand). It downloads the CSVs, rebuilds the JSON, and commits to the default branch when something changed.
+
+A Vercel cron is a poor fit: the dataset is static JSON in `public/`, and a cron invocation cannot commit that file or replace the copy the CDN is already serving. The Action commits the files; the push to the default branch is what redeploys production so Friday’s reader sees new numbers. Do not merge feature PRs by hand if a push to `main` would deploy them — the weekly job is the path that is supposed to update `main`.
 
 ## Layout
 
-- `web/` — deployable Next.js dashboard
-- `canvases/` — Cursor canvas + source `season-data.json`
-- `scripts/build_season_data.py` — data pipeline
+- `web/` — Next.js dashboard
+- `canvases/` — Cursor canvas plus `season-data.json`
+- `scripts/` — download, ROI, and calibration

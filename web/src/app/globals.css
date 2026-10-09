@@ -53,6 +53,58 @@ body {
   gap: 1.25rem;
 }
 
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.site-nav a {
+  color: var(--ink);
+  text-decoration: none;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  background: #fff;
+  font-size: 0.9rem;
+}
+
+.site-nav a[aria-current="page"] {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.club-link {
+  color: inherit;
+  font-weight: 650;
+  text-underline-offset: 2px;
+}
+
+.club-link:hover {
+  color: var(--accent);
+}
+
+.split-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.roi-pos {
+  color: var(--tier-s);
+  font-weight: 650;
+}
+
+.roi-neg {
+  color: var(--danger);
+  font-weight: 650;
+}
+
+tbody tr.bucket-focus {
+  background: #eef7f3;
+}
+
 .page-header h1 {
   margin: 0 0 0.5rem;
   font-size: clamp(1.6rem, 3vw, 2.1rem);
@@ -385,7 +437,8 @@ tbody tr:last-child td {
 }
 
 @media (max-width: 800px) {
-  .stat-row {
+  .stat-row,
+  .split-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -406,8 +459,9 @@ tbody tr:last-child td {
     padding-top: 1.25rem;
   }
 
-  .stat-row {
-    grid-template-columns: 1fr 1fr;
+  .stat-row,
+  .split-grid {
+    grid-template-columns: 1fr;
   }
 
   .panel-head {

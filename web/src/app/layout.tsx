@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "European Accumulator Analysis",
   description:
-    "Historical club win-rate and accumulator combo analysis across Europe’s top football leagues.",
+    "Historical club win rates, home/away splits, flat-bet closing-odds ROI, and odds calibration across Europe’s top leagues and Liga MX.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
