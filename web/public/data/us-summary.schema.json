@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://investigacion-deportiva-historica.vercel.app/data/us-summary.schema.json",
+  "title": "NBA, NFL, and MLB summary",
+  "description": "Per-sport file at /data/nfl/summary.json, /data/nba/summary.json, and /data/mlb/summary.json. This is not the soccer file. /data/summary.json stays schemaVersion 1 with no sport key.",
+  "type": "object",
+  "required": ["schemaVersion", "sport", "generatedAt", "spreadMarket", "credits", "gaps", "definitions", "coverage", "calibration", "teams"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "sport": { "enum": ["nfl", "nba", "mlb"] },
+    "generatedAt": { "type": "string" },
+    "spreadMarket": { "enum": ["ats", "runLine", null] },
+    "credits": { "type": "array" },
+    "gaps": { "type": "array", "items": { "type": "string" } },
+    "definitions": { "type": "object" },
+    "coverage": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["season", "phase", "games", "withMoneyline", "withSpread", "moneylineSources", "latestDate", "partial"],
+        "properties": {
+          "season": { "type": "integer", "description": "NFL season year, NBA start year, or MLB calendar year." },
+          "phase": { "enum": ["regular", "playoff", "other"] },
+          "games": { "type": "integer", "description": "Completed games with scores." },
+          "withMoneyline": { "type": "integer" },
+          "withSpread": { "type": "integer" },
+          "moneylineSources": { "type": "object" },
+          "latestDate": { "type": "string" },
+          "partial": { "type": "boolean" }
+        }
+      }
+    },
+    "calibration": {
+      "type": "object",
+      "description": "Keyed by phase. Two-way de-vig, 5-point probability buckets, Brier score, average overround."
+    },
+    "teams": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["team", "slug", "abbrev", "phases"],
+        "properties": {
+          "team": { "type": "string" },
+          "slug": { "type": "string" },
+          "abbrev": { "type": "string" },
+          "phases": { "type": "object" }
+        }
+      }
+    }
+  }
+}

@@ -30,6 +30,12 @@ jobs:
       - name: Rebuild datasets
         run: python3 scripts/build_season_data.py
 
+      - name: Rebuild NFL, NBA, and MLB summaries
+        env:
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+        run: python3 scripts/build_us_sports.py
+
       - name: Commit and push when the files changed
         run: |
           git config user.name "github-actions[bot]"
@@ -39,7 +45,10 @@ jobs:
             web/public/data/season-data.json \
             web/public/data/matches.json \
             web/public/data/summary.json \
-            web/public/data/coverage.json
+            web/public/data/coverage.json \
+            web/public/data/nfl/summary.json \
+            web/public/data/nba/summary.json \
+            web/public/data/mlb/summary.json
           if git diff --staged --quiet; then
             echo "No data changes"
             exit 0

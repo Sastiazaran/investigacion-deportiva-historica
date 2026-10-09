@@ -50,6 +50,37 @@ cd web && npm test && npm run build
 
 A Vercel cron is a poor fit: the dataset is static JSON in `public/`, and a cron invocation cannot commit that file or replace the copy the CDN is already serving. The Action commits the files; the push to the default branch is what redeploys production so Friday’s reader sees new numbers. Do not merge feature PRs by hand if a push to `main` would deploy them — the weekly job is the path that is supposed to update `main`.
 
+## NBA, NFL, and MLB
+
+These are separate files. `/data/summary.json` is still the soccer file, `schemaVersion` 1, with no `sport` key.
+
+| URL | What it is |
+| --- | --- |
+| `/nba`, `/nfl`, `/mlb` | Team table, moneyline ROI, spread or run line, coverage |
+| `/{sport}/team/[slug]` | One franchise, regular season and playoffs split |
+| `/{sport}/calibration` | Two-way de-vig, 5-point probability buckets, Brier score, average overround |
+| `/data/nfl/summary.json` | NFL public JSON |
+| `/data/nba/summary.json` | NBA public JSON |
+| `/data/mlb/summary.json` | MLB public JSON |
+| `/api/nfl/summary`, `/api/nba/summary`, `/api/mlb/summary` | Same files |
+| `/data/us-summary.schema.json` | Schema for those three files |
+
+`season` is the NFL season year, the NBA start year (2007 means 2007-08), or the MLB calendar year. `roi` is profit divided by decided stakes. A tie or a push is a refund: it is counted and it is not in the stake. Read `definitions` and `gaps` in each file.
+
+NFL lines are nflverse `games.csv`. `spread_line` is positive when the home team is favored. OAK, SD, and STL are folded into the current franchise.
+
+NBA results and spreads are the CC0 Kaggle file `nba_2008-2026.csv`. Moneylines that file is missing are filled from the CC BY-SA 4.0 BetMGM file through 2026-02-12. There is no moneyline from 2026-02-13 onward. A missing spread price is 1.909 (−110).
+
+MLB 2010-2020 is the static Sportsbook Review `.xlsx` archives, committed as `data/mlb/games.json`. Those years do not mark the playoffs, so postseason games sit in the regular-season totals. From 2021-04-01 the static GitHub release `mlb_odds_dataset.json` is used (the scraper is not run). Nothing after 2025-08-16. OAK/ATH and ARI/AZ are one franchise each.
+
+The Friday Action re-downloads nflverse and the two Kaggle files. `KAGGLE_USERNAME` and `KAGGLE_KEY` are optional fallbacks. MLB is not re-downloaded.
+
+```bash
+python3 scripts/build_us_sports.py
+# first time, or to refresh the frozen MLB file:
+python3 scripts/build_us_sports.py --rebuild-mlb
+```
+
 ## Layout
 
 - `web/` — Next.js dashboard

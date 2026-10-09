@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
     return [
       { source: "/api/summary", destination: "/data/summary.json" },
       { source: "/api/summary.json", destination: "/data/summary.json" },
+      { source: "/api/nfl/summary", destination: "/data/nfl/summary.json" },
+      { source: "/api/nba/summary", destination: "/data/nba/summary.json" },
+      { source: "/api/mlb/summary", destination: "/data/mlb/summary.json" },
     ];
   },
   async headers() {
