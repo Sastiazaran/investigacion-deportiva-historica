@@ -1,19 +1,42 @@
 import type { ClubAggregate, ComboRow, SeasonRecord, Tier } from "./types";
 
 export const MIN_YEAR = 2000;
-export const MAX_YEAR = 2025;
+export const MAX_YEAR = 2026;
 export const CHART_TOP_N = 20;
 export const COMBO_TOP_N = 10;
 
 const TIER_S_MIN = 57;
 const TIER_A_MIN = 43;
 
-export const RANGE_PRESETS = [
-  { label: "2000–2026", start: 2000, end: 2025 },
-  { label: "2017–2026", start: 2017, end: 2025 },
-  { label: "2020–2026", start: 2020, end: 2025 },
-  { label: "2025–2026", start: 2025, end: 2025 },
-] as const;
+export function dataYearBounds(records: { season: number }[]) {
+  if (records.length === 0) return { min: MIN_YEAR, max: MAX_YEAR };
+  let min = records[0].season;
+  let max = records[0].season;
+  for (const record of records) {
+    if (record.season < min) min = record.season;
+    if (record.season > max) max = record.season;
+  }
+  return { min, max };
+}
+
+export function rangePresets(minYear: number, maxYear: number) {
+  const endCalendar = maxYear + 1;
+  const presets: { label: string; start: number; end: number }[] = [
+    { label: `${minYear}–${endCalendar}`, start: minYear, end: maxYear },
+  ];
+  if (minYear <= 2017 && maxYear >= 2017) {
+    presets.push({ label: `2017–${endCalendar}`, start: 2017, end: maxYear });
+  }
+  if (minYear <= 2020 && maxYear >= 2020) {
+    presets.push({ label: `2020–${endCalendar}`, start: 2020, end: maxYear });
+  }
+  presets.push({
+    label: `${maxYear}–${endCalendar}`,
+    start: maxYear,
+    end: maxYear,
+  });
+  return presets;
+}
 
 export function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));

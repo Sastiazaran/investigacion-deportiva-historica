@@ -1,23 +1,27 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
-  MAX_YEAR,
-  MIN_YEAR,
-  RANGE_PRESETS,
   CHART_TOP_N,
   COMBO_TOP_N,
   aggregateClubs,
   buildCombos,
   clamp,
+  dataYearBounds,
   datasetStats,
   formatPeriodLabel,
   formatSeasonPart,
+  rangePresets,
 } from "../lib/analysis";
+import { clubSlug } from "../lib/metrics";
 import type { SeasonRecord, ViewTab } from "../lib/types";
+import SiteNav from "./SiteNav";
 
 type Props = {
   records: SeasonRecord[];
+  coverageNotes: string[];
+  hasEuropeanGaps: boolean;
 };
 
 function TierBadge({ tier }: { tier: "S" | "A" | "B" }) {
@@ -78,10 +82,18 @@ function HorizontalBarChart({
   );
 }
 
-export default function Dashboard({ records }: Props) {
+export default function Dashboard({
+  records,
+  coverageNotes,
+  hasEuropeanGaps,
+}: Props) {
+  const bounds = dataYearBounds(records);
+  const presets = rangePresets(bounds.min, bounds.max);
   const [view, setView] = useState<ViewTab>("rates");
-  const [startYear, setStartYear] = useState(2020);
-  const [endYear, setEndYear] = useState(MAX_YEAR);
+  const [startYear, setStartYear] = useState(
+    bounds.min <= 2020 && bounds.max >= 2020 ? 2020 : bounds.min,
+  );
+  const [endYear, setEndYear] = useState(bounds.max);
 
   const stats = useMemo(() => datasetStats(records), [records]);
   const periodLabel = useMemo(
@@ -104,24 +116,26 @@ export default function Dashboard({ records }: Props) {
   const combos = useMemo(() => buildCombos(clubAggs), [clubAggs]);
 
   const onStartYearChange = (value: number) => {
-    setStartYear(clamp(value, MIN_YEAR, endYear));
+    setStartYear(clamp(value, bounds.min, endYear));
   };
 
   const onEndYearChange = (value: number) => {
-    setEndYear(clamp(value, startYear, MAX_YEAR));
+    setEndYear(clamp(value, startYear, bounds.max));
   };
 
   return (
     <main className="dashboard">
+      <SiteNav />
       <header className="page-header">
         <h1>European Accumulator Analysis</h1>
         <p className="lede">
           Win% is <strong>won / played</strong> across La Liga, Premier League,
-          Bundesliga, Ligue 1, Serie A, Eredivisie, and Primeira Liga. Dataset:{" "}
-          <strong>{stats.records} season records</strong>,{" "}
+          Bundesliga, Ligue 1, Serie A, Eredivisie, Primeira Liga, and Liga MX.
+          Dataset: <strong>{stats.records} season records</strong>,{" "}
           <strong>{stats.clubs} unique clubs</strong>. Tiers:{" "}
           <strong>S ≥ 57%</strong>, <strong>A = 43–56.99%</strong>,{" "}
-          <strong>B &lt; 43%</strong>.
+          <strong>B &lt; 43%</strong>. Open a club for home/away splits and
+          flat-bet ROI at closing odds.
         </p>
       </header>
 
@@ -132,7 +146,7 @@ export default function Dashboard({ records }: Props) {
         </div>
 
         <div className="preset-row">
-          {RANGE_PRESETS.map((preset) => {
+          {presets.map((preset) => {
             const active =
               startYear === preset.start && endYear === preset.end;
             return (
@@ -159,8 +173,8 @@ export default function Dashboard({ records }: Props) {
             </span>
             <input
               type="range"
-              min={MIN_YEAR}
-              max={MAX_YEAR}
+              min={bounds.min}
+              max={bounds.max}
               value={startYear}
               onChange={(e) => onStartYearChange(Number(e.target.value))}
             />
@@ -171,23 +185,19 @@ export default function Dashboard({ records }: Props) {
             </span>
             <input
               type="range"
-              min={MIN_YEAR}
-              max={MAX_YEAR}
+              min={bounds.min}
+              max={bounds.max}
               value={endYear}
               onChange={(e) => onEndYearChange(Number(e.target.value))}
             />
           </label>
         </div>
 
-        <aside className="callout warning">
-          <strong>Coverage gaps</strong>
-          <p>
-            La Liga from <strong>2012</strong>, Serie A / Ligue 1 from{" "}
-            <strong>2013/14</strong>, and Eredivisie / Portugal from{" "}
-            <strong>2018</strong>. Early Premier League / Bundesliga seasons are
-            covered; missing league-years affect reliability when the range
-            includes them.
-          </p>
+        <aside className={`callout ${hasEuropeanGaps ? "warning" : "info"}`}>
+          <strong>{hasEuropeanGaps ? "Coverage gaps" : "Coverage"}</strong>
+          {coverageNotes.map((note) => (
+            <p key={note}>{note}</p>
+          ))}
         </aside>
       </section>
 
@@ -248,8 +258,8 @@ export default function Dashboard({ records }: Props) {
             />
             <p className="muted small">
               Chart shows top {CHART_TOP_N} only. Table below lists every club in
-              the selected range. Source: football-data / footballcsv /
-              openfootball · seasons 2000/01–2024/25.
+              the selected range. Club names open home/away ROI. Source:
+              football-data.co.uk.
             </p>
           </div>
 
@@ -268,7 +278,11 @@ export default function Dashboard({ records }: Props) {
               <tbody>
                 {clubAggs.map((c) => (
                   <tr key={c.club}>
-                    <td>{c.club}</td>
+                    <td>
+                      <Link className="club-link" href={`/team/${clubSlug(c.club)}`}>
+                        {c.club}
+                      </Link>
+                    </td>
                     <td className="center">
                       <TierBadge tier={c.tier} />
                     </td>

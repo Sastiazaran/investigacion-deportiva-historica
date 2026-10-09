@@ -1,0 +1,48 @@
+name: Update football data
+
+on:
+  schedule:
+    # Friday 06:00 UTC, so /data/summary.json is refreshed before a Friday reader.
+    - cron: "0 6 * * 5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-football-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Test ROI and calibration math
+        working-directory: scripts
+        run: python3 -m unittest discover -s . -p "test_*.py"
+
+      - name: Rebuild datasets
+        run: python3 scripts/build_season_data.py
+
+      - name: Commit and push when the files changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            canvases/season-data.json \
+            web/public/data/season-data.json \
+            web/public/data/matches.json \
+            web/public/data/summary.json \
+            web/public/data/coverage.json
+          if git diff --staged --quiet; then
+            echo "No data changes"
+            exit 0
+          fi
+          git commit -m "chore: refresh match results, ROI, and calibration"
+          git push

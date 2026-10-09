@@ -1,9 +1,23 @@
 #!/usr/bin/env python3
-"""Download league CSVs and build per-club season records (2000-2025).
+"""Download league results and closing odds, then write the app datasets.
 
-Records every team in the seven top divisions (not a club whitelist).
-Known aliases are canonicalized; all other clubs are kept after light suffix trim.
-Season start year 2025 = 2025/26 (partial seasons are fine).
+Sources
+-------
+football-data.co.uk season files for E0, SP1, D1, I1, F1, N1, P1
+(2000/01 through the current season), plus the all-season Liga MX file
+at /new/MEX.csv. openfootball/mexico is not published anymore (the GitHub
+repo 404s); Liga MX therefore starts in 2012/13, which is as far back as
+football-data's Mexico file goes. Odds there are often present.
+
+Outputs (paths are relative to the repo root, next to this script's parent)
+-----------------------------------------------------------------------
+- canvases/season-data.json
+- web/public/data/season-data.json
+- web/public/data/matches.json
+- web/public/data/summary.json
+- web/public/data/coverage.json
+
+Set FD_CACHE to a directory to reuse already downloaded CSVs.
 """
 
 from __future__ import annotations
@@ -11,10 +25,46 @@ from __future__ import annotations
 import csv
 import io
 import json
-import re
+import os
+import sys
 import urllib.error
 import urllib.request
 from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime, timezone
+from pathlib import Path
+
+from metrics import (
+    Split,
+    add_market_to_calibration,
+    combine_splits,
+    empty_bucket_accumulators,
+    finalize_buckets,
+    result_for_side,
+    select_closing,
+)
+from normalize import club_slug, normalize_team
+
+ROOT = Path(__file__).resolve().parent.parent
+SEASON_PATHS = [
+    ROOT / "canvases" / "season-data.json",
+    ROOT / "web" / "public" / "data" / "season-data.json",
+]
+MATCHES_PATH = ROOT / "web" / "public" / "data" / "matches.json"
+SUMMARY_PATH = ROOT / "web" / "public" / "data" / "summary.json"
+COVERAGE_PATH = ROOT / "web" / "public" / "data" / "coverage.json"
+
+FIRST_SEASON = 2000
+
+
+def default_last_season() -> int:
+    """Season start year that is underway. Files for a new season appear in August."""
+    today = datetime.now(timezone.utc).date()
+    return today.year if today.month >= 8 else today.year - 1
+
+
+# Override with LAST_SEASON=2026 when rebuilding a historical snapshot.
+LAST_SEASON = int(os.environ.get("LAST_SEASON", str(default_last_season())))
 
 LEAGUES = {
     "E0": "Premier League",
@@ -24,400 +74,586 @@ LEAGUES = {
     "F1": "Ligue 1",
     "N1": "Eredivisie",
     "P1": "Primeira Liga",
-}
-
-FC_FILE = {
-    "E0": "eng.1.csv",
-    "SP1": "es.1.csv",
-    "D1": "de.1.csv",
-    "I1": "it.1.csv",
-    "F1": "fr.1.csv",
-    "N1": "nl.1.csv",
-    "P1": "pt.1.csv",
+    "MEX": "Liga MX",
 }
 
 USER_AGENT = (
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-    "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    "Mozilla/5.0 (compatible; InvestigacionDeportivaHistorica/1.0; "
+    "+https://github.com/)"
 )
 
-CLUB_ALIASES = {
-    "Man United": ["Man United", "Manchester United", "Manchester United FC"],
-    "Liverpool": ["Liverpool", "Liverpool FC"],
-    "Arsenal": ["Arsenal", "Arsenal FC"],
-    "Chelsea": ["Chelsea", "Chelsea FC"],
-    "Man City": ["Man City", "Manchester City", "Manchester City FC"],
-    "Real Madrid": ["Real Madrid", "Real Madrid CF"],
-    "Barcelona": ["Barcelona", "FC Barcelona"],
-    "Atletico Madrid": ["Ath Madrid", "Atletico Madrid", "Club Atlético de Madrid", "Atlético Madrid"],
-    "Bayern Munich": ["Bayern Munich", "FC Bayern München", "Bayern München", "FC Bayern Munich"],
-    "Dortmund": [
-        "Dortmund",
-        "Borussia Dortmund",
-        "BV Borussia 09 Dortmund",
-        "Borussia Dortmund 09",
-    ],
-    "PSG": ["Paris SG", "PSG", "Paris Saint-Germain", "Paris Saint Germain"],
-    "Lyon": ["Lyon", "Olympique Lyonnais", "Olympique Lyon"],
-    "Marseille": ["Marseille", "Olympique Marseille", "Olympique de Marseille"],
-    "Juventus": ["Juventus", "Juventus FC"],
-    "Inter Milan": ["Inter", "Inter Milan", "FC Internazionale Milano", "Internazionale"],
-    "AC Milan": ["AC Milan", "Milan"],
-    "Napoli": ["Napoli", "SSC Napoli"],
-    "AS Roma": ["Roma", "AS Roma"],
-    "Ajax": ["Ajax", "AFC Ajax", "Ajax Amsterdam"],
-    "PSV": ["PSV Eindhoven", "PSV"],
-    "Feyenoord": ["Feyenoord", "Feyenoord Rotterdam"],
-    "AZ Alkmaar": ["AZ Alkmaar", "AZ"],
-    "Benfica": ["Benfica", "SL Benfica", "Sport Lisboa e Benfica"],
-    "Porto": ["Porto", "FC Porto"],
-    "Sporting CP": [
-        "Sp Lisbon",
-        "Sporting CP",
-        "Sporting Lisbon",
-        "Sporting Clube de Portugal",
-    ],
-    "Braga": ["Braga", "Sporting Braga", "Sporting Clube de Braga"],
-    "Athletic Bilbao": [
-        "Athletic Club",
-        "Athletic Club Bilbao",
-        "Ath Bilbao",
-        "Athletic Bilbao",
-    ],
-    "Rayo Vallecano": ["Rayo Vallecano", "Rayo Vallecano de Madrid"],
-    "RC Strasbourg": ["RC Strasbourg", "RC Strasbourg Alsace", "Strasbourg"],
-    "Greuther Furth": [
-        "SpVgg Greuther Fürth",
-        "SpVgg Greuther Furth",
-        "SpVgg Greuther Fürth 1903",
-        "Greuther Furth",
-    ],
-    "Rennes": ["Stade Rennais", "Stade Rennais FC 1901", "Rennes"],
-    "Monchengladbach": [
-        "Bor. Mönchengladbach",
-        "Borussia Mönchengladbach",
-        "M'Gladbach",
-        "Gladbach",
-        "Monchengladbach",
-    ],
-}
-
-REVERSE_ALIAS = {}
-for canonical, aliases in CLUB_ALIASES.items():
-    for alias in aliases:
-        REVERSE_ALIAS[alias.lower()] = canonical
-
-TEAM_SUFFIXES = (
-    " FC",
-    " AFC",
-    " CF",
-    " SC",
-    " UD",
-    " CD",
-    " AC",
-    " BK",
-    " SK",
-    " Balompié",
-    " de Fútbol",
-    " de Barcelona",
-)
-
-OPENFOOTBALL_MATCH_V = re.compile(
-    r"^\s+(?:\d{2}:\d{2}\s+)?(.+?)\s+v\s+(.+?)\s+(\d+)-(\d+)(?:\s|\(|$)"
-)
-# Newer openfootball layout: "  19:00   Home  4-2 (1-0)  Away"
-OPENFOOTBALL_MATCH_SCORE_MID = re.compile(
-    r"^\s+(?:\d{2}:\d{2}\s+)?(.+?)\s+(\d+)-(\d+)\s*(?:\([^)]*\)\s+)?(.+?)\s*$"
-)
+CACHE_DIR = Path(os.environ["FD_CACHE"]) if os.environ.get("FD_CACHE") else None
 
 
 def season_code(year: int) -> str:
     return f"{year % 100:02d}{(year + 1) % 100:02d}"
 
 
-def season_folder(year: int) -> str:
-    return f"{year}-{str(year + 1)[-2:]}"
+def season_label(year: int) -> str:
+    return f"{year}/{str(year + 1)[-2:]}"
 
 
-def decade_folder(year: int) -> str:
-    if year < 2010:
-        return "2000s"
-    if year < 2020:
-        return "2010s"
-    return "2020s"
+def iso_now() -> str:
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
-def normalize_team(name: str) -> str | None:
-    """Return a display name for every club; unknown clubs are kept, not dropped.
-
-    Known aliases map to a canonical label. Other names are trimmed of common
-    suffixes (FC, CF, …) and otherwise preserved.
-    """
-    if not name:
-        return None
-    n = " ".join(name.strip().split())
-    for suf in TEAM_SUFFIXES:
-        if n.endswith(suf):
-            n = n[: -len(suf)].strip()
-    if not n:
-        return None
-    key = n.lower()
-    if key in REVERSE_ALIAS:
-        return REVERSE_ALIAS[key]
-    return n
-
-
-FD_ENABLED = True
-
-
-def fetch_text(url: str) -> str | None:
-    global FD_ENABLED
-    if "football-data.co.uk" in url and not FD_ENABLED:
-        return None
+def fetch_bytes(url: str) -> bytes | None:
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     try:
-        with urllib.request.urlopen(req, timeout=12) as resp:
-            return resp.read().decode("utf-8", errors="replace")
-    except Exception as exc:
-        if "football-data.co.uk" in url:
-            # Site is often blocked; skip further FD attempts this run.
-            FD_ENABLED = False
-            print(f"  football-data.co.uk unavailable ({exc}); using GitHub fallbacks")
+        with urllib.request.urlopen(req, timeout=40) as resp:
+            data = resp.read()
+    except (urllib.error.URLError, TimeoutError, OSError) as exc:
+        print(f"  fetch failed {url}: {exc}")
+        return None
+    if not data or data[:1] in (b"<",) or b"<html" in data[:300].lower():
+        return None
+    return data
+
+
+def cached_or_download(key: str, url: str) -> str | None:
+    if CACHE_DIR is not None:
+        path = CACHE_DIR / key
+        if path.exists() and path.stat().st_size > 80:
+            return path.read_text(encoding="utf-8-sig", errors="replace")
+    data = fetch_bytes(url)
+    if data is None:
+        return None
+    text = data.decode("utf-8-sig", errors="replace")
+    if CACHE_DIR is not None:
+        CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        (CACHE_DIR / key).write_text(text, encoding="utf-8")
+    return text
+
+
+def parse_date(value: str) -> str | None:
+    text = (value or "").strip()
+    if not text:
+        return None
+    for fmt in ("%d/%m/%y", "%d/%m/%Y", "%Y-%m-%d"):
+        try:
+            return datetime.strptime(text, fmt).date().isoformat()
+        except ValueError:
+            continue
+    return None
+
+
+def parse_goals(value: str | None) -> int | None:
+    text = (value or "").strip()
+    if text == "":
+        return None
+    try:
+        return int(text)
+    except ValueError:
         return None
 
 
-def parse_football_data_csv(text: str) -> list[dict]:
+def result_from_goals(home_goals: int, away_goals: int) -> str:
+    if home_goals > away_goals:
+        return "H"
+    if home_goals < away_goals:
+        return "A"
+    return "D"
+
+
+def odds_object(triplet: tuple[float, float, float] | None) -> dict | None:
+    if triplet is None:
+        return None
+    home, draw, away = triplet
+    return {"home": round(home, 4), "draw": round(draw, 4), "away": round(away, 4)}
+
+
+def row_to_match(row: dict, league: str, season: int, home_key: str, away_key: str, hg_key: str, ag_key: str, res_key: str) -> dict | None:
+    home = normalize_team(row.get(home_key) or "")
+    away = normalize_team(row.get(away_key) or "")
+    if not home or not away or home == away:
+        return None
+    home_goals = parse_goals(row.get(hg_key))
+    away_goals = parse_goals(row.get(ag_key))
+    if home_goals is None or away_goals is None:
+        return None
+    if home_goals < 0 or away_goals < 0:
+        return None
+    derived = result_from_goals(home_goals, away_goals)
+    raw_result = (row.get(res_key) or "").strip().upper()
+    result = raw_result if raw_result in ("H", "D", "A") else derived
+    if result != derived:
+        result = derived
+    date = parse_date(row.get("Date") or "")
+    if date is None:
+        return None
+    closing, source, books = select_closing(row)
+    match = {
+        "date": date,
+        "season": season,
+        "league": league,
+        "home": home,
+        "away": away,
+        "homeGoals": home_goals,
+        "awayGoals": away_goals,
+        "result": result,
+    }
+    for field, triplet in (
+        ("b365", books["b365"]),
+        ("pinnacle", books["pinnacle"]),
+        ("pinnacleClosing", books["pinnacleClosing"]),
+        ("closing", closing),
+    ):
+        payload = odds_object(triplet)
+        if payload is not None:
+            match[field] = payload
+    if source:
+        match["oddsSource"] = source
+    return match
+
+
+def parse_football_data_csv(text: str, league: str, season: int) -> list[dict]:
     reader = csv.DictReader(io.StringIO(text))
     if not reader.fieldnames:
         return []
-    if "HomeTeam" in reader.fieldnames:
-        return [row for row in reader if row.get("FTR") in ("H", "D", "A")]
-    return parse_footballcsv(text)
-
-
-def parse_footballcsv(text: str) -> list[dict]:
-    reader = csv.DictReader(io.StringIO(text))
-    rows: list[dict] = []
-    for row in reader:
-        t1 = (row.get("Team 1") or row.get("Home") or "").strip()
-        t2 = (row.get("Team 2") or row.get("Away") or "").strip()
-        ft = (row.get("FT") or row.get("Score") or "").strip()
-        if not t1 or not t2 or "-" not in ft:
+    fields = {name.lstrip("\ufeff") for name in reader.fieldnames if name}
+    # Rewrite keys so a BOM on the first header does not hide Country/Div.
+    rows = []
+    for raw in reader:
+        row = {(key or "").lstrip("\ufeff"): value for key, value in raw.items()}
+        if "HomeTeam" in fields:
+            match = row_to_match(row, league, season, "HomeTeam", "AwayTeam", "FTHG", "FTAG", "FTR")
+        elif "Home" in fields:
+            season_text = (row.get("Season") or "").strip()
+            file_season = season
+            if "/" in season_text:
+                try:
+                    file_season = int(season_text.split("/")[0])
+                except ValueError:
+                    file_season = season
+            match = row_to_match(row, league, file_season, "Home", "Away", "HG", "AG", "Res")
+        else:
             continue
-        parts = ft.replace(" ", "").split("-")
-        if len(parts) < 2:
-            continue
-        try:
-            hg, ag = int(parts[0]), int(parts[1])
-        except ValueError:
-            continue
-        ftr = "H" if hg > ag else "A" if hg < ag else "D"
-        rows.append({"HomeTeam": t1, "AwayTeam": t2, "FTR": ftr})
+        if match:
+            rows.append(match)
     return rows
 
 
-def parse_openfootball_txt(text: str) -> list[dict]:
-    rows: list[dict] = []
-    for line in text.splitlines():
-        m = OPENFOOTBALL_MATCH_V.match(line)
-        if m:
-            home, away = m.group(1).strip(), m.group(2).strip()
-            hg, ag = int(m.group(3)), int(m.group(4))
-        else:
-            if " v " in line:
-                continue
-            m2 = OPENFOOTBALL_MATCH_SCORE_MID.match(line)
-            if not m2:
-                continue
-            home, away = m2.group(1).strip(), m2.group(4).strip()
-            hg, ag = int(m2.group(2)), int(m2.group(3))
-            # Reject header-ish / non-team lines
-            if not home or not away or home.startswith("#") or away.startswith("#"):
-                continue
-        ftr = "H" if hg > ag else "A" if hg < ag else "D"
-        rows.append({"HomeTeam": home, "AwayTeam": away, "FTR": ftr})
-    return rows
-
-
-def source_urls(code: str, year: int) -> list[tuple[str, str]]:
-    sc = season_code(year)
-    season = season_folder(year)
-    decade = decade_folder(year)
-    fc = FC_FILE[code]
-    urls: list[tuple[str, str]] = []
-
-    urls.append(("fd", f"https://www.football-data.co.uk/mmz4281/{sc}/{code}.csv"))
-
-    if year >= 2020:
-        urls.append(
-            (
-                "csv",
-                f"https://raw.githubusercontent.com/footballcsv/cache.api.fbdat/master/{season}/{fc}",
-            )
-        )
-    elif year in (2018, 2019):
-        attic = "2018-19" if year == 2018 else "2019-20"
-        urls.append(
-            (
-                "csv",
-                f"https://raw.githubusercontent.com/footballcsv/cache.api.fbdat/master/.attic/{attic}/{fc}",
-            )
-        )
-
-    repo_by_code = {"E0": "england", "D1": "deutschland", "SP1": "espana"}
-    repo = repo_by_code.get(code)
-    if repo and (code != "SP1" or year >= 2012):
-        urls.append(
-            (
-                "csv",
-                f"https://raw.githubusercontent.com/footballcsv/{repo}/master/{decade}/{season}/{fc}",
-            )
-        )
-
-    openfootball = {
-        "E0": f"https://raw.githubusercontent.com/openfootball/england/master/{season}/1-premierleague.txt",
-        "SP1": f"https://raw.githubusercontent.com/openfootball/espana/master/{season}/1-liga.txt",
-        "I1": f"https://raw.githubusercontent.com/openfootball/italy/master/{season}/1-seriea.txt",
-        "D1": f"https://raw.githubusercontent.com/openfootball/deutschland/master/{season}/1-bundesliga.txt",
-        "F1": f"https://raw.githubusercontent.com/openfootball/europe/master/france/{season}_fr1.txt",
-        "N1": f"https://raw.githubusercontent.com/openfootball/europe/master/netherlands/{season}_nl1.txt",
-        "P1": f"https://raw.githubusercontent.com/openfootball/europe/master/portugal/{season}_pt1.txt",
-    }
-    if code in openfootball:
-        urls.append(("txt", openfootball[code]))
-
-    return urls
-
-
-def fetch_csv(code: str, season_year: int) -> list[dict]:
-    for kind, url in source_urls(code, season_year):
-        text = fetch_text(url)
-        if not text or len(text) < 80:
-            continue
-        if text.lstrip().startswith("<"):
-            continue
-        if kind == "txt":
-            rows = parse_openfootball_txt(text)
-        else:
-            rows = parse_football_data_csv(text)
-        if rows:
-            if kind != "fd":
-                print(f"  {code} {season_folder(season_year)}: via fallback ({kind})")
-            return rows
-    print(f"  skip {code} {season_code(season_year)}: all sources failed")
-    return []
-
-
-def process_matches(rows: list[dict], league: str, season_year: int, stats: dict):
-    for row in rows:
-        home = row.get("HomeTeam", "")
-        away = row.get("AwayTeam", "")
-        ftr = row.get("FTR", "")
-
-        if ftr not in ("H", "D", "A"):
-            continue
-
-        for team, result in (
-            (home, "W" if ftr == "H" else "D" if ftr == "D" else "L"),
-            (away, "W" if ftr == "A" else "D" if ftr == "D" else "L"),
-        ):
-            canonical = normalize_team(team)
-            if not canonical:
-                continue
-            key = (canonical, season_year)
-            stats[key]["league"] = league
-            stats[key]["played"] += 1
-            if result == "W":
-                stats[key]["won"] += 1
-            elif result == "D":
-                stats[key]["drawn"] += 1
-            else:
-                stats[key]["lost"] += 1
-
-
-OUTPUT_PATHS = [
-    "/Users/sebastianasti/Documents/Programación-proyectosAsti/InvestigacionDeportivaHistorica/Investigación/canvases/season-data.json",
-    "/Users/sebastianasti/.cursor/projects/Users-sebastianasti-Documents-Programaci-n-proyectosAsti-InvestigacionDeportivaHistorica-Investigaci-n/canvases/season-data.json",
-    "/Users/sebastianasti/.cursor/projects/Users-sebastianasti-Documents-Programaci-n-proyectosAsti-InvestigacionDeportivaHistorica-Sin-t-tulo/canvases/season-data.json",
-    "/Users/sebastianasti/.cursor/projects/Users-sebastianasti-Documents-Programacio-n-proyectosAsti-InvestigacionDeportivaHistorica-Investigacio-n/canvases/season-data.json",
-]
-
-# Inclusive season-start years: 2000 (2000/01) … 2025 (2025/26)
-FIRST_SEASON = 2000
-LAST_SEASON = 2025
-
-
-def main():
-    stats: dict = defaultdict(
-        lambda: {"played": 0, "won": 0, "drawn": 0, "lost": 0, "league": ""}
-    )
-
-    leagues_by_year: dict[int, set[str]] = defaultdict(set)
-
+def download_european() -> dict[tuple[str, int], list[dict]]:
+    jobs = []
     for year in range(FIRST_SEASON, LAST_SEASON + 1):
-        print(f"Season {year}/{year+1}...")
-        for code, league in LEAGUES.items():
-            rows = fetch_csv(code, year)
-            if rows:
-                process_matches(rows, league, year, stats)
-                leagues_by_year[year].add(code)
+        code = season_code(year)
+        for league in ("E0", "SP1", "D1", "I1", "F1", "N1", "P1"):
+            url = f"https://www.football-data.co.uk/mmz4281/{code}/{league}.csv"
+            jobs.append((league, year, f"{league}_{year}.csv", url))
+
+    found: dict[tuple[str, int], list[dict]] = {}
+
+    def work(job: tuple[str, int, str, str]) -> tuple[str, int, list[dict]]:
+        league, year, key, url = job
+        text = cached_or_download(key, url)
+        if not text or len(text) < 80:
+            return league, year, []
+        return league, year, parse_football_data_csv(text, league, year)
+
+    with ThreadPoolExecutor(max_workers=12) as pool:
+        futures = [pool.submit(work, job) for job in jobs]
+        for future in as_completed(futures):
+            league, year, matches = future.result()
+            found[(league, year)] = matches
+            odds = sum(1 for match in matches if match.get("oddsSource"))
+            status = f"{len(matches)} matches, {odds} with closing odds" if matches else "MISSING"
+            print(f"  {league} {season_label(year)}: {status}")
+    return found
+
+
+def download_liga_mx() -> list[dict]:
+    text = cached_or_download("MEX.csv", "https://www.football-data.co.uk/new/MEX.csv")
+    if not text:
+        print("  MEX: MISSING")
+        return []
+    matches = parse_football_data_csv(text, "MEX", FIRST_SEASON)
+    matches = [match for match in matches if FIRST_SEASON <= match["season"] <= LAST_SEASON]
+    print(f"  MEX: {len(matches)} matches across {len({m['season'] for m in matches})} seasons")
+    return matches
+
+
+def load_previous() -> dict[tuple[str, int], list[dict]]:
+    if not MATCHES_PATH.exists():
+        return {}
+    try:
+        payload = json.loads(MATCHES_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    rows = payload.get("matches") if isinstance(payload, dict) else None
+    if not isinstance(rows, list):
+        return {}
+    grouped: dict[tuple[str, int], list[dict]] = defaultdict(list)
+    for match in rows:
+        try:
+            grouped[(match["league"], int(match["season"]))].append(match)
+        except (KeyError, TypeError, ValueError):
+            continue
+    return grouped
+
+
+def dedupe(matches: list[dict]) -> list[dict]:
+    seen: set[tuple] = set()
+    unique: list[dict] = []
+    for match in matches:
+        key = (match["league"], match["date"], match["home"], match["away"])
+        if key in seen:
+            continue
+        seen.add(key)
+        unique.append(match)
+    unique.sort(key=lambda match: (match["date"], match["league"], match["home"], match["away"]))
+    return unique
+
+
+def build_records(matches: list[dict]) -> tuple[list[dict], dict]:
+    """Season W/D/L records (original schema) plus per-club betting splits."""
+    season_overall: dict[tuple[str, int], Split] = defaultdict(Split)
+    season_home: dict[tuple[str, int], Split] = defaultdict(Split)
+    season_away: dict[tuple[str, int], Split] = defaultdict(Split)
+    season_league: dict[tuple[str, int], str] = {}
+
+    global_buckets = empty_bucket_accumulators()
+    season_buckets: dict[int, dict] = defaultdict(empty_bucket_accumulators)
+
+    for match in matches:
+        league_name = LEAGUES[match["league"]]
+        season = match["season"]
+        result = match["result"]
+        closing = match.get("closing")
+        for side, club in (("home", match["home"]), ("away", match["away"])):
+            key = (club, season)
+            season_league[key] = league_name
+            outcome = result_for_side(side, result)
+            season_overall[key].add_result(outcome)
+            venue = season_home if side == "home" else season_away
+            venue[key].add_result(outcome)
+            if closing:
+                price = closing["home"] if side == "home" else closing["away"]
+                won = outcome == "W"
+                season_overall[key].add_bet(price, won)
+                venue[key].add_bet(price, won)
+        if closing:
+            add_market_to_calibration(
+                global_buckets,
+                closing["home"],
+                closing["draw"],
+                closing["away"],
+                result,
+            )
+            add_market_to_calibration(
+                season_buckets[season],
+                closing["home"],
+                closing["draw"],
+                closing["away"],
+                result,
+            )
 
     records = []
-    for (club, season), s in sorted(stats.items()):
-        if s["played"] == 0:
-            continue
-        records.append(
+    clubs: dict[str, dict] = {}
+    for (club, season), overall in season_overall.items():
+        record = {
+            "club": club,
+            "season": season,
+            "league": season_league[(club, season)],
+            "played": overall.played,
+            "won": overall.won,
+            "drawn": overall.drawn,
+            "lost": overall.lost,
+        }
+        records.append(record)
+        club_row = clubs.setdefault(
+            club,
+            {"seasons": [], "leagues": set(), "overall_parts": [], "home_parts": [], "away_parts": []},
+        )
+        club_row["leagues"].add(record["league"])
+        home = season_home[(club, season)]
+        away = season_away[(club, season)]
+        club_row["seasons"].append(
             {
-                "club": club,
                 "season": season,
-                "league": s["league"],
-                "played": s["played"],
-                "won": s["won"],
-                "drawn": s["drawn"],
-                "lost": s["lost"],
+                "league": record["league"],
+                "overall": overall.to_dict(),
+                "home": home.to_dict(),
+                "away": away.to_dict(),
             }
         )
+        club_row["overall_parts"].append(overall)
+        club_row["home_parts"].append(home)
+        club_row["away_parts"].append(away)
 
-    payload = json.dumps(records, separators=(",", ":"))
-    for out in OUTPUT_PATHS:
-        try:
-            with open(out, "w") as f:
-                f.write(payload)
-            print(f"Wrote {out}")
-        except OSError as exc:
-            print(f"Skip write {out}: {exc}")
+    records.sort(key=lambda row: (row["club"], row["season"], row["league"]))
 
-    clubs = {r["club"] for r in records}
-    y2025 = [r for r in records if r["season"] == 2025]
-    print(
-        f"\n{len(records)} records ({len(clubs)} unique clubs); "
-        f"{len(y2025)} records for 2025/26"
+    teams = []
+    for club, club_row in clubs.items():
+        slug = club_slug(club)
+        club_row["seasons"].sort(key=lambda row: row["season"])
+        teams.append(
+            {
+                "club": club,
+                "slug": slug,
+                "leagues": sorted(club_row["leagues"]),
+                "overall": combine_splits(club_row["overall_parts"]).to_dict(),
+                "home": combine_splits(club_row["home_parts"]).to_dict(),
+                "away": combine_splits(club_row["away_parts"]).to_dict(),
+                "seasons": [
+                    {
+                        "season": row["season"],
+                        "league": row["league"],
+                        "overall": row["overall"],
+                        "home": row["home"],
+                        "away": row["away"],
+                    }
+                    for row in club_row["seasons"]
+                ],
+            }
+        )
+    teams.sort(key=lambda row: row["club"])
+
+    slugs = [team["slug"] for team in teams]
+    if len(slugs) != len(set(slugs)):
+        dupes = sorted({slug for slug in slugs if slugs.count(slug) > 1})
+        raise SystemExit(f"Club slug collision: {dupes}")
+
+    summary_teams = teams
+    calibration = {
+        "all": finalize_buckets(global_buckets),
+        "bySeason": [
+            {"season": season, "buckets": finalize_buckets(season_buckets[season])}
+            for season in sorted(season_buckets)
+        ],
+    }
+    return records, {"teams": summary_teams, "calibration": calibration}
+
+
+def coverage_rows(matches: list[dict]) -> list[dict]:
+    grouped: dict[tuple[str, int], list[dict]] = defaultdict(list)
+    for match in matches:
+        grouped[(match["league"], match["season"])].append(match)
+    rows = []
+    for league, name in LEAGUES.items():
+        years = range(FIRST_SEASON, LAST_SEASON + 1)
+        if league == "MEX":
+            present_years = sorted(year for (code, year) in grouped if code == league)
+            years = present_years
+        for year in years:
+            sample = grouped.get((league, year), [])
+            sources = {"PSC": 0, "PS": 0, "B365": 0, "none": 0}
+            for match in sample:
+                sources[match.get("oddsSource") or "none"] += 1
+            latest = max((match["date"] for match in sample), default=None)
+            rows.append(
+                {
+                    "league": league,
+                    "leagueName": name,
+                    "season": year,
+                    "matches": len(sample),
+                    "withClosingOdds": len(sample) - sources["none"],
+                    "oddsSource": sources,
+                    "latestMatchDate": latest,
+                }
+            )
+    return rows
+
+
+def mark_partial(rows: list[dict]) -> None:
+    """The newest season is still in progress. Earlier short seasons are finished."""
+    for row in rows:
+        row["partial"] = row["season"] == LAST_SEASON and row["matches"] > 0
+
+
+def coverage_notes(rows: list[dict]) -> tuple[list[str], bool]:
+    notes: list[str] = []
+    european_gap = False
+    by_league: dict[str, list[dict]] = defaultdict(list)
+    for row in rows:
+        by_league[row["league"]].append(row)
+    for league, name in LEAGUES.items():
+        sample = by_league.get(league, [])
+        present = [row for row in sample if row["matches"] > 0]
+        if league != "MEX":
+            missing = [row["season"] for row in sample if row["matches"] == 0]
+            if missing:
+                european_gap = True
+                notes.append(
+                    f"{name}: missing {', '.join(season_label(year) for year in missing)}."
+                )
+            elif present:
+                first = present[0]["season"]
+                last = present[-1]["season"]
+                with_odds = [row["season"] for row in present if row["withClosingOdds"] > 0]
+                odds_from = season_label(with_odds[0]) if with_odds else "none"
+                notes.append(
+                    f"{name}: {season_label(first)}–{season_label(last)} "
+                    f"({len(present)} seasons). Closing odds from {odds_from}."
+                )
+        elif present:
+            notes.append(
+                f"Liga MX: {season_label(present[0]['season'])}–{season_label(present[-1]['season'])} "
+                "from football-data.co.uk/new/MEX.csv (results and, when published, closing odds). "
+                "openfootball/mexico is not available. Seasons before 2012/13 are absent."
+            )
+    no_odds = [
+        f"{row['leagueName']} {season_label(row['season'])}"
+        for row in rows
+        if row["matches"] > 0 and row["withClosingOdds"] == 0
+    ]
+    if no_odds:
+        notes.append(
+            "Completed matches with no Bet365 or Pinnacle price (they count toward win% but not ROI): "
+            + ", ".join(no_odds)
+            + "."
+        )
+    return notes, european_gap
+
+
+def write_json(path: Path, payload: object) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    print(f"Wrote {path.relative_to(ROOT)} ({path.stat().st_size} bytes)")
+
+
+def main() -> None:
+    print(f"Seasons {season_label(FIRST_SEASON)}–{season_label(LAST_SEASON)}")
+    european = download_european()
+    mexico = download_liga_mx()
+    previous = load_previous()
+
+    matches: list[dict] = []
+    reused = 0
+    for league in ("E0", "SP1", "D1", "I1", "F1", "N1", "P1"):
+        for year in range(FIRST_SEASON, LAST_SEASON + 1):
+            rows = european.get((league, year), [])
+            if rows:
+                matches.extend(rows)
+            elif previous.get((league, year)):
+                matches.extend(previous[(league, year)])
+                reused += 1
+                print(f"  reused previous {league} {season_label(year)}")
+    if mexico:
+        matches.extend(mexico)
+    elif any(code == "MEX" for code, _year in previous):
+        for (code, _year), rows in previous.items():
+            if code == "MEX":
+                matches.extend(rows)
+        print("  reused previous Liga MX matches")
+
+    matches = dedupe(matches)
+    if not matches:
+        raise SystemExit("No matches downloaded")
+
+    previous_count = sum(len(rows) for rows in previous.values())
+    if previous_count >= 1000 and len(matches) < 0.8 * previous_count:
+        raise SystemExit(
+            f"Refusing to replace {previous_count} matches with {len(matches)} "
+            "(download looks incomplete)"
+        )
+
+    records, built = build_records(matches)
+    rows = coverage_rows(matches)
+    mark_partial(rows)
+    notes, european_gap = coverage_notes(rows)
+    generated_at = iso_now()
+
+    for path in SEASON_PATHS:
+        write_json(path, records)
+
+    write_json(
+        MATCHES_PATH,
+        {
+            "schemaVersion": 1,
+            "generatedAt": generated_at,
+            "leagueNames": LEAGUES,
+            "oddsOrder": ["home", "draw", "away"],
+            "closingOddsPolicy": (
+                "PSCH/PSCD/PSCA when all three are decimal odds > 1; "
+                "else PSH/PSD/PSA (or PH/PD/PA); "
+                "else B365H/B365D/B365A (or B365CH/B365CD/B365CA when pre-closing Bet365 columns are absent)."
+            ),
+            "matches": matches,
+        },
     )
 
-    missing_2025 = [c for c in LEAGUES if c not in leagues_by_year.get(2025, set())]
-    if missing_2025:
-        print(
-            "Leagues missing 2025/26: "
-            + ", ".join(f"{c} ({LEAGUES[c]})" for c in missing_2025)
-        )
+    summary = {
+        "schemaVersion": 1,
+        "generatedAt": generated_at,
+        "seasons": {"first": FIRST_SEASON, "last": LAST_SEASON},
+        "definitions": {
+            "season": "Season start year. 2026 means the 2026/27 season, which may be partial.",
+            "stake": "Flat stake of 1.00 unit on the named team to win. staked equals bets.",
+            "roi": (
+                "profit / staked. If the team wins, that bet's profit is odds - 1; "
+                "otherwise profit is -1. roi is null when bets is 0. "
+                "A positive roi means always betting that team at the closing price made money."
+            ),
+            "winPct": "won / played * 100, using every completed match. Null when played is 0.",
+            "closingOdds": (
+                "Pinnacle closing PSCH/PSCD/PSCA when all three prices are decimal odds greater than 1. "
+                "Otherwise Pinnacle PSH/PSD/PSA (or PH/PD/PA). "
+                "Otherwise Bet365 B365H/B365D/B365A, or B365CH/B365CD/B365CA when the file has no pre-closing Bet365 columns. "
+                "oddsSource on each match is PSC, PS, or B365."
+            ),
+            "recordVsRoi": (
+                "played/won/drawn/lost include every completed match. "
+                "bets/staked/returned/profit/roi/avgOdds include only matches with a closing price for that team."
+            ),
+            "homeAway": (
+                "Home uses matches the team played at home and the home closing price. "
+                "Away uses the away closing price. Overall is both."
+            ),
+            "impliedProbability": (
+                "Calibration observes each of home, draw, and away once per priced match. "
+                "Raw implied probability is 1/odds. Overround is removed by dividing by "
+                "(1/home + 1/draw + 1/away). actualWinRate is wins/outcomes in the bucket. "
+                "avgImpliedProb is the mean de-vigged probability. "
+                "sumImpliedProb and sumOdds are the totals behind those averages so buckets can be recombined."
+            ),
+            "buckets": (
+                "Half-open intervals on decimal closing odds: minOdds <= odds < maxOdds. "
+                "The last bucket has maxOdds null. Favorites from 1.20 to 1.50 use 0.05-wide buckets. "
+                "outcomes counts the three 1X2 results, not matches."
+            ),
+            "ligaMx": (
+                "Liga MX comes from https://www.football-data.co.uk/new/MEX.csv because "
+                "openfootball/mexico is not available. Coverage starts in 2012/13. "
+                "The file has no separate playoff flag, so published Liga MX rows are included as-is."
+            ),
+        },
+        "leagues": [{"code": code, "name": name} for code, name in LEAGUES.items()],
+        "coverage": rows,
+        "calibration": built["calibration"]["all"],
+        "calibrationBySeason": built["calibration"]["bySeason"],
+        "teams": built["teams"],
+    }
+    write_json(SUMMARY_PATH, summary)
+    write_json(
+        COVERAGE_PATH,
+        {
+            "schemaVersion": 1,
+            "generatedAt": generated_at,
+            "hasEuropeanGaps": european_gap,
+            "notes": notes,
+            "reusedLeagueSeasons": reused,
+        },
+    )
+
+    priced = sum(1 for match in matches if match.get("oddsSource"))
+    print(
+        f"\n{len(matches)} matches, {priced} with closing odds, "
+        f"{len(records)} club-seasons, {len(built['teams'])} clubs"
+    )
+    porto = next(team for team in built["teams"] if team["club"] == "Porto")
+    overall = porto["overall"]
+    print(
+        f"Porto overall ROI {overall['roi']} on {overall['bets']} bets "
+        f"(avg odds {overall['avgOdds']}, win% {overall['winPct']})"
+    )
+    if european_gap:
+        print("European coverage still has gaps; see coverage.json")
     else:
-        print("All leagues have 2025/26 data.")
-
-    club_totals = defaultdict(lambda: {"played": 0, "won": 0})
-    for r in records:
-        club_totals[r["club"]]["played"] += r["played"]
-        club_totals[r["club"]]["won"] += r["won"]
-
-    print(f"\nTop 25 win % {FIRST_SEASON}-{LAST_SEASON} (min 20 matches):")
-    ranked = [
-        (club, t)
-        for club, t in club_totals.items()
-        if t["played"] >= 20
-    ]
-    ranked.sort(key=lambda x: x[1]["won"] / x[1]["played"], reverse=True)
-    for club, t in ranked[:25]:
-        print(f"  {club}: {100 * t['won'] / t['played']:.1f}% ({t['won']}/{t['played']})")
+        print("European leagues have a file for every requested season.")
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        sys.exit(130)
