@@ -40,6 +40,15 @@ export default function SiteNav() {
             label: "Calibration",
             current: path.startsWith(`/${sport}/calibration`),
           },
+          ...(sport === "nba"
+            ? [
+                {
+                  href: "/nba/simulator",
+                  label: "Simulator",
+                  current: path.startsWith("/nba/simulator"),
+                },
+              ]
+            : []),
         ];
   return (
     <nav className="site-nav" aria-label="Primary">

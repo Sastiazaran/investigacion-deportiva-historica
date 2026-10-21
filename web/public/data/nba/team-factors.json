@@ -1,0 +1,1900 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-21T20:28:05.233Z",
+  "sims": 5000,
+  "priceMargin": 1.05,
+  "priorGames": 16,
+  "homeAdvantagePoints": 1.74,
+  "homeEfgBump": 0.0051,
+  "paceSd": 5.52,
+  "leaguePace": 102.54,
+  "league": {
+    "efg": 0.5456,
+    "tov": 0.1272,
+    "oreb": 0.2601,
+    "ftr": 0.2635,
+    "ftPct": 0.7828,
+    "threeRate": 0.4151,
+    "fg2": 0.55,
+    "fg3": 0.3597
+  },
+  "coverage": {
+    "2024": {
+      "games": 1231,
+      "from": "2024-10-22",
+      "to": "2025-04-13"
+    },
+    "2025": {
+      "games": 1231,
+      "from": "2025-10-21",
+      "to": "2026-04-12"
+    },
+    "2026": {
+      "games": 3,
+      "from": "2026-10-20",
+      "to": "2026-10-20"
+    }
+  },
+  "pbp": {
+    "stride": 15,
+    "requestedGames": 86,
+    "keptGames": 86,
+    "mismatches": 0,
+    "plays": 41790,
+    "possessions": 17503,
+    "points": 19915,
+    "technicalPoints": 57,
+    "boxPoints": 19915,
+    "pointsPerPossession": 1.1345,
+    "pointShare": {
+      "0": 0.4766,
+      "1": 0.0494,
+      "2": 0.3376,
+      "3": 0.1358,
+      "4plus": 0.0006
+    },
+    "note": "Full-season play-by-play is not downloaded. A 1-in-15 sample of 2025-26 regular-season games plus every completed 2026-27 game is parsed and kept when the play points are within 2 of the box score. Raw plays are not stored."
+  },
+  "sources": [
+    "ESPN team box scores via the sportsdataverse release espn_nba_team_boxscores (team_box_2025.csv, team_box_2026.csv, team_box_2027.csv). Season in that file is the ending year.",
+    "Closing moneylines from sports.core.api.espn.com (close.moneyLine.decimal). ESPN BET through November 2025, DraftKings after that. One request per 2025-26 regular-season game, cached, with a 0.12s gap.",
+    "ESPN play-by-play from the game summary endpoint for every 15th 2025-26 regular-season game and every completed 2026-27 game. Raw plays are not stored."
+  ],
+  "notes": [
+    "Ratings use regular-season box scores only. 2024-25 is the walk-forward prior (16 games of weight). The page's current profile shrinks 2026-27 games toward the finished 2025-26 season with the same weight.",
+    "The simulator does not use the BetMGM moneylines in web/public/data/nba/summary.json. Those stop after 2026-02-12, and the Kaggle extract was not available without credentials.",
+    "Player usage, shot zones, minutes, matchups, and props are not in this version."
+  ],
+  "teams": {
+    "atl": {
+      "team": "Atlanta Hawks",
+      "abbrev": "atl",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 104.6,
+          "off": {
+            "efg": 0.5537,
+            "tov": 0.1226,
+            "oreb": 0.2435,
+            "ftr": 0.2337,
+            "ftPct": 0.7736,
+            "threeRate": 0.4293,
+            "fg2": 0.5516,
+            "fg3": 0.371
+          },
+          "def": {
+            "efg": 0.5455,
+            "tov": 0.1388,
+            "oreb": 0.255,
+            "ftr": 0.2599,
+            "ftPct": 0.7943,
+            "threeRate": 0.4054,
+            "fg2": 0.5542,
+            "fg3": 0.3552
+          }
+        },
+        "current": {
+          "games": 0,
+          "priorGames": 16,
+          "pace": 104.6,
+          "off": {
+            "efg": 0.5537,
+            "tov": 0.1226,
+            "oreb": 0.2435,
+            "ftr": 0.2337,
+            "ftPct": 0.7736,
+            "threeRate": 0.4293,
+            "fg2": 0.5516,
+            "fg3": 0.371
+          },
+          "def": {
+            "efg": 0.5455,
+            "tov": 0.1388,
+            "oreb": 0.255,
+            "ftr": 0.2599,
+            "ftPct": 0.7943,
+            "threeRate": 0.4054,
+            "fg2": 0.5542,
+            "fg3": 0.3552
+          }
+        }
+      }
+    },
+    "bkn": {
+      "team": "Brooklyn Nets",
+      "abbrev": "bkn",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 100,
+          "off": {
+            "efg": 0.5203,
+            "tov": 0.1427,
+            "oreb": 0.2362,
+            "ftr": 0.2719,
+            "ftPct": 0.7804,
+            "threeRate": 0.4546,
+            "fg2": 0.5284,
+            "fg3": 0.3404
+          },
+          "def": {
+            "efg": 0.5714,
+            "tov": 0.1317,
+            "oreb": 0.2597,
+            "ftr": 0.2904,
+            "ftPct": 0.775,
+            "threeRate": 0.388,
+            "fg2": 0.5714,
+            "fg3": 0.3809
+          }
+        },
+        "current": {
+          "games": 0,
+          "priorGames": 16,
+          "pace": 100,
+          "off": {
+            "efg": 0.5203,
+            "tov": 0.1427,
+            "oreb": 0.2362,
+            "ftr": 0.2719,
+            "ftPct": 0.7804,
+            "threeRate": 0.4546,
+            "fg2": 0.5284,
+            "fg3": 0.3404
+          },
+          "def": {
+            "efg": 0.5714,
+            "tov": 0.1317,
+            "oreb": 0.2597,
+            "ftr": 0.2904,
+            "ftPct": 0.775,
+            "threeRate": 0.388,
+            "fg2": 0.5714,
+            "fg3": 0.3809
+          }
+        }
+      }
+    },
+    "bos": {
+      "team": "Boston Celtics",
+      "abbrev": "bos",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 97.98,
+          "off": {
+            "efg": 0.5529,
+            "tov": 0.1114,
+            "oreb": 0.2917,
+            "ftr": 0.2074,
+            "ftPct": 0.807,
+            "threeRate": 0.4672,
+            "fg2": 0.555,
+            "fg3": 0.3669
+          },
+          "def": {
+            "efg": 0.5228,
+            "tov": 0.1144,
+            "oreb": 0.2427,
+            "ftr": 0.2446,
+            "ftPct": 0.7747,
+            "threeRate": 0.4509,
+            "fg2": 0.5109,
+            "fg3": 0.3582
+          }
+        },
+        "2026": {
+          "games": 1,
+          "priorGames": 0,
+          "pace": 101.16,
+          "off": {
+            "efg": 0.5511,
+            "tov": 0.1259,
+            "oreb": 0.2553,
+            "ftr": 0.2386,
+            "ftPct": 0.7619,
+            "threeRate": 0.4773,
+            "fg2": 0.5,
+            "fg3": 0.4048
+          },
+          "def": {
+            "efg": 0.5407,
+            "tov": 0.1452,
+            "oreb": 0.3415,
+            "ftr": 0.3721,
+            "ftPct": 0.875,
+            "threeRate": 0.4651,
+            "fg2": 0.5217,
+            "fg3": 0.375
+          }
+        },
+        "current": {
+          "games": 1,
+          "priorGames": 16,
+          "pace": 98.17,
+          "off": {
+            "efg": 0.5528,
+            "tov": 0.1122,
+            "oreb": 0.2894,
+            "ftr": 0.2092,
+            "ftPct": 0.8041,
+            "threeRate": 0.4677,
+            "fg2": 0.5519,
+            "fg3": 0.3691
+          },
+          "def": {
+            "efg": 0.5238,
+            "tov": 0.1163,
+            "oreb": 0.2481,
+            "ftr": 0.252,
+            "ftPct": 0.7834,
+            "threeRate": 0.4517,
+            "fg2": 0.5115,
+            "fg3": 0.3592
+          }
+        }
+      }
+    },
+    "cha": {
+      "team": "Charlotte Hornets",
+      "abbrev": "cha",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 100.23,
+          "off": {
+            "efg": 0.5525,
+            "tov": 0.1352,
+            "oreb": 0.3052,
+            "ftr": 0.2441,
+            "ftPct": 0.818,
+            "threeRate": 0.4867,
+            "fg2": 0.5381,
+            "fg3": 0.3784
+          },
+          "def": {
+            "efg": 0.5396,
+            "tov": 0.1159,
+            "oreb": 0.2342,
+            "ftr": 0.2318,
+            "ftPct": 0.8007,
+            "threeRate": 0.4057,
+            "fg2": 0.5399,
+            "fg3": 0.3594
+          }
+        },
+        "current": {
+          "games": 0,
+          "priorGames": 16,
+          "pace": 100.23,
+          "off": {
+            "efg": 0.5525,
+            "tov": 0.1352,
+            "oreb": 0.3052,
+            "ftr": 0.2441,
+            "ftPct": 0.818,
+            "threeRate": 0.4867,
+            "fg2": 0.5381,
+            "fg3": 0.3784
+          },
+          "def": {
+            "efg": 0.5396,
+            "tov": 0.1159,
+            "oreb": 0.2342,
+            "ftr": 0.2318,
+            "ftPct": 0.8007,
+            "threeRate": 0.4057,
+            "fg2": 0.5399,
+            "fg3": 0.3594
+          }
+        }
+      }
+    },
+    "chi": {
+      "team": "Chicago Bulls",
+      "abbrev": "chi",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 105.19,
+          "off": {
+            "efg": 0.5475,
+            "tov": 0.1314,
+            "oreb": 0.2311,
+            "ftr": 0.2459,
+            "ftPct": 0.7763,
+            "threeRate": 0.4432,
+            "fg2": 0.5586,
+            "fg3": 0.3556
+          },
+          "def": {
+            "efg": 0.5532,
+            "tov": 0.1095,
+            "oreb": 0.2454,
+            "ftr": 0.2451,
+            "ftPct": 0.7744,
+            "threeRate": 0.4076,
+            "fg2": 0.554,
+            "fg3": 0.368
+          }
+        },
+        "current": {
+          "games": 0,
+          "priorGames": 16,
+          "pace": 105.19,
+          "off": {
+            "efg": 0.5475,
+            "tov": 0.1314,
+            "oreb": 0.2311,
+            "ftr": 0.2459,
+            "ftPct": 0.7763,
+            "threeRate": 0.4432,
+            "fg2": 0.5586,
+            "fg3": 0.3556
+          },
+          "def": {
+            "efg": 0.5532,
+            "tov": 0.1095,
+            "oreb": 0.2454,
+            "ftr": 0.2451,
+            "ftPct": 0.7744,
+            "threeRate": 0.4076,
+            "fg2": 0.554,
+            "fg3": 0.368
+          }
+        }
+      }
+    },
+    "cle": {
+      "team": "Cleveland Cavaliers",
+      "abbrev": "cle",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 102.97,
+          "off": {
+            "efg": 0.561,
+            "tov": 0.1222,
+            "oreb": 0.2687,
+            "ftr": 0.2654,
+            "ftPct": 0.7759,
+            "threeRate": 0.4418,
+            "fg2": 0.5779,
+            "fg3": 0.3597
+          },
+          "def": {
+            "efg": 0.5434,
+            "tov": 0.1314,
+            "oreb": 0.256,
+            "ftr": 0.2632,
+            "ftPct": 0.7945,
+            "threeRate": 0.4282,
+            "fg2": 0.5326,
+            "fg3": 0.3719
+          }
+        },
+        "current": {
+          "games": 0,
+          "priorGames": 16,
+          "pace": 102.97,
+          "off": {
+            "efg": 0.561,
+            "tov": 0.1222,
+            "oreb": 0.2687,
+            "ftr": 0.2654,
+            "ftPct": 0.7759,
+            "threeRate": 0.4418,
+            "fg2": 0.5779,
+            "fg3": 0.3597
+          },
+          "def": {
+            "efg": 0.5434,
+            "tov": 0.1314,
+            "oreb": 0.256,
+            "ftr": 0.2632,
+            "ftPct": 0.7945,
+            "threeRate": 0.4282,
+            "fg2": 0.5326,
+            "fg3": 0.3719
+          }
+        }
+      }
+    },
+    "dal": {
+      "team": "Dallas Mavericks",
+      "abbrev": "dal",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 105.13,
+          "off": {
+            "efg": 0.5269,
+            "tov": 0.1257,
+            "oreb": 0.2321,
+            "ftr": 0.2869,
+            "ftPct": 0.7549,
+            "threeRate": 0.355,
+            "fg2": 0.5332,
+            "fg3": 0.3438
+          },
+          "def": {
+            "efg": 0.5459,
+            "tov": 0.1142,
+            "oreb": 0.2591,
+            "ftr": 0.2376,
+            "ftPct": 0.7702,
+            "threeRate": 0.3893,
+            "fg2": 0.5588,
+            "fg3": 0.3505
+          }
+        },
+        "current": {
+          "games": 0,
+          "priorGames": 16,
+          "pace": 105.13,
+          "off": {
+            "efg": 0.5269,
+            "tov": 0.1257,
+            "oreb": 0.2321,
+            "ftr": 0.2869,
+            "ftPct": 0.7549,
+            "threeRate": 0.355,
+            "fg2": 0.5332,
+            "fg3": 0.3438
+          },
+          "def": {
+            "efg": 0.5459,
+            "tov": 0.1142,
+            "oreb": 0.2591,
+            "ftr": 0.2376,
+            "ftPct": 0.7702,
+            "threeRate": 0.3893,
+            "fg2": 0.5588,
+            "fg3": 0.3505
+          }
+        }
+      }
+    },
+    "den": {
+      "team": "Denver Nuggets",
+      "abbrev": "den",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 102.09,
+          "off": {
+            "efg": 0.5768,
+            "tov": 0.1151,
+            "oreb": 0.2362,
+            "ftr": 0.2941,
+            "ftPct": 0.8077,
+            "threeRate": 0.4077,
+            "fg2": 0.5652,
+            "fg3": 0.3957
+          },
+          "def": {
+            "efg": 0.543,
+            "tov": 0.104,
+            "oreb": 0.2474,
+            "ftr": 0.2537,
+            "ftPct": 0.7708,
+            "threeRate": 0.4288,
+            "fg2": 0.5579,
+            "fg3": 0.3488
+          }
+        },
+        "current": {
+          "games": 0,
+          "priorGames": 16,
+          "pace": 102.09,
+          "off": {
+            "efg": 0.5768,
+            "tov": 0.1151,
+            "oreb": 0.2362,
+            "ftr": 0.2941,
+            "ftPct": 0.8077,
+            "threeRate": 0.4077,
+            "fg2": 0.5652,
+            "fg3": 0.3957
+          },
+          "def": {
+            "efg": 0.543,
+            "tov": 0.104,
+            "oreb": 0.2474,
+            "ftr": 0.2537,
+            "ftPct": 0.7708,
+            "threeRate": 0.4288,
+            "fg2": 0.5579,
+            "fg3": 0.3488
+          }
+        }
+      }
+    },
+    "det": {
+      "team": "Detroit Pistons",
+      "abbrev": "det",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 102.93,
+          "off": {
+            "efg": 0.5465,
+            "tov": 0.1303,
+            "oreb": 0.309,
+            "ftr": 0.2921,
+            "ftPct": 0.7626,
+            "threeRate": 0.3452,
+            "fg2": 0.5531,
+            "fg3": 0.356
+          },
+          "def": {
+            "efg": 0.5175,
+            "tov": 0.1481,
+            "oreb": 0.2576,
+            "ftr": 0.3188,
+            "ftPct": 0.7882,
+            "threeRate": 0.4315,
+            "fg2": 0.5175,
+            "fg3": 0.3449
+          }
+        },
+        "2026": {
+          "games": 1,
+          "priorGames": 0,
+          "pace": 101.16,
+          "off": {
+            "efg": 0.5407,
+            "tov": 0.1452,
+            "oreb": 0.3415,
+            "ftr": 0.3721,
+            "ftPct": 0.875,
+            "threeRate": 0.4651,
+            "fg2": 0.5217,
+            "fg3": 0.375
+          },
+          "def": {
+            "efg": 0.5511,
+            "tov": 0.1259,
+            "oreb": 0.2553,
+            "ftr": 0.2386,
+            "ftPct": 0.7619,
+            "threeRate": 0.4773,
+            "fg2": 0.5,
+            "fg3": 0.4048
+          }
+        },
+        "current": {
+          "games": 1,
+          "priorGames": 16,
+          "pace": 102.83,
+          "off": {
+            "efg": 0.5461,
+            "tov": 0.1312,
+            "oreb": 0.3108,
+            "ftr": 0.2966,
+            "ftPct": 0.7706,
+            "threeRate": 0.352,
+            "fg2": 0.5516,
+            "fg3": 0.3574
+          },
+          "def": {
+            "efg": 0.5195,
+            "tov": 0.1468,
+            "oreb": 0.2575,
+            "ftr": 0.314,
+            "ftPct": 0.7869,
+            "threeRate": 0.4342,
+            "fg2": 0.5165,
+            "fg3": 0.3489
+          }
+        }
+      }
+    },
+    "gs": {
+      "team": "Golden State Warriors",
+      "abbrev": "gs",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 102.33,
+          "off": {
+            "efg": 0.5495,
+            "tov": 0.1377,
+            "oreb": 0.2577,
+            "ftr": 0.2379,
+            "ftPct": 0.8072,
+            "threeRate": 0.4967,
+            "fg2": 0.5652,
+            "fg3": 0.3556
+          },
+          "def": {
+            "efg": 0.553,
+            "tov": 0.1397,
+            "oreb": 0.271,
+            "ftr": 0.2472,
+            "ftPct": 0.8022,
+            "threeRate": 0.4064,
+            "fg2": 0.5617,
+            "fg3": 0.3603
+          }
+        },
+        "current": {
+          "games": 0,
+          "priorGames": 16,
+          "pace": 102.33,
+          "off": {
+            "efg": 0.5495,
+            "tov": 0.1377,
+            "oreb": 0.2577,
+            "ftr": 0.2379,
+            "ftPct": 0.8072,
+            "threeRate": 0.4967,
+            "fg2": 0.5652,
+            "fg3": 0.3556
+          },
+          "def": {
+            "efg": 0.553,
+            "tov": 0.1397,
+            "oreb": 0.271,
+            "ftr": 0.2472,
+            "ftPct": 0.8022,
+            "threeRate": 0.4064,
+            "fg2": 0.5617,
+            "fg3": 0.3603
+          }
+        }
+      }
+    },
+    "hou": {
+      "team": "Houston Rockets",
+      "abbrev": "hou",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 100.12,
+          "off": {
+            "efg": 0.5424,
+            "tov": 0.1332,
+            "oreb": 0.3481,
+            "ftr": 0.2604,
+            "ftPct": 0.7632,
+            "threeRate": 0.3504,
+            "fg2": 0.5402,
+            "fg3": 0.3643
+          },
+          "def": {
+            "efg": 0.5303,
+            "tov": 0.1209,
+            "oreb": 0.2549,
+            "ftr": 0.2507,
+            "ftPct": 0.7557,
+            "threeRate": 0.4007,
+            "fg2": 0.5332,
+            "fg3": 0.3506
+          }
+        },
+        "current": {
+          "games": 0,
+          "priorGames": 16,
+          "pace": 100.12,
+          "off": {
+            "efg": 0.5424,
+            "tov": 0.1332,
+            "oreb": 0.3481,
+            "ftr": 0.2604,
+            "ftPct": 0.7632,
+            "threeRate": 0.3504,
+            "fg2": 0.5402,
+            "fg3": 0.3643
+          },
+          "def": {
+            "efg": 0.5303,
+            "tov": 0.1209,
+            "oreb": 0.2549,
+            "ftr": 0.2507,
+            "ftPct": 0.7557,
+            "threeRate": 0.4007,
+            "fg2": 0.5332,
+            "fg3": 0.3506
+          }
+        }
+      }
+    },
+    "ind": {
+      "team": "Indiana Pacers",
+      "abbrev": "ind",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 103.82,
+          "off": {
+            "efg": 0.5332,
+            "tov": 0.1276,
+            "oreb": 0.2172,
+            "ftr": 0.2522,
+            "ftPct": 0.7763,
+            "threeRate": 0.4222,
+            "fg2": 0.5329,
+            "fg3": 0.3557
+          },
+          "def": {
+            "efg": 0.5558,
+            "tov": 0.117,
+            "oreb": 0.2591,
+            "ftr": 0.2823,
+            "ftPct": 0.7734,
+            "threeRate": 0.3763,
+            "fg2": 0.5695,
+            "fg3": 0.3554
+          }
+        },
+        "current": {
+          "games": 0,
+          "priorGames": 16,
+          "pace": 103.82,
+          "off": {
+            "efg": 0.5332,
+            "tov": 0.1276,
+            "oreb": 0.2172,
+            "ftr": 0.2522,
+            "ftPct": 0.7763,
+            "threeRate": 0.4222,
+            "fg2": 0.5329,
+            "fg3": 0.3557
+          },
+          "def": {
+            "efg": 0.5558,
+            "tov": 0.117,
+            "oreb": 0.2591,
+            "ftr": 0.2823,
+            "ftPct": 0.7734,
+            "threeRate": 0.3763,
+            "fg2": 0.5695,
+            "fg3": 0.3554
+          }
+        }
+      }
+    },
+    "lac": {
+      "team": "LA Clippers",
+      "abbrev": "lac",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 99.39,
+          "off": {
+            "efg": 0.5588,
+            "tov": 0.1302,
+            "oreb": 0.2367,
+            "ftr": 0.2953,
+            "ftPct": 0.8227,
+            "threeRate": 0.4043,
+            "fg2": 0.5638,
+            "fg3": 0.3676
+          },
+          "def": {
+            "efg": 0.5447,
+            "tov": 0.1274,
+            "oreb": 0.271,
+            "ftr": 0.2482,
+            "ftPct": 0.7956,
+            "threeRate": 0.4163,
+            "fg2": 0.5433,
+            "fg3": 0.3645
+          }
+        },
+        "current": {
+          "games": 0,
+          "priorGames": 16,
+          "pace": 99.39,
+          "off": {
+            "efg": 0.5588,
+            "tov": 0.1302,
+            "oreb": 0.2367,
+            "ftr": 0.2953,
+            "ftPct": 0.8227,
+            "threeRate": 0.4043,
+            "fg2": 0.5638,
+            "fg3": 0.3676
+          },
+          "def": {
+            "efg": 0.5447,
+            "tov": 0.1274,
+            "oreb": 0.271,
+            "ftr": 0.2482,
+            "ftPct": 0.7956,
+            "threeRate": 0.4163,
+            "fg2": 0.5433,
+            "fg3": 0.3645
+          }
+        }
+      }
+    },
+    "lal": {
+      "team": "Los Angeles Lakers",
+      "abbrev": "lal",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 100.81,
+          "off": {
+            "efg": 0.5731,
+            "tov": 0.1318,
+            "oreb": 0.2388,
+            "ftr": 0.3197,
+            "ftPct": 0.763,
+            "threeRate": 0.3936,
+            "fg2": 0.5954,
+            "fg3": 0.3591
+          },
+          "def": {
+            "efg": 0.5553,
+            "tov": 0.1305,
+            "oreb": 0.2566,
+            "ftr": 0.2405,
+            "ftPct": 0.7922,
+            "threeRate": 0.413,
+            "fg2": 0.5744,
+            "fg3": 0.3521
+          }
+        },
+        "current": {
+          "games": 0,
+          "priorGames": 16,
+          "pace": 100.81,
+          "off": {
+            "efg": 0.5731,
+            "tov": 0.1318,
+            "oreb": 0.2388,
+            "ftr": 0.3197,
+            "ftPct": 0.763,
+            "threeRate": 0.3936,
+            "fg2": 0.5954,
+            "fg3": 0.3591
+          },
+          "def": {
+            "efg": 0.5553,
+            "tov": 0.1305,
+            "oreb": 0.2566,
+            "ftr": 0.2405,
+            "ftPct": 0.7922,
+            "threeRate": 0.413,
+            "fg2": 0.5744,
+            "fg3": 0.3521
+          }
+        }
+      }
+    },
+    "mem": {
+      "team": "Memphis Grizzlies",
+      "abbrev": "mem",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 104.38,
+          "off": {
+            "efg": 0.5331,
+            "tov": 0.1303,
+            "oreb": 0.247,
+            "ftr": 0.2512,
+            "ftPct": 0.7927,
+            "threeRate": 0.4361,
+            "fg2": 0.5363,
+            "fg3": 0.3527
+          },
+          "def": {
+            "efg": 0.5619,
+            "tov": 0.1326,
+            "oreb": 0.2915,
+            "ftr": 0.262,
+            "ftPct": 0.7753,
+            "threeRate": 0.424,
+            "fg2": 0.5736,
+            "fg3": 0.364
+          }
+        },
+        "current": {
+          "games": 0,
+          "priorGames": 16,
+          "pace": 104.38,
+          "off": {
+            "efg": 0.5331,
+            "tov": 0.1303,
+            "oreb": 0.247,
+            "ftr": 0.2512,
+            "ftPct": 0.7927,
+            "threeRate": 0.4361,
+            "fg2": 0.5363,
+            "fg3": 0.3527
+          },
+          "def": {
+            "efg": 0.5619,
+            "tov": 0.1326,
+            "oreb": 0.2915,
+            "ftr": 0.262,
+            "ftPct": 0.7753,
+            "threeRate": 0.424,
+            "fg2": 0.5736,
+            "fg3": 0.364
+          }
+        }
+      }
+    },
+    "mia": {
+      "team": "Miami Heat",
+      "abbrev": "mia",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 106.22,
+          "off": {
+            "efg": 0.5418,
+            "tov": 0.1158,
+            "oreb": 0.2536,
+            "ftr": 0.2682,
+            "ftPct": 0.7918,
+            "threeRate": 0.4063,
+            "fg2": 0.5415,
+            "fg3": 0.3614
+          },
+          "def": {
+            "efg": 0.5404,
+            "tov": 0.1275,
+            "oreb": 0.2515,
+            "ftr": 0.2404,
+            "ftPct": 0.8037,
+            "threeRate": 0.4189,
+            "fg2": 0.5423,
+            "fg3": 0.3586
+          }
+        },
+        "current": {
+          "games": 0,
+          "priorGames": 16,
+          "pace": 106.22,
+          "off": {
+            "efg": 0.5418,
+            "tov": 0.1158,
+            "oreb": 0.2536,
+            "ftr": 0.2682,
+            "ftPct": 0.7918,
+            "threeRate": 0.4063,
+            "fg2": 0.5415,
+            "fg3": 0.3614
+          },
+          "def": {
+            "efg": 0.5404,
+            "tov": 0.1275,
+            "oreb": 0.2515,
+            "ftr": 0.2404,
+            "ftPct": 0.8037,
+            "threeRate": 0.4189,
+            "fg2": 0.5423,
+            "fg3": 0.3586
+          }
+        }
+      }
+    },
+    "mil": {
+      "team": "Milwaukee Bucks",
+      "abbrev": "mil",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 100.27,
+          "off": {
+            "efg": 0.5655,
+            "tov": 0.1394,
+            "oreb": 0.2108,
+            "ftr": 0.223,
+            "ftPct": 0.7302,
+            "threeRate": 0.4571,
+            "fg2": 0.5529,
+            "fg3": 0.3869
+          },
+          "def": {
+            "efg": 0.5578,
+            "tov": 0.1172,
+            "oreb": 0.2585,
+            "ftr": 0.2744,
+            "ftPct": 0.7853,
+            "threeRate": 0.4503,
+            "fg2": 0.5537,
+            "fg3": 0.3752
+          }
+        },
+        "current": {
+          "games": 0,
+          "priorGames": 16,
+          "pace": 100.27,
+          "off": {
+            "efg": 0.5655,
+            "tov": 0.1394,
+            "oreb": 0.2108,
+            "ftr": 0.223,
+            "ftPct": 0.7302,
+            "threeRate": 0.4571,
+            "fg2": 0.5529,
+            "fg3": 0.3869
+          },
+          "def": {
+            "efg": 0.5578,
+            "tov": 0.1172,
+            "oreb": 0.2585,
+            "ftr": 0.2744,
+            "ftPct": 0.7853,
+            "threeRate": 0.4503,
+            "fg2": 0.5537,
+            "fg3": 0.3752
+          }
+        }
+      }
+    },
+    "min": {
+      "team": "Minnesota Timberwolves",
+      "abbrev": "min",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 103.73,
+          "off": {
+            "efg": 0.5591,
+            "tov": 0.1293,
+            "oreb": 0.2569,
+            "ftr": 0.2854,
+            "ftPct": 0.7519,
+            "threeRate": 0.42,
+            "fg2": 0.5621,
+            "fg3": 0.37
+          },
+          "def": {
+            "efg": 0.5291,
+            "tov": 0.1297,
+            "oreb": 0.2625,
+            "ftr": 0.2824,
+            "ftPct": 0.7808,
+            "threeRate": 0.3789,
+            "fg2": 0.5267,
+            "fg3": 0.3553
+          }
+        },
+        "current": {
+          "games": 0,
+          "priorGames": 16,
+          "pace": 103.73,
+          "off": {
+            "efg": 0.5591,
+            "tov": 0.1293,
+            "oreb": 0.2569,
+            "ftr": 0.2854,
+            "ftPct": 0.7519,
+            "threeRate": 0.42,
+            "fg2": 0.5621,
+            "fg3": 0.37
+          },
+          "def": {
+            "efg": 0.5291,
+            "tov": 0.1297,
+            "oreb": 0.2625,
+            "ftr": 0.2824,
+            "ftPct": 0.7808,
+            "threeRate": 0.3789,
+            "fg2": 0.5267,
+            "fg3": 0.3553
+          }
+        }
+      }
+    },
+    "no": {
+      "team": "New Orleans Pelicans",
+      "abbrev": "no",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 103.82,
+          "off": {
+            "efg": 0.5272,
+            "tov": 0.1223,
+            "oreb": 0.2696,
+            "ftr": 0.2836,
+            "ftPct": 0.7837,
+            "threeRate": 0.3551,
+            "fg2": 0.531,
+            "fg3": 0.3469
+          },
+          "def": {
+            "efg": 0.5547,
+            "tov": 0.1242,
+            "oreb": 0.286,
+            "ftr": 0.2579,
+            "ftPct": 0.7736,
+            "threeRate": 0.4419,
+            "fg2": 0.5779,
+            "fg3": 0.3503
+          }
+        },
+        "current": {
+          "games": 0,
+          "priorGames": 16,
+          "pace": 103.82,
+          "off": {
+            "efg": 0.5272,
+            "tov": 0.1223,
+            "oreb": 0.2696,
+            "ftr": 0.2836,
+            "ftPct": 0.7837,
+            "threeRate": 0.3551,
+            "fg2": 0.531,
+            "fg3": 0.3469
+          },
+          "def": {
+            "efg": 0.5547,
+            "tov": 0.1242,
+            "oreb": 0.286,
+            "ftr": 0.2579,
+            "ftPct": 0.7736,
+            "threeRate": 0.4419,
+            "fg2": 0.5779,
+            "fg3": 0.3503
+          }
+        }
+      }
+    },
+    "ny": {
+      "team": "New York Knicks",
+      "abbrev": "ny",
+      "profiles": {
+        "2025": {
+          "games": 83,
+          "priorGames": 0,
+          "pace": 99.78,
+          "off": {
+            "efg": 0.557,
+            "tov": 0.121,
+            "oreb": 0.2959,
+            "ftr": 0.2365,
+            "ftPct": 0.7918,
+            "threeRate": 0.4269,
+            "fg2": 0.5554,
+            "fg3": 0.3728
+          },
+          "def": {
+            "efg": 0.5399,
+            "tov": 0.13,
+            "oreb": 0.2343,
+            "ftr": 0.2644,
+            "ftPct": 0.7778,
+            "threeRate": 0.4476,
+            "fg2": 0.5375,
+            "fg3": 0.3618
+          }
+        },
+        "2026": {
+          "games": 1,
+          "priorGames": 0,
+          "pace": 106.88,
+          "off": {
+            "efg": 0.4309,
+            "tov": 0.1241,
+            "oreb": 0.2642,
+            "ftr": 0.2872,
+            "ftPct": 0.7037,
+            "threeRate": 0.3511,
+            "fg2": 0.3934,
+            "fg3": 0.3333
+          },
+          "def": {
+            "efg": 0.4775,
+            "tov": 0.1063,
+            "oreb": 0.1333,
+            "ftr": 0.3034,
+            "ftPct": 0.7778,
+            "threeRate": 0.4494,
+            "fg2": 0.5306,
+            "fg3": 0.275
+          }
+        },
+        "current": {
+          "games": 1,
+          "priorGames": 16,
+          "pace": 100.2,
+          "off": {
+            "efg": 0.5493,
+            "tov": 0.1212,
+            "oreb": 0.2937,
+            "ftr": 0.2396,
+            "ftPct": 0.7853,
+            "threeRate": 0.4222,
+            "fg2": 0.5442,
+            "fg3": 0.3708
+          },
+          "def": {
+            "efg": 0.5361,
+            "tov": 0.1286,
+            "oreb": 0.2281,
+            "ftr": 0.2668,
+            "ftPct": 0.7778,
+            "threeRate": 0.4477,
+            "fg2": 0.5371,
+            "fg3": 0.3565
+          }
+        }
+      }
+    },
+    "okc": {
+      "team": "Oklahoma City Thunder",
+      "abbrev": "okc",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 102.62,
+          "off": {
+            "efg": 0.5613,
+            "tov": 0.1124,
+            "oreb": 0.223,
+            "ftr": 0.2607,
+            "ftPct": 0.8173,
+            "threeRate": 0.4258,
+            "fg2": 0.5717,
+            "fg3": 0.3648
+          },
+          "def": {
+            "efg": 0.5186,
+            "tov": 0.1458,
+            "oreb": 0.2556,
+            "ftr": 0.2481,
+            "ftPct": 0.7397,
+            "threeRate": 0.44,
+            "fg2": 0.4914,
+            "fg3": 0.3688
+          }
+        },
+        "2026": {
+          "games": 1,
+          "priorGames": 0,
+          "pace": 107.9,
+          "off": {
+            "efg": 0.5263,
+            "tov": 0.1188,
+            "oreb": 0.2222,
+            "ftr": 0.2105,
+            "ftPct": 0.8,
+            "threeRate": 0.3263,
+            "fg2": 0.4531,
+            "fg3": 0.4516
+          },
+          "def": {
+            "efg": 0.4409,
+            "tov": 0.1186,
+            "oreb": 0.2128,
+            "ftr": 0.2688,
+            "ftPct": 0.88,
+            "threeRate": 0.3978,
+            "fg2": 0.4643,
+            "fg3": 0.2703
+          }
+        },
+        "current": {
+          "games": 1,
+          "priorGames": 16,
+          "pace": 102.93,
+          "off": {
+            "efg": 0.5591,
+            "tov": 0.1128,
+            "oreb": 0.2229,
+            "ftr": 0.2576,
+            "ftPct": 0.8164,
+            "threeRate": 0.4195,
+            "fg2": 0.5631,
+            "fg3": 0.3691
+          },
+          "def": {
+            "efg": 0.5138,
+            "tov": 0.1442,
+            "oreb": 0.253,
+            "ftr": 0.2494,
+            "ftPct": 0.749,
+            "threeRate": 0.4374,
+            "fg2": 0.4896,
+            "fg3": 0.3632
+          }
+        }
+      }
+    },
+    "orl": {
+      "team": "Orlando Magic",
+      "abbrev": "orl",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 103.38,
+          "off": {
+            "efg": 0.5306,
+            "tov": 0.1237,
+            "oreb": 0.25,
+            "ftr": 0.3107,
+            "ftPct": 0.8014,
+            "threeRate": 0.3864,
+            "fg2": 0.5404,
+            "fg3": 0.3433
+          },
+          "def": {
+            "efg": 0.5448,
+            "tov": 0.1309,
+            "oreb": 0.244,
+            "ftr": 0.2855,
+            "ftPct": 0.7813,
+            "threeRate": 0.3912,
+            "fg2": 0.5546,
+            "fg3": 0.353
+          }
+        },
+        "current": {
+          "games": 0,
+          "priorGames": 16,
+          "pace": 103.38,
+          "off": {
+            "efg": 0.5306,
+            "tov": 0.1237,
+            "oreb": 0.25,
+            "ftr": 0.3107,
+            "ftPct": 0.8014,
+            "threeRate": 0.3864,
+            "fg2": 0.5404,
+            "fg3": 0.3433
+          },
+          "def": {
+            "efg": 0.5448,
+            "tov": 0.1309,
+            "oreb": 0.244,
+            "ftr": 0.2855,
+            "ftPct": 0.7813,
+            "threeRate": 0.3912,
+            "fg2": 0.5546,
+            "fg3": 0.353
+          }
+        }
+      }
+    },
+    "phi": {
+      "team": "Philadelphia 76ers",
+      "abbrev": "phi",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 103.29,
+          "off": {
+            "efg": 0.5305,
+            "tov": 0.1186,
+            "oreb": 0.2621,
+            "ftr": 0.2749,
+            "ftPct": 0.8093,
+            "threeRate": 0.3911,
+            "fg2": 0.5348,
+            "fg3": 0.3491
+          },
+          "def": {
+            "efg": 0.5414,
+            "tov": 0.1328,
+            "oreb": 0.2751,
+            "ftr": 0.2704,
+            "ftPct": 0.7851,
+            "threeRate": 0.423,
+            "fg2": 0.5502,
+            "fg3": 0.353
+          }
+        },
+        "2026": {
+          "games": 1,
+          "priorGames": 0,
+          "pace": 106.88,
+          "off": {
+            "efg": 0.4775,
+            "tov": 0.1063,
+            "oreb": 0.1333,
+            "ftr": 0.3034,
+            "ftPct": 0.7778,
+            "threeRate": 0.4494,
+            "fg2": 0.5306,
+            "fg3": 0.275
+          },
+          "def": {
+            "efg": 0.4309,
+            "tov": 0.1241,
+            "oreb": 0.2642,
+            "ftr": 0.2872,
+            "ftPct": 0.7037,
+            "threeRate": 0.3511,
+            "fg2": 0.3934,
+            "fg3": 0.3333
+          }
+        },
+        "current": {
+          "games": 1,
+          "priorGames": 16,
+          "pace": 103.5,
+          "off": {
+            "efg": 0.5274,
+            "tov": 0.1179,
+            "oreb": 0.2545,
+            "ftr": 0.2765,
+            "ftPct": 0.8073,
+            "threeRate": 0.3945,
+            "fg2": 0.5346,
+            "fg3": 0.3442
+          },
+          "def": {
+            "efg": 0.5346,
+            "tov": 0.1323,
+            "oreb": 0.2744,
+            "ftr": 0.2714,
+            "ftPct": 0.7798,
+            "threeRate": 0.4185,
+            "fg2": 0.5395,
+            "fg3": 0.3519
+          }
+        }
+      }
+    },
+    "phx": {
+      "team": "Phoenix Suns",
+      "abbrev": "phx",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 100.45,
+          "off": {
+            "efg": 0.5369,
+            "tov": 0.1276,
+            "oreb": 0.2893,
+            "ftr": 0.2251,
+            "ftPct": 0.7805,
+            "threeRate": 0.4531,
+            "fg2": 0.5325,
+            "fg3": 0.3614
+          },
+          "def": {
+            "efg": 0.5413,
+            "tov": 0.1449,
+            "oreb": 0.2813,
+            "ftr": 0.2764,
+            "ftPct": 0.7853,
+            "threeRate": 0.4102,
+            "fg2": 0.5557,
+            "fg3": 0.347
+          }
+        },
+        "current": {
+          "games": 0,
+          "priorGames": 16,
+          "pace": 100.45,
+          "off": {
+            "efg": 0.5369,
+            "tov": 0.1276,
+            "oreb": 0.2893,
+            "ftr": 0.2251,
+            "ftPct": 0.7805,
+            "threeRate": 0.4531,
+            "fg2": 0.5325,
+            "fg3": 0.3614
+          },
+          "def": {
+            "efg": 0.5413,
+            "tov": 0.1449,
+            "oreb": 0.2813,
+            "ftr": 0.2764,
+            "ftPct": 0.7853,
+            "threeRate": 0.4102,
+            "fg2": 0.5557,
+            "fg3": 0.347
+          }
+        }
+      }
+    },
+    "por": {
+      "team": "Portland Trail Blazers",
+      "abbrev": "por",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 104.01,
+          "off": {
+            "efg": 0.5336,
+            "tov": 0.1458,
+            "oreb": 0.313,
+            "ftr": 0.28,
+            "ftPct": 0.7651,
+            "threeRate": 0.4685,
+            "fg2": 0.5511,
+            "fg3": 0.3426
+          },
+          "def": {
+            "efg": 0.5407,
+            "tov": 0.135,
+            "oreb": 0.2731,
+            "ftr": 0.272,
+            "ftPct": 0.7902,
+            "threeRate": 0.3918,
+            "fg2": 0.5431,
+            "fg3": 0.358
+          }
+        },
+        "current": {
+          "games": 0,
+          "priorGames": 16,
+          "pace": 104.01,
+          "off": {
+            "efg": 0.5336,
+            "tov": 0.1458,
+            "oreb": 0.313,
+            "ftr": 0.28,
+            "ftPct": 0.7651,
+            "threeRate": 0.4685,
+            "fg2": 0.5511,
+            "fg3": 0.3426
+          },
+          "def": {
+            "efg": 0.5407,
+            "tov": 0.135,
+            "oreb": 0.2731,
+            "ftr": 0.272,
+            "ftPct": 0.7902,
+            "threeRate": 0.3918,
+            "fg2": 0.5431,
+            "fg3": 0.358
+          }
+        }
+      }
+    },
+    "sa": {
+      "team": "San Antonio Spurs",
+      "abbrev": "sa",
+      "profiles": {
+        "2025": {
+          "games": 83,
+          "priorGames": 0,
+          "pace": 102.72,
+          "off": {
+            "efg": 0.558,
+            "tov": 0.1172,
+            "oreb": 0.263,
+            "ftr": 0.2728,
+            "ftPct": 0.7866,
+            "threeRate": 0.4213,
+            "fg2": 0.5721,
+            "fg3": 0.3591
+          },
+          "def": {
+            "efg": 0.5222,
+            "tov": 0.1143,
+            "oreb": 0.2299,
+            "ftr": 0.2271,
+            "ftPct": 0.7895,
+            "threeRate": 0.4051,
+            "fg2": 0.518,
+            "fg3": 0.3523
+          }
+        },
+        "2026": {
+          "games": 1,
+          "priorGames": 0,
+          "pace": 107.9,
+          "off": {
+            "efg": 0.4409,
+            "tov": 0.1186,
+            "oreb": 0.2128,
+            "ftr": 0.2688,
+            "ftPct": 0.88,
+            "threeRate": 0.3978,
+            "fg2": 0.4643,
+            "fg3": 0.2703
+          },
+          "def": {
+            "efg": 0.5263,
+            "tov": 0.1188,
+            "oreb": 0.2222,
+            "ftr": 0.2105,
+            "ftPct": 0.8,
+            "threeRate": 0.3263,
+            "fg2": 0.4531,
+            "fg3": 0.4516
+          }
+        },
+        "current": {
+          "games": 1,
+          "priorGames": 16,
+          "pace": 103.02,
+          "off": {
+            "efg": 0.5509,
+            "tov": 0.1173,
+            "oreb": 0.2598,
+            "ftr": 0.2726,
+            "ftPct": 0.7921,
+            "threeRate": 0.4199,
+            "fg2": 0.5653,
+            "fg3": 0.354
+          },
+          "def": {
+            "efg": 0.5225,
+            "tov": 0.1146,
+            "oreb": 0.2294,
+            "ftr": 0.2261,
+            "ftPct": 0.7901,
+            "threeRate": 0.4003,
+            "fg2": 0.5135,
+            "fg3": 0.3573
+          }
+        }
+      }
+    },
+    "sac": {
+      "team": "Sacramento Kings",
+      "abbrev": "sac",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 102.22,
+          "off": {
+            "efg": 0.5247,
+            "tov": 0.1264,
+            "oreb": 0.2594,
+            "ftr": 0.2562,
+            "ftPct": 0.7717,
+            "threeRate": 0.3392,
+            "fg2": 0.5318,
+            "fg3": 0.3405
+          },
+          "def": {
+            "efg": 0.572,
+            "tov": 0.123,
+            "oreb": 0.2653,
+            "ftr": 0.2743,
+            "ftPct": 0.7886,
+            "threeRate": 0.4101,
+            "fg2": 0.5743,
+            "fg3": 0.3791
+          }
+        },
+        "current": {
+          "games": 0,
+          "priorGames": 16,
+          "pace": 102.22,
+          "off": {
+            "efg": 0.5247,
+            "tov": 0.1264,
+            "oreb": 0.2594,
+            "ftr": 0.2562,
+            "ftPct": 0.7717,
+            "threeRate": 0.3392,
+            "fg2": 0.5318,
+            "fg3": 0.3405
+          },
+          "def": {
+            "efg": 0.572,
+            "tov": 0.123,
+            "oreb": 0.2653,
+            "ftr": 0.2743,
+            "ftPct": 0.7886,
+            "threeRate": 0.4101,
+            "fg2": 0.5743,
+            "fg3": 0.3791
+          }
+        }
+      }
+    },
+    "tor": {
+      "team": "Toronto Raptors",
+      "abbrev": "tor",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 101.55,
+          "off": {
+            "efg": 0.5463,
+            "tov": 0.1216,
+            "oreb": 0.2547,
+            "ftr": 0.2651,
+            "ftPct": 0.769,
+            "threeRate": 0.3632,
+            "fg2": 0.5551,
+            "fg3": 0.354
+          },
+          "def": {
+            "efg": 0.5397,
+            "tov": 0.1428,
+            "oreb": 0.2599,
+            "ftr": 0.2793,
+            "ftPct": 0.7932,
+            "threeRate": 0.4179,
+            "fg2": 0.551,
+            "fg3": 0.3494
+          }
+        },
+        "current": {
+          "games": 0,
+          "priorGames": 16,
+          "pace": 101.55,
+          "off": {
+            "efg": 0.5463,
+            "tov": 0.1216,
+            "oreb": 0.2547,
+            "ftr": 0.2651,
+            "ftPct": 0.769,
+            "threeRate": 0.3632,
+            "fg2": 0.5551,
+            "fg3": 0.354
+          },
+          "def": {
+            "efg": 0.5397,
+            "tov": 0.1428,
+            "oreb": 0.2599,
+            "ftr": 0.2793,
+            "ftPct": 0.7932,
+            "threeRate": 0.4179,
+            "fg2": 0.551,
+            "fg3": 0.3494
+          }
+        }
+      }
+    },
+    "utah": {
+      "team": "Utah Jazz",
+      "abbrev": "utah",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 105.68,
+          "off": {
+            "efg": 0.5365,
+            "tov": 0.1318,
+            "oreb": 0.2616,
+            "ftr": 0.2773,
+            "ftPct": 0.7861,
+            "threeRate": 0.4025,
+            "fg2": 0.5496,
+            "fg3": 0.3446
+          },
+          "def": {
+            "efg": 0.5776,
+            "tov": 0.1242,
+            "oreb": 0.2712,
+            "ftr": 0.2917,
+            "ftPct": 0.7767,
+            "threeRate": 0.4509,
+            "fg2": 0.5935,
+            "fg3": 0.3722
+          }
+        },
+        "current": {
+          "games": 0,
+          "priorGames": 16,
+          "pace": 105.68,
+          "off": {
+            "efg": 0.5365,
+            "tov": 0.1318,
+            "oreb": 0.2616,
+            "ftr": 0.2773,
+            "ftPct": 0.7861,
+            "threeRate": 0.4025,
+            "fg2": 0.5496,
+            "fg3": 0.3446
+          },
+          "def": {
+            "efg": 0.5776,
+            "tov": 0.1242,
+            "oreb": 0.2712,
+            "ftr": 0.2917,
+            "ftPct": 0.7767,
+            "threeRate": 0.4509,
+            "fg2": 0.5935,
+            "fg3": 0.3722
+          }
+        }
+      }
+    },
+    "wsh": {
+      "team": "Washington Wizards",
+      "abbrev": "wsh",
+      "profiles": {
+        "2025": {
+          "games": 82,
+          "priorGames": 0,
+          "pace": 104.41,
+          "off": {
+            "efg": 0.5349,
+            "tov": 0.1358,
+            "oreb": 0.2405,
+            "ftr": 0.2346,
+            "ftPct": 0.7664,
+            "threeRate": 0.4026,
+            "fg2": 0.5328,
+            "fg3": 0.3587
+          },
+          "def": {
+            "efg": 0.5626,
+            "tov": 0.1173,
+            "oreb": 0.2981,
+            "ftr": 0.2917,
+            "ftPct": 0.7968,
+            "threeRate": 0.4041,
+            "fg2": 0.5693,
+            "fg3": 0.3684
+          }
+        },
+        "current": {
+          "games": 0,
+          "priorGames": 16,
+          "pace": 104.41,
+          "off": {
+            "efg": 0.5349,
+            "tov": 0.1358,
+            "oreb": 0.2405,
+            "ftr": 0.2346,
+            "ftPct": 0.7664,
+            "threeRate": 0.4026,
+            "fg2": 0.5328,
+            "fg3": 0.3587
+          },
+          "def": {
+            "efg": 0.5626,
+            "tov": 0.1173,
+            "oreb": 0.2981,
+            "ftr": 0.2917,
+            "ftPct": 0.7968,
+            "threeRate": 0.4041,
+            "fg2": 0.5693,
+            "fg3": 0.3684
+          }
+        }
+      }
+    }
+  }
+}

@@ -60,6 +60,12 @@ export default function UsSportView({ sport, summary }: { sport: UsSport; summar
           {marketName ? ` and ${marketName}` : ""}. Regular season and playoffs are separate.
           Prices stay decimal in the math. {seasonLabel(sport, start)} – {seasonLabel(sport, end)}.
         </p>
+        {sport === "nba" ? (
+          <p className="lede">
+            <Link href={withOddsQuery("/nba/simulator", format)}>Game simulator</Link>
+            {" "}for one matchup: 5,000 possessions, win probability, and a minimum price at fair odds times 1.05.
+          </p>
+        ) : null}
       </header>
 
       <div className="preset-row">
