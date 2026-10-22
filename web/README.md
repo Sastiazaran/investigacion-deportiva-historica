@@ -25,3 +25,7 @@ cd web && npm test && npm run build
 ```
 
 The Friday GitHub Action documented in the root README commits those files. Vercel’s root directory is `web`.
+
+`/nba/simulator` is the team-level Monte Carlo page (5,000 possessions). It reads `public/data/nba/team-factors.json` and `public/data/nba/sim-backtest.json`. Those files do not replace `public/data/summary.json`. Refresh them from the repo root with `python3 scripts/nba_sim_data.py`, then `node --experimental-strip-types scripts/nba-backtest.ts` inside `web/`.
+
+The 2025-26 walk-forward backtest does not beat the closing line: Brier 0.2079 vs 0.1948, log loss 0.6043 vs 0.5710, and −16.8% ROI on 853 bets at a 5% price margin (1,230 games). Through 2026-02-12 the same rule is −3.7% (525 bets); after that date it is −37.6% (328 bets). Closes are ESPN BET (298) then DraftKings (932). The site's NBA summary still has no BetMGM moneyline after 2026-02-12.

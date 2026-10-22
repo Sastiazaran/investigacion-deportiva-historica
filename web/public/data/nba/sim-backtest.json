@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "season": 2025,
+  "n": 5000,
+  "generatedAt": "2026-10-21T20:28:05.234Z",
+  "closeSources": {
+    "espn-bet-close": 298,
+    "espn-close:DraftKings": 932
+  },
+  "closingSource": "ESPN odds close.moneyLine.decimal. ESPN BET (provider 58) through November 2025; DraftKings (provider 100) after that.",
+  "repoMoneylineGap": "The site's NBA summary has no moneyline after 2026-02-12. That file's prices are BetMGM through that date. This backtest could not re-download the Kaggle extracts (the public download URL returned 404 without credentials). It uses the close ESPN publishes and splits the sample on 2026-02-12.",
+  "beatsMarket": false,
+  "statement": "The simulator does not beat the closing line. On 1,230 regular-season games the simulator's Brier score is 0.2079 and its log loss is 0.6043. The de-vigged closing line is 0.1948 and 0.5710. Flat 1-unit bets taken only when the close was at least the model's fair price times 1.05 returned -16.8% on 853 bets.",
+  "missingClose": 1,
+  "full": {
+    "games": 1230,
+    "homeWins": 682,
+    "homeWinRate": 0.5545,
+    "meanModelHomeProb": 0.5345,
+    "meanMarketHomeProb": 0.5489,
+    "model": {
+      "brier": 0.2079,
+      "logLoss": 0.6043
+    },
+    "market": {
+      "brier": 0.1948,
+      "logLoss": 0.571
+    },
+    "roiEdge5": {
+      "bets": 853,
+      "wins": 261,
+      "staked": 853,
+      "profit": -142.958,
+      "roi": -0.1676
+    },
+    "roiAnyEdge": {
+      "bets": 1025,
+      "wins": 351,
+      "staked": 1025,
+      "profit": -134.107,
+      "roi": -0.1308
+    },
+    "beatsMarket": false
+  },
+  "through2026_02_12": {
+    "games": 819,
+    "homeWins": 447,
+    "homeWinRate": 0.5458,
+    "meanModelHomeProb": 0.5322,
+    "meanMarketHomeProb": 0.5493,
+    "model": {
+      "brier": 0.2212,
+      "logLoss": 0.6343
+    },
+    "market": {
+      "brier": 0.2141,
+      "logLoss": 0.6169
+    },
+    "roiEdge5": {
+      "bets": 525,
+      "wins": 192,
+      "staked": 525,
+      "profit": -19.608,
+      "roi": -0.0373
+    },
+    "roiAnyEdge": {
+      "bets": 659,
+      "wins": 264,
+      "staked": 659,
+      "profit": -16.857,
+      "roi": -0.0256
+    },
+    "beatsMarket": false
+  },
+  "after2026_02_12": {
+    "games": 411,
+    "homeWins": 235,
+    "homeWinRate": 0.5718,
+    "meanModelHomeProb": 0.5392,
+    "meanMarketHomeProb": 0.5482,
+    "model": {
+      "brier": 0.1813,
+      "logLoss": 0.5446
+    },
+    "market": {
+      "brier": 0.1563,
+      "logLoss": 0.4795
+    },
+    "roiEdge5": {
+      "bets": 328,
+      "wins": 69,
+      "staked": 328,
+      "profit": -123.35,
+      "roi": -0.3761
+    },
+    "roiAnyEdge": {
+      "bets": 366,
+      "wins": 87,
+      "staked": 366,
+      "profit": -117.25,
+      "roi": -0.3204
+    },
+    "beatsMarket": false
+  }
+}
