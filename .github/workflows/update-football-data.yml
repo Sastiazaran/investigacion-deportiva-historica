@@ -53,6 +53,10 @@ jobs:
         working-directory: web
         run: node --experimental-strip-types scripts/nba-backtest.ts
 
+      - name: Score NBA total calibration
+        working-directory: web
+        run: node --experimental-strip-types scripts/nba-total-calibration.ts
+
       - name: Fail if an in-season competition is stale
         run: python3 scripts/check_freshness.py
 
@@ -79,6 +83,7 @@ jobs:
             web/public/data/mlb/sim-backtest.json \
             web/public/data/nba/team-factors.json \
             web/public/data/nba/sim-backtest.json \
+            web/public/data/nba/total-calibration.json \
             data/mlb/games.json
           if git diff --staged --quiet; then
             echo "No data changes"
