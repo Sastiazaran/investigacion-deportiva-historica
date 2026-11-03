@@ -26,6 +26,8 @@ from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+from espn_lines import fetch_mlb_gap, fetch_nba_gap, merge_mlb, merge_nba
+from freshness import mlb_in_season, nba_in_season
 from us_markets import (
     JUICE_110,
     MLB_NAMES,
@@ -63,8 +65,8 @@ SBR_TEMPLATE = (
     "sportsbookreviewsonline_com_737/mlb-odds-{year}.xlsx"
 )
 MLB_RELEASE_START = "2021-04-01"
-MLB_GAP_AFTER = "2025-08-16"
-NBA_ML_GAP_FROM = "2026-02-13"
+MLB_ARCHIVE_END = "2025-08-16"
+EASTERN = timezone(timedelta(hours=-5))
 
 USER_AGENT = "investigacion-deportiva-historica"
 
@@ -174,6 +176,7 @@ def load_nfl() -> tuple[list[dict], dict]:
                 home_spread = spread
                 home_price = american_to_decimal(row["home_spread_odds"]) or JUICE_110
                 away_price = american_to_decimal(row["away_spread_odds"]) or JUICE_110
+            total_line = as_float(row.get("total_line"))
             games.append(
                 new_game(
                     date=row["gameday"],
@@ -189,6 +192,9 @@ def load_nfl() -> tuple[list[dict], dict]:
                     home_spread=home_spread,
                     away_spread_odds=away_price,
                     home_spread_odds=home_price,
+                    total_line=total_line,
+                    over_odds=american_to_decimal(row.get("over_odds")),
+                    under_odds=american_to_decimal(row.get("under_odds")),
                 )
             )
     return games, {"scheduled": scheduled}
@@ -465,12 +471,31 @@ def rebuild_mlb_games() -> list[dict]:
     return kept
 
 
+def scrub_mlb_spreads(games: list[dict]) -> int:
+    """The 2010-2020 archive puts some closing totals in the run-line column. A real run line is 1.5, sometimes 2.5."""
+    dropped = 0
+    for game in games:
+        spread = game.get("home_spread")
+        if spread is None or abs(float(spread)) <= 2.5:
+            continue
+        game["home_spread"] = None
+        game["home_spread_odds"] = None
+        game["away_spread_odds"] = None
+        dropped += 1
+    return dropped
+
+
 def load_mlb(rebuild: bool) -> list[dict]:
     if rebuild or not MLB_GAMES.exists():
         if not rebuild and not MLB_GAMES.exists():
             raise SystemExit("data/mlb/games.json is missing. Run with --rebuild-mlb once.")
-        return rebuild_mlb_games()
-    return json.loads(MLB_GAMES.read_text())["games"]
+        games = rebuild_mlb_games()
+    else:
+        games = json.loads(MLB_GAMES.read_text())["games"]
+    dropped = scrub_mlb_spreads(games)
+    if dropped:
+        print(f"MLB dropped {dropped} spread values outside a run line")
+    return games
 
 
 def _side_result(winner: str, side: str) -> str:
@@ -726,13 +751,20 @@ def nfl_extra(games: list[dict], meta: dict) -> dict:
     }
 
 
+def _today() -> datetime:
+    return datetime.now(timezone.utc).astimezone(EASTERN)
+
+
 def nba_extra(games: list[dict]) -> dict:
     priced = [game["date"] for game in games if game["ml_source"]]
     last_ml = max(priced) if priced else None
     last_game = max(game["date"] for game in games)
     sources = Counter(game["ml_source"] for game in games if game["ml_source"])
+    today = _today().date()
+    season_start = today.year if today.month >= 8 else today.year - 1
+    partial = [season_start] if nba_in_season(today) else []
     return {
-        "partialSeasons": [],
+        "partialSeasons": partial,
         "credits": [
             {
                 "id": "kaggle-cc0",
@@ -748,17 +780,25 @@ def nba_extra(games: list[dict]) -> dict:
                 "license": "CC BY-SA 4.0",
                 "credit": "BetMGM pregame moneylines, 2021-22 through 2026-02-12, used only where the CC0 file has no moneyline. CC BY-SA 4.0, Casey Durfee.",
             },
+            {
+                "id": "espn-close",
+                "name": "ESPN NBA scoreboard and closing odds",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard",
+                "credit": "Games after the Kaggle file, and moneylines from 2026-02-13, from the ESPN scoreboard and the ESPN core odds close.",
+            },
         ],
         "gaps": [
-            f"Primary moneylines stop during 2022-23. Later prices are BetMGM through {last_ml}. No moneyline from {NBA_ML_GAP_FROM} onward (last completed game in this file: {last_game}).",
-            "Spread and total are nearly complete from 2007-08. The spread is the favorite's number of points, alongside whos_favored. There is no spread price in the CC0 file, so every ATS bet is graded at -110 (1.909).",
+            f"Scores run through {last_game}. Moneylines run through {last_ml}.",
+            "History through 2026-06-13 is the CC0 Kaggle file. BetMGM fills moneylines that file is missing, through 2026-02-12.",
+            "From 2026-02-13, a missing moneyline is the ESPN close (DraftKings when that book is posted, otherwise ESPN BET). Games after the Kaggle file are added from the same feed, including the spread and total.",
+            "The CC0 spread has no price, so those ATS bets stay at -110 (1.909). ESPN spreads keep the posted price.",
             "Rows marked neither regular nor playoff (play-in and a handful of cup dates) are the phase 'other', not mixed into the regular season or the playoffs.",
             f"Moneyline rows by source: {dict(sources)}.",
         ],
         "definitions": {
             "season": "Season start year. 2007 means 2007-08. The source file stores the ending year; it is converted here.",
             "phase": "regular, playoff, or other. other is the source rows where both regular and playoffs are false.",
-            "moneyline": "Flat 1.00 unit. Source is kaggle-cc0 when the CC0 file has a price, otherwise betmgm. NBA games do not tie. A missing price is not a bet.",
+            "moneyline": "Flat 1.00 unit. Source is kaggle-cc0 when the CC0 file has a price, otherwise betmgm through 2026-02-12, otherwise the ESPN close. NBA games do not tie. A missing price is not a bet.",
             "ats": "Home spread line is positive when home is favored. Cover rule matches the NFL rule. Price is always 1.909. Pushes are counted and excluded from ROI.",
             "calibration": "Same two-way de-vig, 5-point probability buckets, Brier score, and average overround as the NFL file.",
             "sampleSize": "played, bets, and pushes are separate.",
@@ -768,8 +808,12 @@ def nba_extra(games: list[dict]) -> dict:
 
 def mlb_extra(games: list[dict]) -> dict:
     last = max(game["date"] for game in games)
+    priced = [game["date"] for game in games if game.get("ml_source")]
+    last_ml = max(priced) if priced else None
+    today = _today().date()
+    partial = [today.year] if mlb_in_season(today) else []
     return {
-        "partialSeasons": [2025],
+        "partialSeasons": partial,
         "credits": [
             {
                 "id": "sbr-close",
@@ -783,11 +827,20 @@ def mlb_extra(games: list[dict]) -> dict:
                 "url": MLB_RELEASE,
                 "credit": "2021-04-01 through 2025-08-16 from the static GitHub release asset only. The scraper's code is not run. Closing price is the median current line across the books in that file.",
             },
+            {
+                "id": "espn-close",
+                "name": "ESPN MLB scoreboard and closing odds",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard",
+                "credit": "Games and closes after 2025-08-16 from the ESPN scoreboard and the ESPN core odds close.",
+            },
         ],
         "gaps": [
-            f"Nothing after {MLB_GAP_AFTER}. The last game in the frozen file is {last}. The 2025 season is partial, and 2026 is absent.",
-            "2010-2020 archives do not mark the postseason, so those playoff games sit inside the regular-season totals. From 2021-04-01, playoffs are game types F, D, L, and W.",
-            "The 2021 overlap is deduped. A release game replaces the archive row with the same date and teams. Spring training and the All-Star game are dropped.",
+            f"Scores run through {last}. Moneylines run through {last_ml}.",
+            f"2010 through {MLB_ARCHIVE_END} stay the frozen Sportsbook Review archives plus the static mlb_odds_dataset.json release. That release is not updated.",
+            f"From the day after {MLB_ARCHIVE_END}, games and closes are the ESPN scoreboard and the ESPN closing line. Spring training and the All-Star game are dropped.",
+            "2010-2013 archive rows do not have a usable run line, so those seasons have moneylines and no spread. A stored number outside -2.5 to 2.5 is dropped.",
+            "2010-2020 archives do not mark the postseason, so those playoff games sit inside the regular-season totals. From 2021-04-01, playoffs are game types F, D, L, and W, and ESPN postseason games are phase playoff.",
+            "The 2021 overlap is deduped. A release game replaces the archive row with the same date and teams.",
             "OAK and ATH are one franchise (Athletics). ARI and AZ are the Diamondbacks.",
         ],
         "definitions": {
@@ -827,11 +880,49 @@ def print_coverage(sport: str, payload: dict) -> None:
         )
 
 
+def _write_sim_games(name: str, games: list[dict]) -> None:
+    """Per-game lines for the simulator backtest. Not served by the site."""
+    dest = CACHE / f"{name}-sim-games.json"
+    slim = []
+    for game in games:
+        slim.append(
+            {
+                "date": game["date"],
+                "season": game["season"],
+                "phase": game["phase"],
+                "away": game["away"],
+                "home": game["home"],
+                "away_score": game["away_score"],
+                "home_score": game["home_score"],
+                "away_ml": game.get("away_ml"),
+                "home_ml": game.get("home_ml"),
+                "home_spread": game.get("home_spread"),
+                "away_spread_odds": game.get("away_spread_odds"),
+                "home_spread_odds": game.get("home_spread_odds"),
+                "total_line": game.get("total_line"),
+                "over_odds": game.get("over_odds"),
+                "under_odds": game.get("under_odds"),
+            }
+        )
+    dest.write_text(json.dumps({"games": slim}))
+    print(f"sim games {name}: {len(slim)} -> {dest}")
+
+
 def main() -> None:
     rebuild_mlb = "--rebuild-mlb" in sys.argv
+    skip_espn = "--skip-espn" in sys.argv
     nfl_games, nfl_meta = load_nfl()
     nba_games = load_nba(load_mgm())
     mlb_games = load_mlb(rebuild_mlb)
+    if not skip_espn:
+        added, filled = merge_nba(nba_games, fetch_nba_gap(CACHE / "espn"))
+        print(f"NBA ESPN added {added} filled moneylines {filled}")
+        mlb_added = merge_mlb(mlb_games, fetch_mlb_gap(CACHE / "espn"))
+        print(f"MLB ESPN added {mlb_added}")
+        MLB_GAMES.write_text(json.dumps({"games": mlb_games}, separators=(",", ":")))
+    _write_sim_games("nfl", nfl_games)
+    _write_sim_games("nba", nba_games)
+    _write_sim_games("mlb", mlb_games)
     nfl = summarize("nfl", nfl_games, NFL_NAMES, "ats", nfl_extra(nfl_games, nfl_meta))
     nba = summarize("nba", nba_games, NBA_NAMES, "ats", nba_extra(nba_games))
     mlb = summarize("mlb", mlb_games, MLB_NAMES, "runLine", mlb_extra(mlb_games))
@@ -841,6 +932,15 @@ def main() -> None:
     print_coverage("nfl", nfl)
     print_coverage("nba", nba)
     print_coverage("mlb", mlb)
+    dates = {}
+    for label, rows in (("NFL", nfl_games), ("NBA", nba_games), ("MLB", mlb_games)):
+        priced = [game["date"] for game in rows if game.get("home_ml")]
+        dates[label] = {
+            "game": max(game["date"] for game in rows),
+            "moneyline": max(priced) if priced else None,
+        }
+    (PUBLIC / "line-dates.json").write_text(json.dumps(dates, indent=2) + "\n")
+    print(f"line dates {dates}")
 
 
 if __name__ == "__main__":

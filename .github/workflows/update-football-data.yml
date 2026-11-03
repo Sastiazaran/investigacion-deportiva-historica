@@ -23,6 +23,10 @@ jobs:
         with:
           python-version: "3.12"
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
       - name: Test ROI and calibration math
         working-directory: scripts
         run: python3 -m unittest discover -s . -p "test_*.py"
@@ -36,6 +40,22 @@ jobs:
           KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
         run: python3 scripts/build_us_sports.py
 
+      - name: Retrain football, NFL, and MLB simulators
+        working-directory: web
+        run: node --experimental-strip-types scripts/calibrate-sims.ts
+
+      - name: Refresh NBA possession ratings
+        env:
+          NBA_SIM_SKIP_PBP: "1"
+        run: python3 scripts/nba_sim_data.py
+
+      - name: Retrain the NBA possession backtest
+        working-directory: web
+        run: node --experimental-strip-types scripts/nba-backtest.ts
+
+      - name: Fail if an in-season competition is stale
+        run: python3 scripts/check_freshness.py
+
       - name: Commit and push when the files changed
         run: |
           git config user.name "github-actions[bot]"
@@ -48,7 +68,18 @@ jobs:
             web/public/data/coverage.json \
             web/public/data/nfl/summary.json \
             web/public/data/nba/summary.json \
-            web/public/data/mlb/summary.json
+            web/public/data/mlb/summary.json \
+            web/public/data/line-dates.json \
+            web/public/data/freshness.json \
+            web/public/data/football/sim-factors.json \
+            web/public/data/football/sim-backtest.json \
+            web/public/data/nfl/sim-factors.json \
+            web/public/data/nfl/sim-backtest.json \
+            web/public/data/mlb/sim-factors.json \
+            web/public/data/mlb/sim-backtest.json \
+            web/public/data/nba/team-factors.json \
+            web/public/data/nba/sim-backtest.json \
+            data/mlb/games.json
           if git diff --staged --quiet; then
             echo "No data changes"
             exit 0

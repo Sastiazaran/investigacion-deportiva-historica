@@ -40,7 +40,8 @@ export default function CalibrationView({ bySeason }: Props) {
   return (
     <>
       <header className="page-header">
-        <h1>Closing-odds calibration</h1>
+        <p className="eyebrow">Football</p>
+        <h1>Calibration</h1>
         <p className="lede">
           Each priced match adds three outcomes (home, draw, away). Implied
           probability is 1/odds with the overround removed, so the three fair

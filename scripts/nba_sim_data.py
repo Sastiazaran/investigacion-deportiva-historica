@@ -324,7 +324,14 @@ def attach_pbp(games: list[dict]) -> dict:
 def main() -> None:
     games = load_games()
     attach_odds(games)
-    pbp = attach_pbp(games)
+    if os.environ.get("NBA_SIM_SKIP_PBP") == "1":
+        pbp = {
+            "note": "Play-by-play refresh was skipped. Box scores and closing prices were refreshed.",
+            "keptGames": 0,
+            "requestedGames": 0,
+        }
+    else:
+        pbp = attach_pbp(games)
     # Drop display names from the cache file; the backtest script has the codes.
     slim = []
     for game in games:

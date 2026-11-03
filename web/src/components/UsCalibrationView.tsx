@@ -25,7 +25,8 @@ export default function UsCalibrationView({ sport, summary }: { sport: UsSport; 
   return (
     <>
       <header className="page-header">
-        <h1>{sportLabel(sport)} calibration</h1>
+        <p className="eyebrow">{sportLabel(sport)}</p>
+        <h1>Calibration</h1>
         <p className="lede">
           Two-way de-vig: fair probability is 1/odds divided by the sum of the two implied
           probabilities. Buckets are 5 percentage points wide. Brier score is the mean squared

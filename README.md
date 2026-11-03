@@ -46,7 +46,7 @@ cd web && npm test && npm run build
 
 ## Weekly update
 
-`.github/workflows/update-football-data.yml` runs every Friday at 06:00 UTC (and on demand). It downloads the CSVs, rebuilds the JSON, and commits to the default branch when something changed.
+`.github/workflows/update-football-data.yml` runs every Friday at 06:00 UTC (and on demand). It downloads the CSVs, rebuilds the JSON, retrains the simulators, and commits to the default branch when something changed. The job then checks freshness and fails if an in-season competition's latest final, or its closing line, is older than the threshold in `scripts/freshness.py`.
 
 A Vercel cron is a poor fit: the dataset is static JSON in `public/`, and a cron invocation cannot commit that file or replace the copy the CDN is already serving. The Action commits the files; the push to the default branch is what redeploys production so Friday’s reader sees new numbers. Do not merge feature PRs by hand if a push to `main` would deploy them — the weekly job is the path that is supposed to update `main`.
 
@@ -69,15 +69,23 @@ These are separate files. `/data/summary.json` is still the soccer file, `schema
 
 NFL lines are nflverse `games.csv`. `spread_line` is positive when the home team is favored. OAK, SD, and STL are folded into the current franchise.
 
-NBA results and spreads are the CC0 Kaggle file `nba_2008-2026.csv`. Moneylines that file is missing are filled from the CC BY-SA 4.0 BetMGM file through 2026-02-12. There is no moneyline from 2026-02-13 onward. A missing spread price is 1.909 (−110).
+NBA results and spreads through 2026-06-13 are the CC0 Kaggle file `nba_2008-2026.csv`. Moneylines that file is missing are filled from the CC BY-SA 4.0 BetMGM file through 2026-02-12. From 2026-02-13, missing moneylines and every later game come from the ESPN scoreboard and the ESPN closing line (DraftKings when that book is posted). A Kaggle spread with no price is 1.909 (−110). ESPN spreads keep the posted price.
 
-MLB 2010-2020 is the static Sportsbook Review `.xlsx` archives, committed as `data/mlb/games.json`. Those years do not mark the playoffs, so postseason games sit in the regular-season totals. From 2021-04-01 the static GitHub release `mlb_odds_dataset.json` is used (the scraper is not run). Nothing after 2025-08-16. OAK/ATH and ARI/AZ are one franchise each.
+MLB 2010-2020 is the static Sportsbook Review `.xlsx` archives, committed as `data/mlb/games.json`. Those years do not mark the playoffs, so postseason games sit in the regular-season totals. 2010-2013 do not have a usable run line. From 2021-04-01 through 2025-08-16 the static GitHub release `mlb_odds_dataset.json` is used (the scraper is not run). After 2025-08-16, games and closes are the ESPN scoreboard. OAK/ATH and ARI/AZ are one franchise each.
 
-The Friday Action re-downloads nflverse and the two Kaggle files. `KAGGLE_USERNAME` and `KAGGLE_KEY` are optional fallbacks. MLB is not re-downloaded.
+The Friday Action re-downloads nflverse, the two Kaggle files, and the ESPN gaps. `KAGGLE_USERNAME` and `KAGGLE_KEY` are optional fallbacks.
+
+## Game simulators
+
+`/football/simulator`, `/nba/simulator`, `/nfl/simulator`, and `/mlb/simulator` use the same page. Each one shows win, draw or tie, and loss probabilities first, then fair decimal odds, then the minimum price at fair times 1.05. The spread is positive when the home side lays. The total is the over/under. The odds toggle switches the prices between decimal and American.
+
+Football is a Dixon-Coles score matrix, fit separately for each league. NFL is a normal model of points. NBA is the possession Monte Carlo below. MLB is a Poisson runs model, with a regulation tie broken by one extra run.
+
+The page prints the walk-forward backtest against the closing line. A lower Brier score and a lower log loss are better. The model beats a market only when both are better. None of the simulators beats the close on every scored market. Numbers are in `web/public/data/<sport>/sim-backtest.json`.
 
 ## NBA Monte Carlo simulator
 
-`/nba/simulator` runs 5,000 seeded possessions for one matchup. Ratings are pace, eFG%, TOV%, OREB%, and free-throw rate, with a home-court eFG shift fit to the 2025-26 average home margin. The minimum price is the model's fair decimal odds times 1.05, shown in decimal and American so it can be compared with Playdoit.
+`/nba/simulator` runs 5,000 seeded possessions for one matchup. Ratings are pace, eFG%, TOV%, OREB%, and free-throw rate, with a home-court eFG shift fit to the 2025-26 average home margin. The minimum price is the model's fair decimal odds times 1.05.
 
 The page also prints the 2025-26 walk-forward backtest. The simulator does not beat the closing line.
 

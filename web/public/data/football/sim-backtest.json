@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "sport": "football",
+  "model": "Dixon-Coles",
+  "generatedAt": "2026-11-03T19:55:37.053Z",
+  "beatsMarket": false,
+  "statement": "Does not beat the closing line on every scored market. football result trails the closing line. Brier 0.5951 versus 0.5779. Log loss 0.9965 versus 0.9710. The 5% rule returned -7.2% on 56787 bets across 62,745 games.",
+  "markets": {
+    "result": {
+      "games": 62745,
+      "model": {
+        "brier": 0.5951,
+        "logLoss": 0.9965
+      },
+      "market": {
+        "brier": 0.5779,
+        "logLoss": 0.971
+      },
+      "roiEdge5": {
+        "bets": 56787,
+        "wins": 14488,
+        "staked": 56787,
+        "profit": -4101.98,
+        "roi": -0.0722
+      },
+      "beatsMarket": false
+    }
+  },
+  "notes": [
+    "Walk-forward 1X2 against the closing price in matches.json (Pinnacle close when it exists, else Pinnacle, else Bet365).",
+    "The first 30 matches of each league are used to start the averages and are not scored.",
+    "The file has no closing totals or handicaps, so over/under and the goal line are model outputs without a closing-line score.",
+    "A lower Brier score and a lower log loss are better. The model beats the close only when both are better."
+  ]
+}

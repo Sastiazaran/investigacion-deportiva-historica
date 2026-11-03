@@ -1,0 +1,205 @@
+{
+  "generatedAt": "2026-11-03T19:55:07",
+  "today": "2026-11-03",
+  "rows": [
+    {
+      "competition": "Premier League",
+      "status": "fresh",
+      "latest": "2026-11-02",
+      "ageDays": 1,
+      "thresholdDays": 18,
+      "inSeason": true,
+      "reason": "latest game 2026-11-02 is 1 days old; threshold is 18"
+    },
+    {
+      "competition": "La Liga",
+      "status": "fresh",
+      "latest": "2026-11-02",
+      "ageDays": 1,
+      "thresholdDays": 18,
+      "inSeason": true,
+      "reason": "latest game 2026-11-02 is 1 days old; threshold is 18"
+    },
+    {
+      "competition": "Serie A",
+      "status": "fresh",
+      "latest": "2026-11-02",
+      "ageDays": 1,
+      "thresholdDays": 18,
+      "inSeason": true,
+      "reason": "latest game 2026-11-02 is 1 days old; threshold is 18"
+    },
+    {
+      "competition": "Bundesliga",
+      "status": "fresh",
+      "latest": "2026-11-01",
+      "ageDays": 2,
+      "thresholdDays": 18,
+      "inSeason": true,
+      "reason": "latest game 2026-11-01 is 2 days old; threshold is 18"
+    },
+    {
+      "competition": "Ligue 1",
+      "status": "fresh",
+      "latest": "2026-11-02",
+      "ageDays": 1,
+      "thresholdDays": 18,
+      "inSeason": true,
+      "reason": "latest game 2026-11-02 is 1 days old; threshold is 18"
+    },
+    {
+      "competition": "Eredivisie",
+      "status": "fresh",
+      "latest": "2026-11-01",
+      "ageDays": 2,
+      "thresholdDays": 18,
+      "inSeason": true,
+      "reason": "latest game 2026-11-01 is 2 days old; threshold is 18"
+    },
+    {
+      "competition": "Primeira Liga",
+      "status": "fresh",
+      "latest": "2026-11-02",
+      "ageDays": 1,
+      "thresholdDays": 18,
+      "inSeason": true,
+      "reason": "latest game 2026-11-02 is 1 days old; threshold is 18"
+    },
+    {
+      "competition": "Liga MX",
+      "status": "fresh",
+      "latest": "2026-11-02",
+      "ageDays": 1,
+      "thresholdDays": 16,
+      "inSeason": true,
+      "reason": "latest game 2026-11-02 is 1 days old; threshold is 16"
+    },
+    {
+      "competition": "NFL",
+      "status": "fresh",
+      "latest": "2026-11-02",
+      "ageDays": 1,
+      "thresholdDays": 11,
+      "inSeason": true,
+      "reason": "latest game 2026-11-02 is 1 days old; threshold is 11"
+    },
+    {
+      "competition": "NBA",
+      "status": "fresh",
+      "latest": "2026-11-02",
+      "ageDays": 1,
+      "thresholdDays": 10,
+      "inSeason": true,
+      "reason": "latest game 2026-11-02 is 1 days old; threshold is 10"
+    },
+    {
+      "competition": "MLB",
+      "status": "fresh",
+      "latest": "2026-10-28",
+      "ageDays": 6,
+      "thresholdDays": 8,
+      "inSeason": true,
+      "reason": "latest game 2026-10-28 is 6 days old; threshold is 8"
+    },
+    {
+      "competition": "Premier League closing lines",
+      "status": "fresh",
+      "latest": "2026-11-02",
+      "ageDays": 1,
+      "thresholdDays": 18,
+      "inSeason": true,
+      "reason": "latest game 2026-11-02 is 1 days old; threshold is 18"
+    },
+    {
+      "competition": "La Liga closing lines",
+      "status": "fresh",
+      "latest": "2026-11-02",
+      "ageDays": 1,
+      "thresholdDays": 18,
+      "inSeason": true,
+      "reason": "latest game 2026-11-02 is 1 days old; threshold is 18"
+    },
+    {
+      "competition": "Serie A closing lines",
+      "status": "fresh",
+      "latest": "2026-11-02",
+      "ageDays": 1,
+      "thresholdDays": 18,
+      "inSeason": true,
+      "reason": "latest game 2026-11-02 is 1 days old; threshold is 18"
+    },
+    {
+      "competition": "Bundesliga closing lines",
+      "status": "fresh",
+      "latest": "2026-11-01",
+      "ageDays": 2,
+      "thresholdDays": 18,
+      "inSeason": true,
+      "reason": "latest game 2026-11-01 is 2 days old; threshold is 18"
+    },
+    {
+      "competition": "Ligue 1 closing lines",
+      "status": "fresh",
+      "latest": "2026-11-02",
+      "ageDays": 1,
+      "thresholdDays": 18,
+      "inSeason": true,
+      "reason": "latest game 2026-11-02 is 1 days old; threshold is 18"
+    },
+    {
+      "competition": "Eredivisie closing lines",
+      "status": "fresh",
+      "latest": "2026-11-01",
+      "ageDays": 2,
+      "thresholdDays": 18,
+      "inSeason": true,
+      "reason": "latest game 2026-11-01 is 2 days old; threshold is 18"
+    },
+    {
+      "competition": "Primeira Liga closing lines",
+      "status": "fresh",
+      "latest": "2026-11-02",
+      "ageDays": 1,
+      "thresholdDays": 18,
+      "inSeason": true,
+      "reason": "latest game 2026-11-02 is 1 days old; threshold is 18"
+    },
+    {
+      "competition": "Liga MX closing lines",
+      "status": "fresh",
+      "latest": "2026-11-02",
+      "ageDays": 1,
+      "thresholdDays": 16,
+      "inSeason": true,
+      "reason": "latest game 2026-11-02 is 1 days old; threshold is 16"
+    },
+    {
+      "competition": "NFL closing lines",
+      "status": "fresh",
+      "latest": "2026-11-02",
+      "ageDays": 1,
+      "thresholdDays": 11,
+      "inSeason": true,
+      "reason": "latest game 2026-11-02 is 1 days old; threshold is 11"
+    },
+    {
+      "competition": "NBA closing lines",
+      "status": "fresh",
+      "latest": "2026-11-02",
+      "ageDays": 1,
+      "thresholdDays": 10,
+      "inSeason": true,
+      "reason": "latest game 2026-11-02 is 1 days old; threshold is 10"
+    },
+    {
+      "competition": "MLB closing lines",
+      "status": "fresh",
+      "latest": "2026-10-28",
+      "ageDays": 6,
+      "thresholdDays": 8,
+      "inSeason": true,
+      "reason": "latest game 2026-10-28 is 6 days old; threshold is 8"
+    }
+  ],
+  "stale": []
+}

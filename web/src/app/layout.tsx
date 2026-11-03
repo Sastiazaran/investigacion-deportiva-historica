@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { OddsFormatProvider } from "../components/OddsFormatProvider";
+import SiteNav from "../components/SiteNav";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,10 +17,26 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "European Accumulator Analysis",
+  title: "Lines",
   description:
-    "Historical club win rates, home/away splits, flat-bet closing-odds ROI, and odds calibration across Europe’s top leagues and Liga MX.",
+    "Historical results, closing-line calibration, and match simulators for European football, Liga MX, the NFL, the NBA, and MLB.",
 };
+
+function freshnessLine() {
+  try {
+    const file = path.join(process.cwd(), "public", "data", "freshness.json");
+    const report = JSON.parse(readFileSync(file, "utf8")) as {
+      rows?: { competition: string; latest: string | null; status: string }[];
+    };
+    const games = (report.rows ?? []).filter((row) => !row.competition.includes("closing"));
+    if (!games.length) return null;
+    return games
+      .map((row) => `${row.competition} ${row.latest ?? "none"}`)
+      .join(" · ");
+  } catch {
+    return null;
+  }
+}
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
@@ -26,7 +45,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <OddsFormatProvider>{children}</OddsFormatProvider>
+        <OddsFormatProvider>
+          <SiteNav />
+          <main className="dashboard">
+            {children}
+            <p className="freshness">{freshnessLine()}</p>
+          </main>
+        </OddsFormatProvider>
       </body>
     </html>
   );
