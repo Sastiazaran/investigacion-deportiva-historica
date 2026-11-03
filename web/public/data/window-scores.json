@@ -1,0 +1,630 @@
+{
+  "football": [
+    {
+      "start": 2000,
+      "label": "2000 → current",
+      "games": 67449,
+      "backtest": null
+    },
+    {
+      "start": 2001,
+      "label": "2001 → current",
+      "games": 65159,
+      "backtest": null
+    },
+    {
+      "start": 2002,
+      "label": "2002 → current",
+      "games": 62869,
+      "backtest": null
+    },
+    {
+      "start": 2003,
+      "label": "2003 → current",
+      "games": 60505,
+      "backtest": null
+    },
+    {
+      "start": 2004,
+      "label": "2004 → current",
+      "games": 58141,
+      "backtest": null
+    },
+    {
+      "start": 2005,
+      "label": "2005 → current",
+      "games": 55703,
+      "backtest": null
+    },
+    {
+      "start": 2006,
+      "label": "2006 → current",
+      "games": 53265,
+      "backtest": null
+    },
+    {
+      "start": 2007,
+      "label": "2007 → current",
+      "games": 50893,
+      "backtest": null
+    },
+    {
+      "start": 2008,
+      "label": "2008 → current",
+      "games": 48521,
+      "backtest": null
+    },
+    {
+      "start": 2009,
+      "label": "2009 → current",
+      "games": 46149,
+      "backtest": null
+    },
+    {
+      "start": 2010,
+      "label": "2010 → current",
+      "games": 43777,
+      "backtest": null
+    },
+    {
+      "start": 2011,
+      "label": "2011 → current",
+      "games": 41405,
+      "backtest": null
+    },
+    {
+      "start": 2012,
+      "label": "2012 → current",
+      "games": 39033,
+      "backtest": null
+    },
+    {
+      "start": 2013,
+      "label": "2013 → current",
+      "games": 36327,
+      "backtest": null
+    },
+    {
+      "start": 2014,
+      "label": "2014 → current",
+      "games": 33621,
+      "backtest": null
+    },
+    {
+      "start": 2015,
+      "label": "2015 → current",
+      "games": 30849,
+      "backtest": null
+    },
+    {
+      "start": 2016,
+      "label": "2016 → current",
+      "games": 28077,
+      "backtest": null
+    },
+    {
+      "start": 2017,
+      "label": "2017 → current",
+      "games": 25305,
+      "backtest": null
+    },
+    {
+      "start": 2018,
+      "label": "2018 → current",
+      "games": 22533,
+      "backtest": null
+    },
+    {
+      "start": 2019,
+      "label": "2019 → current",
+      "games": 19761,
+      "backtest": null
+    },
+    {
+      "start": 2020,
+      "label": "2020 → current",
+      "games": 17223,
+      "backtest": null
+    },
+    {
+      "start": 2021,
+      "label": "2021 → current",
+      "games": 14443,
+      "backtest": null
+    },
+    {
+      "start": 2022,
+      "label": "2022 → current",
+      "games": 11663,
+      "backtest": null
+    },
+    {
+      "start": 2023,
+      "label": "2023 → current",
+      "games": 8883,
+      "backtest": null
+    },
+    {
+      "start": 2024,
+      "label": "2024 → current",
+      "games": 6179,
+      "backtest": {
+        "games": 775,
+        "modelBrier": 0.5924,
+        "modelLogLoss": 0.9943,
+        "marketBrier": 0.5825,
+        "marketLogLoss": 0.979
+      }
+    },
+    {
+      "start": 2025,
+      "label": "2025 → current",
+      "games": 3475,
+      "backtest": {
+        "games": 775,
+        "modelBrier": 0.5952,
+        "modelLogLoss": 0.9983,
+        "marketBrier": 0.5825,
+        "marketLogLoss": 0.979
+      }
+    },
+    {
+      "start": 2026,
+      "label": "Current season only",
+      "games": 775,
+      "backtest": {
+        "games": 775,
+        "modelBrier": 0.626,
+        "modelLogLoss": 1.0414,
+        "marketBrier": 0.5825,
+        "marketLogLoss": 0.979
+      }
+    }
+  ],
+  "nfl": [
+    {
+      "start": 1999,
+      "label": "1999 → current",
+      "games": 7088,
+      "backtest": null,
+      "miaHome": 0.6021,
+      "margin": 3.4413
+    },
+    {
+      "start": 2000,
+      "label": "2000 → current",
+      "games": 6840,
+      "backtest": null,
+      "miaHome": 0.6031,
+      "margin": 3.4762
+    },
+    {
+      "start": 2001,
+      "label": "2001 → current",
+      "games": 6592,
+      "backtest": null,
+      "miaHome": 0.5972,
+      "margin": 3.2704
+    },
+    {
+      "start": 2002,
+      "label": "2002 → current",
+      "games": 6344,
+      "backtest": null,
+      "miaHome": 0.5836,
+      "margin": 2.8055
+    },
+    {
+      "start": 2003,
+      "label": "2003 → current",
+      "games": 6088,
+      "backtest": null,
+      "miaHome": 0.5674,
+      "margin": 2.2562
+    },
+    {
+      "start": 2004,
+      "label": "2004 → current",
+      "games": 5832,
+      "backtest": null,
+      "miaHome": 0.553,
+      "margin": 1.7719
+    },
+    {
+      "start": 2005,
+      "label": "2005 → current",
+      "games": 5576,
+      "backtest": null,
+      "miaHome": 0.5541,
+      "margin": 1.8085
+    },
+    {
+      "start": 2006,
+      "label": "2006 → current",
+      "games": 5320,
+      "backtest": null,
+      "miaHome": 0.5434,
+      "margin": 1.4497
+    },
+    {
+      "start": 2007,
+      "label": "2007 → current",
+      "games": 5064,
+      "backtest": null,
+      "miaHome": 0.5379,
+      "margin": 1.2647
+    },
+    {
+      "start": 2008,
+      "label": "2008 → current",
+      "games": 4808,
+      "backtest": null,
+      "miaHome": 0.5424,
+      "margin": 1.4142
+    },
+    {
+      "start": 2009,
+      "label": "2009 → current",
+      "games": 4552,
+      "backtest": null,
+      "miaHome": 0.5121,
+      "margin": 0.4021
+    },
+    {
+      "start": 2010,
+      "label": "2010 → current",
+      "games": 4296,
+      "backtest": null,
+      "miaHome": 0.487,
+      "margin": -0.4348
+    },
+    {
+      "start": 2011,
+      "label": "2011 → current",
+      "games": 4040,
+      "backtest": null,
+      "miaHome": 0.4888,
+      "margin": -0.3742
+    },
+    {
+      "start": 2012,
+      "label": "2012 → current",
+      "games": 3784,
+      "backtest": null,
+      "miaHome": 0.4903,
+      "margin": -0.3245
+    },
+    {
+      "start": 2013,
+      "label": "2013 → current",
+      "games": 3528,
+      "backtest": null,
+      "miaHome": 0.4797,
+      "margin": -0.6772
+    },
+    {
+      "start": 2014,
+      "label": "2014 → current",
+      "games": 3272,
+      "backtest": null,
+      "miaHome": 0.4762,
+      "margin": -0.7917
+    },
+    {
+      "start": 2015,
+      "label": "2015 → current",
+      "games": 3016,
+      "backtest": null,
+      "miaHome": 0.4718,
+      "margin": -0.9393
+    },
+    {
+      "start": 2016,
+      "label": "2016 → current",
+      "games": 2760,
+      "backtest": null,
+      "miaHome": 0.4713,
+      "margin": -0.9557
+    },
+    {
+      "start": 2017,
+      "label": "2017 → current",
+      "games": 2504,
+      "backtest": null,
+      "miaHome": 0.4618,
+      "margin": -1.2729
+    },
+    {
+      "start": 2018,
+      "label": "2018 → current",
+      "games": 2248,
+      "backtest": null,
+      "miaHome": 0.4791,
+      "margin": -0.6975
+    },
+    {
+      "start": 2019,
+      "label": "2019 → current",
+      "games": 1992,
+      "backtest": null,
+      "miaHome": 0.4861,
+      "margin": -0.4632
+    },
+    {
+      "start": 2020,
+      "label": "2020 → current",
+      "games": 1736,
+      "backtest": null,
+      "miaHome": 0.5126,
+      "margin": 0.421
+    },
+    {
+      "start": 2021,
+      "label": "2021 → current",
+      "games": 1480,
+      "backtest": null,
+      "miaHome": 0.4527,
+      "margin": -1.5795
+    },
+    {
+      "start": 2022,
+      "label": "2022 → current",
+      "games": 1208,
+      "backtest": null,
+      "miaHome": 0.394,
+      "margin": -3.5745
+    },
+    {
+      "start": 2023,
+      "label": "2023 → current",
+      "games": 937,
+      "backtest": null,
+      "miaHome": 0.3652,
+      "margin": -4.5801
+    },
+    {
+      "start": 2024,
+      "label": "2024 → current",
+      "games": 665,
+      "backtest": {
+        "games": 120,
+        "modelBrier": 0.2405,
+        "modelLogLoss": 0.6769,
+        "marketBrier": 0.227,
+        "marketLogLoss": 0.6479
+      },
+      "miaHome": 0.2754,
+      "margin": -7.9388
+    },
+    {
+      "start": 2025,
+      "label": "2025 → current",
+      "games": 393,
+      "backtest": {
+        "games": 120,
+        "modelBrier": 0.2349,
+        "modelLogLoss": 0.6621,
+        "marketBrier": 0.227,
+        "marketLogLoss": 0.6479
+      },
+      "miaHome": 0.3357,
+      "margin": -5.6419
+    },
+    {
+      "start": 2026,
+      "label": "Current season only",
+      "games": 121,
+      "backtest": {
+        "games": 120,
+        "modelBrier": 0.2457,
+        "modelLogLoss": 0.684,
+        "marketBrier": 0.227,
+        "marketLogLoss": 0.6479
+      },
+      "miaHome": 0.3471,
+      "margin": -5.2299
+    }
+  ],
+  "mlb": [
+    {
+      "start": 2010,
+      "label": "2010 → current",
+      "games": 40032,
+      "backtest": null
+    },
+    {
+      "start": 2011,
+      "label": "2011 → current",
+      "games": 37570,
+      "backtest": null
+    },
+    {
+      "start": 2012,
+      "label": "2012 → current",
+      "games": 35103,
+      "backtest": null
+    },
+    {
+      "start": 2013,
+      "label": "2013 → current",
+      "games": 32636,
+      "backtest": null
+    },
+    {
+      "start": 2014,
+      "label": "2014 → current",
+      "games": 30167,
+      "backtest": null
+    },
+    {
+      "start": 2015,
+      "label": "2015 → current",
+      "games": 27705,
+      "backtest": null
+    },
+    {
+      "start": 2016,
+      "label": "2016 → current",
+      "games": 25240,
+      "backtest": null
+    },
+    {
+      "start": 2017,
+      "label": "2017 → current",
+      "games": 22779,
+      "backtest": null
+    },
+    {
+      "start": 2018,
+      "label": "2018 → current",
+      "games": 20312,
+      "backtest": null
+    },
+    {
+      "start": 2019,
+      "label": "2019 → current",
+      "games": 17848,
+      "backtest": null
+    },
+    {
+      "start": 2020,
+      "label": "2020 → current",
+      "games": 15384,
+      "backtest": null
+    },
+    {
+      "start": 2021,
+      "label": "2021 → current",
+      "games": 14435,
+      "backtest": null
+    },
+    {
+      "start": 2022,
+      "label": "2022 → current",
+      "games": 12009,
+      "backtest": null
+    },
+    {
+      "start": 2023,
+      "label": "2023 → current",
+      "games": 9648,
+      "backtest": null
+    },
+    {
+      "start": 2024,
+      "label": "2024 → current",
+      "games": 7259,
+      "backtest": {
+        "games": 2428,
+        "modelBrier": 0.2482,
+        "modelLogLoss": 0.6899,
+        "marketBrier": 0.2431,
+        "marketLogLoss": 0.6791
+      }
+    },
+    {
+      "start": 2025,
+      "label": "2025 → current",
+      "games": 4861,
+      "backtest": {
+        "games": 2428,
+        "modelBrier": 0.2477,
+        "modelLogLoss": 0.6893,
+        "marketBrier": 0.2431,
+        "marketLogLoss": 0.6791
+      }
+    },
+    {
+      "start": 2026,
+      "label": "Current season only",
+      "games": 2428,
+      "backtest": {
+        "games": 2428,
+        "modelBrier": 0.2522,
+        "modelLogLoss": 0.6987,
+        "marketBrier": 0.2431,
+        "marketLogLoss": 0.6791
+      }
+    }
+  ],
+  "nba": [
+    {
+      "start": 2017,
+      "label": "2017 → current",
+      "games": 10858,
+      "backtest": null
+    },
+    {
+      "start": 2018,
+      "label": "2018 → current",
+      "games": 9629,
+      "backtest": null
+    },
+    {
+      "start": 2019,
+      "label": "2019 → current",
+      "games": 8399,
+      "backtest": null
+    },
+    {
+      "start": 2020,
+      "label": "2020 → current",
+      "games": 7340,
+      "backtest": null
+    },
+    {
+      "start": 2021,
+      "label": "2021 → current",
+      "games": 6260,
+      "backtest": null
+    },
+    {
+      "start": 2022,
+      "label": "2022 → current",
+      "games": 5030,
+      "backtest": null
+    },
+    {
+      "start": 2023,
+      "label": "2023 → current",
+      "games": 3800,
+      "backtest": null
+    },
+    {
+      "start": 2024,
+      "label": "2024 → current",
+      "games": 2569,
+      "backtest": {
+        "games": 107,
+        "modelBrier": 0.2386,
+        "modelLogLoss": 0.6707,
+        "marketBrier": 0.1927,
+        "marketLogLoss": 0.5643
+      }
+    },
+    {
+      "start": 2025,
+      "label": "2025 → current",
+      "games": 1338,
+      "backtest": {
+        "games": 107,
+        "modelBrier": 0.2292,
+        "modelLogLoss": 0.6458,
+        "marketBrier": 0.1927,
+        "marketLogLoss": 0.5643
+      }
+    },
+    {
+      "start": 2026,
+      "label": "Current season only",
+      "games": 107,
+      "backtest": {
+        "games": 91,
+        "modelBrier": 0.2358,
+        "modelLogLoss": 0.6647,
+        "marketBrier": 0.1932,
+        "marketLogLoss": 0.5642
+      }
+    }
+  ]
+}
