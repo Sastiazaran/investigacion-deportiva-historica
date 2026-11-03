@@ -3,9 +3,11 @@
   "season": 2026,
   "week": 9,
   "threshold": 0.15,
-  "source": "nflverse games.csv moneylines. Week 9 has not been played, so these are the current lines in that file, not a settled close.",
+  "source": "nflverse games.csv moneylines for unplayed Week 9 games, scored with the default season window.",
   "flagged": [
-    "DAL at IND"
+    "JAX at BAL",
+    "DAL at IND",
+    "NYG at PHI"
   ],
   "games": [
     {
@@ -13,19 +15,19 @@
       "away": "JAX",
       "home": "BAL",
       "spread": -10.5,
-      "modelHome": 0.2382,
-      "marketHome": 0.1882,
-      "gap": 0.0501,
-      "flagged": false
+      "modelHome": 0.3451,
+      "marketHome": 0.1881,
+      "gap": 0.157,
+      "flagged": true
     },
     {
       "date": "2026-11-08",
       "away": "CIN",
       "home": "ATL",
       "spread": -3,
-      "modelHome": 0.4132,
+      "modelHome": 0.5164,
       "marketHome": 0.4066,
-      "gap": 0.0066,
+      "gap": 0.1097,
       "flagged": false
     },
     {
@@ -33,19 +35,9 @@
       "away": "DEN",
       "home": "CAR",
       "spread": -2.5,
-      "modelHome": 0.3601,
+      "modelHome": 0.383,
       "marketHome": 0.4365,
-      "gap": 0.0764,
-      "flagged": false
-    },
-    {
-      "date": "2026-11-08",
-      "away": "TB",
-      "home": "CHI",
-      "spread": 6,
-      "modelHome": 0.6072,
-      "marketHome": 0.7095,
-      "gap": 0.1024,
+      "gap": 0.0535,
       "flagged": false
     },
     {
@@ -53,9 +45,9 @@
       "away": "DAL",
       "home": "IND",
       "spread": -6,
-      "modelHome": 0.4587,
+      "modelHome": 0.5724,
       "marketHome": 0.295,
-      "gap": 0.1637,
+      "gap": 0.2775,
       "flagged": true
     },
     {
@@ -63,19 +55,9 @@
       "away": "NYJ",
       "home": "KC",
       "spread": 9.5,
-      "modelHome": 0.7689,
+      "modelHome": 0.7845,
       "marketHome": 0.8,
-      "gap": 0.0311,
-      "flagged": false
-    },
-    {
-      "date": "2026-11-08",
-      "away": "HOU",
-      "home": "LAC",
-      "spread": -4.5,
-      "modelHome": 0.32,
-      "marketHome": 0.3426,
-      "gap": 0.0225,
+      "gap": 0.0155,
       "flagged": false
     },
     {
@@ -83,19 +65,9 @@
       "away": "DET",
       "home": "MIA",
       "spread": -7,
-      "modelHome": 0.2516,
-      "marketHome": 0.2429,
-      "gap": 0.0088,
-      "flagged": false
-    },
-    {
-      "date": "2026-11-08",
-      "away": "GB",
-      "home": "NE",
-      "spread": 3,
-      "modelHome": 0.6414,
-      "marketHome": 0.5997,
-      "gap": 0.0417,
+      "modelHome": 0.3357,
+      "marketHome": 0.2428,
+      "gap": 0.0929,
       "flagged": false
     },
     {
@@ -103,9 +75,9 @@
       "away": "CLE",
       "home": "NO",
       "spread": 1.5,
-      "modelHome": 0.5296,
-      "marketHome": 0.5218,
-      "gap": 0.0078,
+      "modelHome": 0.5676,
+      "marketHome": 0.5217,
+      "gap": 0.0458,
       "flagged": false
     },
     {
@@ -113,19 +85,29 @@
       "away": "NYG",
       "home": "PHI",
       "spread": -3.5,
-      "modelHome": 0.474,
+      "modelHome": 0.59,
       "marketHome": 0.3962,
-      "gap": 0.0778,
+      "gap": 0.1938,
+      "flagged": true
+    },
+    {
+      "date": "2026-11-08",
+      "away": "LA",
+      "home": "WAS",
+      "spread": -5.5,
+      "modelHome": 0.2719,
+      "marketHome": 0.3194,
+      "gap": 0.0475,
       "flagged": false
     },
     {
       "date": "2026-11-08",
-      "away": "ARI",
-      "home": "SEA",
-      "spread": 10.5,
-      "modelHome": 0.8503,
-      "marketHome": 0.8223,
-      "gap": 0.028,
+      "away": "HOU",
+      "home": "LAC",
+      "spread": -4.5,
+      "modelHome": 0.4066,
+      "marketHome": 0.3425,
+      "gap": 0.064,
       "flagged": false
     },
     {
@@ -133,19 +115,39 @@
       "away": "LV",
       "home": "SF",
       "spread": 10,
-      "modelHome": 0.8001,
-      "marketHome": 0.8118,
-      "gap": 0.0117,
+      "modelHome": 0.8067,
+      "marketHome": 0.8119,
+      "gap": 0.0051,
       "flagged": false
     },
     {
       "date": "2026-11-08",
-      "away": "LA",
-      "home": "WAS",
-      "spread": -5.5,
-      "modelHome": 0.2473,
-      "marketHome": 0.3194,
-      "gap": 0.0722,
+      "away": "GB",
+      "home": "NE",
+      "spread": 3,
+      "modelHome": 0.6814,
+      "marketHome": 0.5996,
+      "gap": 0.0818,
+      "flagged": false
+    },
+    {
+      "date": "2026-11-08",
+      "away": "ARI",
+      "home": "SEA",
+      "spread": 10.5,
+      "modelHome": 0.855,
+      "marketHome": 0.8223,
+      "gap": 0.0327,
+      "flagged": false
+    },
+    {
+      "date": "2026-11-08",
+      "away": "TB",
+      "home": "CHI",
+      "spread": 6,
+      "modelHome": 0.6226,
+      "marketHome": 0.7095,
+      "gap": 0.0869,
       "flagged": false
     },
     {
@@ -153,9 +155,9 @@
       "away": "BUF",
       "home": "MIN",
       "spread": -3.5,
-      "modelHome": 0.4275,
+      "modelHome": 0.4453,
       "marketHome": 0.3836,
-      "gap": 0.0438,
+      "gap": 0.0617,
       "flagged": false
     }
   ],
@@ -163,14 +165,7 @@
     "miamiHome": {
       "home": "MIA",
       "away": "DET",
-      "modelHome": 0.2516,
-      "meanMargin": -8.9123
-    },
-    "detroitHome": {
-      "home": "DET",
-      "away": "MIA",
-      "modelHome": 0.7748,
-      "meanMargin": 10.0527
+      "modelHome": 0.3357
     }
   }
 }

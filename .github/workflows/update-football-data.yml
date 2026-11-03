@@ -57,6 +57,13 @@ jobs:
         working-directory: web
         run: node --experimental-strip-types scripts/nba-total-calibration.ts
 
+      - name: Cache NBA box scores for season windows
+        run: python3 scripts/nba_window_cache.py
+
+      - name: Rebuild season-window ratings
+        working-directory: web
+        run: node --experimental-strip-types scripts/rating-windows.ts
+
       - name: Fail if an in-season competition is stale
         run: python3 scripts/check_freshness.py
 
@@ -85,6 +92,8 @@ jobs:
             web/public/data/nba/team-factors.json \
             web/public/data/nba/sim-backtest.json \
             web/public/data/nba/total-calibration.json \
+            web/public/data/nba/rating-windows.json \
+            web/public/data/window-scores.json \
             data/mlb/games.json
           if git diff --staged --quiet; then
             echo "No data changes"

@@ -21,14 +21,45 @@ export type FootballLeague = {
   teams: Record<string, Rating>;
 };
 
+export type WindowBacktest = {
+  games: number;
+  modelBrier: number | null;
+  modelLogLoss: number | null;
+  marketBrier: number | null;
+  marketLogLoss: number | null;
+};
+
+export type FootballWindow = {
+  start: number;
+  label: string;
+  games: number;
+  backtest: WindowBacktest | null;
+  leagues: Record<string, FootballLeague>;
+};
+
 export type FootballFactors = {
   schemaVersion: number;
   model: string;
   notes: string[];
   leagues: Record<string, FootballLeague>;
+  currentSeason?: number;
+  defaultStart?: number;
+  ratingWindows?: { currentSeason: number; defaultStart: number; choices: FootballWindow[] };
 };
 
 export type PointsTeam = { off: number; def: number; games: number; seasonGames?: number; priorSeason?: number };
+
+export type PointsWindow = {
+  start: number;
+  label: string;
+  games: number;
+  backtest: WindowBacktest | null;
+  leaguePpg: number;
+  homeAdvantage: number;
+  marginSd: number;
+  totalSd: number;
+  teams: Record<string, PointsTeam>;
+};
 
 export type PointsFactors = {
   schemaVersion: number;
@@ -40,6 +71,22 @@ export type PointsFactors = {
   marginSd: number;
   totalSd: number;
   teams: Record<string, PointsTeam>;
+  currentSeason?: number;
+  defaultStart?: number;
+  ratingWindows?: { currentSeason: number; defaultStart: number; choices: PointsWindow[] };
+};
+
+export type RunsWindow = {
+  start: number;
+  label: string;
+  games: number;
+  backtest: WindowBacktest | null;
+  homeAvg: number;
+  awayAvg: number;
+  leagueRpg: number;
+  tieShare: number;
+  priorGames: number;
+  teams: Record<string, Rating>;
 };
 
 export type RunsFactors = {
@@ -51,6 +98,9 @@ export type RunsFactors = {
   leagueRpg: number;
   tieShare: number;
   teams: Record<string, Rating>;
+  currentSeason?: number;
+  defaultStart?: number;
+  ratingWindows?: { currentSeason: number; defaultStart: number; choices: RunsWindow[] };
 };
 
 export function predictFootball(league: FootballLeague, home: string, away: string, spreadLine: number, totalLine: number): SimOutput {

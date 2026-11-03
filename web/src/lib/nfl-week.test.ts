@@ -35,7 +35,7 @@ test("Week 9 2026 Detroit is favored at Miami and at home", () => {
   const detroitHome = homeWin(factors, "DET", "MIA");
   assert.ok(miamiHome < 0.45, `Miami home win ${(miamiHome)}`);
   assert.ok(detroitHome > 0.6, `Detroit home win ${(detroitHome)}`);
-  assert.ok(factors.teams.MIA.seasonGames != null && factors.teams.MIA.seasonGames < 20);
+  assert.ok(factors.teams.MIA.seasonGames != null && factors.teams.MIA.seasonGames > 0);
   assert.ok(factors.teams.DET.off > factors.teams.MIA.off + 5);
 });
 

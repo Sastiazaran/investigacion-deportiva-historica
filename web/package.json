@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --experimental-strip-types --test src/lib/metrics.test.ts src/lib/odds-format.test.ts src/lib/us-summary.test.ts src/lib/nba-sim.test.ts src/lib/sim-markets.test.ts src/lib/nfl-rating.test.ts src/lib/nfl-week.test.ts"
+    "test": "node --experimental-strip-types --test src/lib/metrics.test.ts src/lib/odds-format.test.ts src/lib/us-summary.test.ts src/lib/nba-sim.test.ts src/lib/sim-markets.test.ts src/lib/nfl-rating.test.ts src/lib/nfl-week.test.ts src/lib/rating-window.test.ts"
   },
   "dependencies": {
     "next": "16.3.4",

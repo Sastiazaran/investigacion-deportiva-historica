@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
-import MatchSimulator, { type SimBacktest } from "../../../components/MatchSimulator";
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import MatchSimulator, { type NbaWindows, type SimBacktest } from "../../../components/MatchSimulator";
 import { loadNbaBacktest, loadNbaFactors, type BacktestBlock } from "../../../lib/load-nba-sim";
+
+function loadNbaWindows() {
+  const file = path.join(process.cwd(), "public", "data", "nba", "rating-windows.json");
+  return JSON.parse(readFileSync(file, "utf8")) as NbaWindows;
+}
 
 export const metadata: Metadata = {
   title: "NBA game simulator",
@@ -29,5 +36,5 @@ export default function NbaSimulatorPage() {
     },
     notes: [raw.closingSource, raw.repoMoneylineGap],
   };
-  return <MatchSimulator kind="nba" factors={loadNbaFactors()} backtest={backtest} />;
+  return <MatchSimulator kind="nba" factors={loadNbaFactors()} nbaWindows={loadNbaWindows()} backtest={backtest} />;
 }
