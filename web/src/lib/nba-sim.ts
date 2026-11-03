@@ -310,15 +310,33 @@ export function settleCloses(rows: CloseRow[], margin = PRICE_MARGIN): BetSummar
 }
 
 type ShotParams = {
-  qTov: number;
+  pTov: number;
+  pFoul: number;
+  pFga: number;
   threeRate: number;
   fg2: number;
   fg3: number;
   ftPct: number;
   and1: number;
-  pFoul: number;
   oreb: number;
 };
+
+/**
+ * Points per possession implied by the box score.
+ *
+ * Field-goal percentage is FGM/FGA, and a shooting foul is not an FGA.
+ * Free throws and turnovers are counted per FGA, then divided by
+ * possessions = FGA + 0.44*FTA − OREB + TOV.
+ */
+export function boxScorePointsPerPossession(factors: FourFactors) {
+  const fgPct = (1 - factors.threeRate) * factors.fg2 + factors.threeRate * factors.fg3;
+  const misses = Math.max(0, 1 - fgPct);
+  const offensiveRebounds = factors.oreb * misses;
+  const turnovers = (factors.tov * (1 + 0.44 * factors.ftr)) / Math.max(1 - factors.tov, 1e-6);
+  const possessions = 1 + 0.44 * factors.ftr - offensiveRebounds + turnovers;
+  const points = 2 * factors.efg + factors.ftPct * factors.ftr;
+  return possessions > 0 ? points / possessions : 0;
+}
 
 function binomPmf(n: number, k: number, p: number) {
   let coeff = 1;
@@ -351,14 +369,45 @@ export function possessionParams(
   const ftPct = clamp(off.ftPct, 0.6, 0.95);
   const split = shotSplit(efg, threeRate, off.fg2, off.fg3);
   const fgPct = (1 - threeRate) * split.fg2 + threeRate * split.fg3;
-  const fts = 2 + threeRate;
-  let and1 = Math.min(0.12, (ftr * 0.35) / Math.max(fgPct, 0.2));
-  if (and1 * fgPct > ftr) and1 = ftr / Math.max(fgPct, 0.2);
-  const remain = Math.max(0, ftr - and1 * fgPct);
-  const pFoul = clamp(remain / Math.max((1 - fgPct) * fts, 1e-6), 0, 0.85);
-  const tovPerFga = (tov * (1 + 0.44 * ftr)) / Math.max(1 - tov, 1e-6);
-  const qTov = clamp(tovPerFga / (1 + tovPerFga), 0.02, 0.35);
-  return { qTov, threeRate, fg2: split.fg2, fg3: split.fg3, ftPct, and1, pFoul, oreb };
+  // About one and-1 per 25 makes. A higher rate turns free throws into extra
+  // points on top of makes and pushes the total above the box score.
+  let and1 = 0.04;
+  if (and1 * fgPct > ftr) and1 = ftr / Math.max(fgPct, 1e-6);
+  const ftTrips = 2 * (1 - threeRate) + 3 * threeRate;
+  const foulFreeThrows = Math.max(0, ftr - and1 * fgPct);
+  const foulsPerFga = ftTrips > 0 ? foulFreeThrows / ftTrips : 0;
+  const turnoversPerFga = (tov * (1 + 0.44 * ftr)) / Math.max(1 - tov, 1e-6);
+  // One chance is a turnover, a shooting foul, or a real field-goal attempt.
+  // The foul is not a missed field goal: those shots are not in FGA, so they
+  // must not keep the make rate of a field-goal attempt.
+  const chances = 1 + foulsPerFga + turnoversPerFga;
+  return {
+    pTov: turnoversPerFga / chances,
+    pFoul: foulsPerFga / chances,
+    pFga: 1 / chances,
+    threeRate,
+    fg2: split.fg2,
+    fg3: split.fg3,
+    ftPct,
+    and1,
+    oreb,
+  };
+}
+
+/** Oliver possessions represented by one simulated chance-tree. */
+export function oliverPossessionsPerTree(params: ShotParams) {
+  const fgPct = (1 - params.threeRate) * params.fg2 + params.threeRate * params.fg3;
+  const miss = Math.max(0, 1 - fgPct);
+  const restart = params.pFga * miss * params.oreb;
+  const chances = 1 / Math.max(1e-6, 1 - restart);
+  const fga = chances * params.pFga;
+  const offensiveRebounds = fga * miss * params.oreb;
+  const turnovers = chances * params.pTov;
+  const fouls = chances * params.pFoul;
+  const freeThrowTrips = 2 * (1 - params.threeRate) + 3 * params.threeRate;
+  const freeThrows = params.and1 * fgPct * fga + fouls * freeThrowTrips;
+  const possessions = fga - offensiveRebounds + turnovers + 0.44 * freeThrows;
+  return possessions > 0 ? possessions : 1;
 }
 
 /** Probability of 0..17 points on one possession, matching `samplePossession`. */
@@ -369,30 +418,33 @@ export function possessionDistribution(params: ShotParams) {
     const index = Math.min(17, Math.max(0, points));
     dist[index] += prob;
   };
+  const addFreeThrows = (points: number, probability: number, throws: number) => {
+    for (let made = 0; made <= throws; made += 1) {
+      add(points + made, probability * binomPmf(throws, made, params.ftPct));
+    }
+  };
   const walk = (depth: number, points: number, prob: number) => {
     if (prob < 1e-14) return;
     if (depth >= 5) {
       add(points, prob);
       return;
     }
-    add(points, prob * params.qTov);
-    const live = prob * (1 - params.qTov);
+    add(points, prob * params.pTov);
+    addFreeThrows(points, prob * params.pFoul * (1 - params.threeRate), 2);
+    addFreeThrows(points, prob * params.pFoul * params.threeRate, 3);
+    const attempt = prob * params.pFga;
     const sides = [
-      { rate: 1 - params.threeRate, make: params.fg2, value: 2, fts: 2 },
-      { rate: params.threeRate, make: params.fg3, value: 3, fts: 3 },
+      { rate: 1 - params.threeRate, make: params.fg2, value: 2 },
+      { rate: params.threeRate, make: params.fg3, value: 3 },
     ];
     for (const side of sides) {
-      const branch = live * side.rate;
+      const branch = attempt * side.rate;
       add(points + side.value, branch * side.make * (1 - params.and1));
       add(points + side.value, branch * side.make * params.and1 * (1 - params.ftPct));
       add(points + side.value + 1, branch * side.make * params.and1 * params.ftPct);
-      const foul = branch * (1 - side.make) * params.pFoul;
-      for (let made = 0; made <= side.fts; made += 1) {
-        add(points + made, foul * binomPmf(side.fts, made, params.ftPct));
-      }
-      const missLive = branch * (1 - side.make) * (1 - params.pFoul);
-      add(points, missLive * (1 - params.oreb));
-      walk(depth + 1, points, missLive * params.oreb);
+      const missed = branch * (1 - side.make);
+      add(points, missed * (1 - params.oreb));
+      walk(depth + 1, points, missed * params.oreb);
     }
   };
   walk(0, 0, 1);
@@ -437,8 +489,10 @@ function sampleNormal(rng: () => number) {
 }
 
 export function expectedMargin(league: FourFactors, pace: number, efgBump: number) {
-  const home = distMean(possessionDistribution(possessionParams(league, league, league, efgBump)));
-  const away = distMean(possessionDistribution(possessionParams(league, league, league, -efgBump)));
+  const homeParams = possessionParams(league, league, league, efgBump);
+  const awayParams = possessionParams(league, league, league, -efgBump);
+  const home = distMean(possessionDistribution(homeParams)) / oliverPossessionsPerTree(homeParams);
+  const away = distMean(possessionDistribution(awayParams)) / oliverPossessionsPerTree(awayParams);
   return (home - away) * pace;
 }
 
@@ -537,6 +591,7 @@ export function simulateGame(input: {
   const awayParams = possessionParams(input.away.off, input.home.def, input.league, -bump);
   const homeCdf = buildCdf(possessionDistribution(homeParams));
   const awayCdf = buildCdf(possessionDistribution(awayParams));
+  const oliverPerTree = (oliverPossessionsPerTree(homeParams) + oliverPossessionsPerTree(awayParams)) / 2;
   const rng = mulberry32(input.seed);
   // Pace is possessions per team. Alternating trips so each side gets about that many.
   const meanPoss = (input.home.pace + input.away.pace) / 2;
@@ -550,14 +605,16 @@ export function simulateGame(input: {
   let awayWins = 0;
   let ties = 0;
   for (let sim = 0; sim < n; sim += 1) {
-    const gamePace = clamp(Math.round(meanPoss + sampleNormal(rng) * input.paceSd), 80, 130);
+    const gamePace = clamp(meanPoss + sampleNormal(rng) * input.paceSd, 80, 130);
+    const trips = clamp(Math.round((gamePace * 2) / oliverPerTree), 140, 280);
     let homeBall = rng() < 0.5;
-    let score = playPeriod(rng, gamePace * 2, homeBall, homeCdf, awayCdf);
+    let score = playPeriod(rng, trips, homeBall, homeCdf, awayCdf);
     let extra = 0;
     const playOt = input.overtime !== false;
     while (playOt && score.home === score.away && extra < 4) {
       homeBall = rng() < 0.5;
-      const ot = Math.max(16, Math.round(meanPoss / 2));
+      // Five minutes is 10/48 of a team's 48-minute possessions, for both teams.
+      const ot = Math.max(8, Math.round((meanPoss * 10) / 48));
       const period = playPeriod(rng, ot, homeBall, homeCdf, awayCdf);
       score = {
         home: score.home + period.home,

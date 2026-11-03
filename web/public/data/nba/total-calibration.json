@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-03T22:08:40.328Z",
+  "sims": 40,
+  "homeEfgBump": 0.0055,
+  "note": "Bias is mean simulated total minus the comparison total. Positive means the simulator is high. The simulated total is the mean of the possession model for that matchup, including overtime.",
+  "seasons": [
+    {
+      "season": 2025,
+      "label": "2025-26",
+      "games": 1230,
+      "meanSimulated": 233.87,
+      "meanSimHome": 117.84,
+      "meanSimAway": 116.03,
+      "meanActual": 231.2,
+      "meanActualHome": 116.47,
+      "meanActualAway": 114.73,
+      "bias": 2.68,
+      "mae": 15.4,
+      "closingGames": 411,
+      "meanClosing": 229.96,
+      "biasVsClose": 3.98,
+      "maeVsClose": 6.22
+    },
+    {
+      "season": 2026,
+      "label": "2026-27",
+      "games": 107,
+      "meanSimulated": 233.84,
+      "meanSimHome": 118.2,
+      "meanSimAway": 115.64,
+      "meanActual": 226.81,
+      "meanActualHome": 114.22,
+      "meanActualAway": 112.59,
+      "bias": 7.03,
+      "mae": 16.63,
+      "closingGames": 107,
+      "meanClosing": 230.31,
+      "biasVsClose": 3.53,
+      "maeVsClose": 5.99
+    }
+  ]
+}

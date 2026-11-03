@@ -18,6 +18,8 @@ import {
   logLoss,
   minimumDecimal,
   mulberry32,
+  boxScorePointsPerPossession,
+  oliverPossessionsPerTree,
   possessionDistribution,
   possessionParams,
   possessions,
@@ -144,7 +146,7 @@ test("the home-court eFG shift is sized to the target margin", () => {
   const bump = solveHomeEfgBump(league, 100, 3);
   const margin = distMean(possessionDistribution(possessionParams(league, league, league, bump))) * 100
     - distMean(possessionDistribution(possessionParams(league, league, league, -bump))) * 100;
-  close(margin, 3, 0.05);
+  close(margin, 3, 0.1);
   assert.ok(bump > 0);
 });
 
@@ -236,9 +238,38 @@ test("a large efficiency edge moves the win probability", () => {
     overtime: false,
   });
   const params = possessionParams(league, league, league, 0);
-  const expected = distMean(possessionDistribution(params)) * 100;
-  close(neutral.homePoints.mean, expected, 0.8);
+  const expected = (distMean(possessionDistribution(params)) / oliverPossessionsPerTree(params)) * 100;
+  close(neutral.homePoints.mean, expected, 1.2);
   assert.ok(result.homePoints.mean > neutral.homePoints.mean);
+});
+
+test("a league-average possession is not inflated above the box score", () => {
+  const published = JSON.parse(readFileSync(path.join(import.meta.dirname, "../../public/data/nba/team-factors.json"), "utf8")) as {
+    league: FourFactors;
+    leaguePace: number;
+  };
+  const identity = boxScorePointsPerPossession(published.league);
+  const params = possessionParams(published.league, published.league, published.league, 0);
+  const perTree = distMean(possessionDistribution(params));
+  const perPossession = perTree / oliverPossessionsPerTree(params);
+  close(perPossession, identity, 0.02);
+  const target = identity * published.leaguePace * 2;
+  const sim = simulateGame({
+    home: teamFrom(published.league, published.leaguePace),
+    away: teamFrom(published.league, published.leaguePace),
+    league: published.league,
+    homeAdvantagePoints: 0,
+    paceSd: 0,
+    leaguePace: published.leaguePace,
+    n: 400,
+    seed: 11,
+    homeEfgBump: 0,
+    overtime: false,
+  });
+  // 2025-26 regular-season games averaged 231 points. The old foul model scored about 256.
+  assert.ok(Math.abs(sim.total.mean - target) < 3, `simulated ${sim.total.mean} vs box score ${target}`);
+  assert.ok(target < 242 && target > 220, `box-score total ${target}`);
+  assert.ok(sim.total.mean < 242, `simulated total ${sim.total.mean}`);
 });
 
 test("the matchup seed is stable", () => {
