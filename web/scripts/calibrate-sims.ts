@@ -29,11 +29,13 @@ import {
   type BinaryRow,
   type OutcomeRow,
 } from "../src/lib/sim-markets.ts";
+import { NFL_PRIOR_GAMES, seasonRate, type Count } from "../src/lib/nfl-rating.ts";
+import type { PointsFactors } from "../src/lib/predict.ts";
 
 const ROOT = path.join(process.cwd(), "..");
 const PUBLIC = path.join(process.cwd(), "public", "data");
 const PRIOR_FOOTBALL = 8;
-const PRIOR_POINTS = 6;
+const PRIOR_POINTS = NFL_PRIOR_GAMES;
 const PRIOR_RUNS = 10;
 const RHO_GRID = [-0.2, -0.15, -0.1, -0.05, 0, 0.02];
 
@@ -317,25 +319,47 @@ function deviation(state: Running, fallback: number, floor: number) {
   return Math.max(floor, Math.sqrt(state.variance / (state.count - 1)));
 }
 
+type SeasonEnv = { points: number; games: number; margin: number };
+
+function emptyCount(): Count {
+  return { gf: 0, ga: 0, gp: 0 };
+}
+
+function environment(envs: Map<number, SeasonEnv>, season: number) {
+  const current = envs.get(season);
+  if (current && current.games >= 16) {
+    return { league: current.points / (2 * current.games), hfa: current.margin / current.games };
+  }
+  const previous = envs.get(season - 1);
+  if (previous && previous.games >= 16) {
+    return { league: previous.points / (2 * previous.games), hfa: previous.margin / previous.games };
+  }
+  return { league: 22, hfa: 1.5 };
+}
+
 function calibratePoints(sport: "nfl" | "nba", fallbackMargin: number, fallbackTotal: number, startHfa: number) {
   const cache = process.env[`${sport.toUpperCase()}_SIM_GAMES`] ?? path.join(ROOT, ".cache", "us-sports", `${sport}-sim-games.json`);
   const games = (JSON.parse(readFileSync(cache, "utf8")) as { games: LineGame[] }).games
     .filter((game) => game.phase === "regular")
     .sort((a, b) => a.date.localeCompare(b.date) || a.home.localeCompare(b.home));
-  const teams = new Map<string, Side>();
-  const ensure = (code: string) => {
-    let side = teams.get(code);
-    if (!side) {
-      side = emptySide();
-      teams.set(code, side);
+  const byTeam = new Map<string, Map<number, Count>>();
+  const seasonEnv = new Map<number, SeasonEnv>();
+  const teamSeason = (code: string, season: number) => {
+    let seasons = byTeam.get(code);
+    if (!seasons) {
+      seasons = new Map();
+      byTeam.set(code, seasons);
     }
-    return side;
+    let row = seasons.get(season);
+    if (!row) {
+      row = emptyCount();
+      seasons.set(season, row);
+    }
+    return row;
   };
-  let points = 0;
-  let played = 0;
-  let marginSum = 0;
   const marginResiduals: Running = { variance: 0, count: 0, mean: 0 };
   const totalResiduals: Running = { variance: 0, count: 0, mean: 0 };
+  let played = 0;
   const mlModel: BinaryRow[] = [];
   const mlMarket: BinaryRow[] = [];
   const mlBets: BetRow[] = [];
@@ -346,16 +370,21 @@ function calibratePoints(sport: "nfl" | "nba", fallbackMargin: number, fallbackT
   const totalMarket: BinaryRow[] = [];
   const totalBets: BetRow[] = [];
   for (const game of games) {
-    const league = played >= 40 ? points / (2 * played) : sport === "nba" ? 112 : 22;
-    const hfa = played >= 40 ? marginSum / played : startHfa;
-    const home = ensure(game.home);
-    const away = ensure(game.away);
-    const homeOff = shrunk(home.gf, home.gp, PRIOR_POINTS, league);
-    const homeDef = shrunk(home.ga, home.gp, PRIOR_POINTS, league);
-    const awayOff = shrunk(away.gf, away.gp, PRIOR_POINTS, league);
-    const awayDef = shrunk(away.ga, away.gp, PRIOR_POINTS, league);
-    const meanHome = homeOff + awayDef - league + hfa;
-    const meanAway = awayOff + homeDef - league;
+    const setting = environment(seasonEnv, game.season);
+    const league = setting.league;
+    const hfa = played >= 40 ? setting.hfa : startHfa;
+    const homeRate = seasonRate({
+      current: teamSeason(game.home, game.season),
+      previous: byTeam.get(game.home)?.get(game.season - 1),
+      league,
+    });
+    const awayRate = seasonRate({
+      current: teamSeason(game.away, game.season),
+      previous: byTeam.get(game.away)?.get(game.season - 1),
+      league,
+    });
+    const meanHome = homeRate.off + awayRate.def - league + hfa;
+    const meanAway = awayRate.off + homeRate.def - league;
     const marginSd = deviation(marginResiduals, fallbackMargin, sport === "nba" ? 8 : 7);
     const totalSd = deviation(totalResiduals, fallbackTotal, sport === "nba" ? 8 : 7);
     if (played >= 40) {
@@ -411,42 +440,58 @@ function calibratePoints(sport: "nfl" | "nba", fallbackMargin: number, fallbackT
     const residualTotal = game.home_score + game.away_score - (meanHome + meanAway);
     pushResidual(marginResiduals, residualMargin);
     pushResidual(totalResiduals, residualTotal);
-    home.gf += game.home_score;
-    home.ga += game.away_score;
-    home.gp += 1;
-    away.gf += game.away_score;
-    away.ga += game.home_score;
-    away.gp += 1;
-    points += game.home_score + game.away_score;
-    marginSum += game.home_score - game.away_score;
+    const homeRow = teamSeason(game.home, game.season);
+    homeRow.gf += game.home_score;
+    homeRow.ga += game.away_score;
+    homeRow.gp += 1;
+    const awayRow = teamSeason(game.away, game.season);
+    awayRow.gf += game.away_score;
+    awayRow.ga += game.home_score;
+    awayRow.gp += 1;
+    const env = seasonEnv.get(game.season) ?? { points: 0, games: 0, margin: 0 };
+    env.points += game.home_score + game.away_score;
+    env.games += 1;
+    env.margin += game.home_score - game.away_score;
+    seasonEnv.set(game.season, env);
     played += 1;
   }
-  const league = played > 0 ? points / (2 * played) : 22;
+  const latestSeason = Math.max(...games.map((game) => game.season));
+  const setting = environment(seasonEnv, latestSeason);
   const published: Record<string, unknown> = {};
-  for (const [code, side] of teams) {
+  for (const [code, seasons] of byTeam) {
+    const current = seasons.get(latestSeason) ?? emptyCount();
+    const rate = seasonRate({
+      current,
+      previous: seasons.get(latestSeason - 1),
+      league: setting.league,
+    });
     published[code] = {
-      off: round4(shrunk(side.gf, side.gp, PRIOR_POINTS, league)),
-      def: round4(shrunk(side.ga, side.gp, PRIOR_POINTS, league)),
-      games: side.gp,
+      off: round4(rate.off),
+      def: round4(rate.def),
+      games: current.gp,
+      seasonGames: current.gp,
+      priorSeason: latestSeason - 1,
     };
   }
-  const factors = {
+  const factors: PointsFactors & { season: number; notes: string[] } = {
     schemaVersion: 1,
     model: "points-normal",
     sport,
     generatedAt: new Date().toISOString(),
     priceMargin: 1.05,
-    leaguePpg: round4(league),
-    homeAdvantage: round4(played > 0 ? marginSum / played : startHfa),
+    leaguePpg: round4(setting.league),
+    homeAdvantage: round4(setting.hfa),
     marginSd: round4(deviation(marginResiduals, fallbackMargin, 7)),
     totalSd: round4(deviation(totalResiduals, fallbackTotal, 7)),
     priorGames: PRIOR_POINTS,
+    season: latestSeason,
     notes: [
-      "Home points = shrunk points scored + opponent points allowed − league average + home advantage.",
+      `Ratings are the ${latestSeason} season, shrunk toward ${latestSeason - 1} with ${PRIOR_POINTS} games of prior. Older seasons are not averaged in.`,
+      "Home points = offense + opponent points allowed − league average + home advantage. The league average and home edge are from the current season once 16 games have been played.",
+      "There is no quarterback, injury, or weather input.",
       "Margin and total are independent normals. Integer scores use a continuity correction, so a tie is possible.",
-      "The standard deviation is the past residual, not the game being predicted.",
     ],
-    teams: published,
+    teams: published as PointsFactors["teams"],
   };
   const backtest = report(
     sport,
@@ -466,10 +511,124 @@ function calibratePoints(sport: "nfl" | "nba", fallbackMargin: number, fallbackT
   const dir = path.join(PUBLIC, sport);
   writeFileSync(path.join(dir, "sim-factors.json"), JSON.stringify(factors));
   writeFileSync(path.join(dir, "sim-backtest.json"), JSON.stringify(backtest, null, 2) + "\n");
+  if (sport === "nfl") writeWeekCheck(factors);
   console.log(backtest.statement);
   for (const [name, block] of Object.entries(backtest.markets)) {
     console.log(`  ${name} games ${block.games} model ${block.model.brier}/${block.model.logLoss} market ${block.market.brier}/${block.market.logLoss}`);
   }
+}
+
+function parseCsvLine(line: string) {
+  const cells: string[] = [];
+  let current = "";
+  let quoted = false;
+  for (let i = 0; i < line.length; i += 1) {
+    const char = line[i];
+    if (quoted) {
+      if (char === '"') {
+        if (line[i + 1] === '"') {
+          current += '"';
+          i += 1;
+        } else {
+          quoted = false;
+        }
+      } else {
+        current += char;
+      }
+    } else if (char === '"') {
+      quoted = true;
+    } else if (char === ",") {
+      cells.push(current);
+      current = "";
+    } else {
+      current += char;
+    }
+  }
+  cells.push(current);
+  return cells;
+}
+
+function projectPoints(factors: PointsFactors, home: string, away: string, spreadLine: number, totalLine: number) {
+  const homeTeam = factors.teams[home];
+  const awayTeam = factors.teams[away];
+  const meanHome = homeTeam.off + awayTeam.def - factors.leaguePpg + factors.homeAdvantage;
+  const meanAway = awayTeam.off + homeTeam.def - factors.leaguePpg;
+  return marketsFromNormal(meanHome, meanAway, factors.marginSd, factors.totalSd, spreadLine, totalLine);
+}
+
+function americanToDecimal(value: string) {
+  const number = Number(value);
+  if (!Number.isFinite(number) || number === 0) return null;
+  const decimal = number > 0 ? 1 + number / 100 : 1 + 100 / Math.abs(number);
+  return decimal > 1 ? Math.round(decimal * 1000) / 1000 : null;
+}
+
+function writeWeekCheck(factors: PointsFactors) {
+  const csvPath = path.join(ROOT, ".cache", "us-sports", "games.csv");
+  const lines = readFileSync(csvPath, "utf8").split(/\r?\n/);
+  const header = parseCsvLine(lines[0]);
+  const index = (name: string) => header.indexOf(name);
+  const rows = [];
+  for (const line of lines.slice(1)) {
+    if (!line) continue;
+    const cells = parseCsvLine(line);
+    if (cells[index("season")] !== "2026" || cells[index("week")] !== "9" || cells[index("game_type")] !== "REG") continue;
+    const home = cells[index("home_team")];
+    const away = cells[index("away_team")];
+    const spread = Number(cells[index("spread_line")]);
+    const total = Number(cells[index("total_line")]);
+    const homeMl = americanToDecimal(cells[index("home_moneyline")]);
+    const awayMl = americanToDecimal(cells[index("away_moneyline")]);
+    if (!factors.teams[home] || !factors.teams[away] || homeMl == null || awayMl == null) continue;
+    const output = projectPoints(factors, home, away, Number.isFinite(spread) ? spread : 0, Number.isFinite(total) ? total : 45);
+    const decided = output.home.probability + output.away.probability;
+    const modelHome = decided > 0 ? output.home.probability / decided : 0.5;
+    const market = devigTwo(homeMl, awayMl);
+    const gap = Math.abs(modelHome - market.home);
+    rows.push({
+      date: cells[index("gameday")],
+      away,
+      home,
+      spread: Number.isFinite(spread) ? spread : null,
+      modelHome: round4(modelHome),
+      marketHome: round4(market.home),
+      gap: round4(gap),
+      flagged: gap > 0.15,
+    });
+  }
+  rows.sort((a, b) => a.date.localeCompare(b.date) || a.home.localeCompare(b.home));
+  const miamiHome = projectPoints(factors, "MIA", "DET", -7, 50.5);
+  const detroitHome = projectPoints(factors, "DET", "MIA", 7, 50.5);
+  const homeShare = (output: ReturnType<typeof projectPoints>) => {
+    const decided = output.home.probability + output.away.probability;
+    return decided > 0 ? output.home.probability / decided : 0.5;
+  };
+  const payload = {
+    schemaVersion: 1,
+    season: 2026,
+    week: 9,
+    threshold: 0.15,
+    source: "nflverse games.csv moneylines. Week 9 has not been played, so these are the current lines in that file, not a settled close.",
+    flagged: rows.filter((row) => row.flagged).map((row) => `${row.away} at ${row.home}`),
+    games: rows,
+    miaDet: {
+      miamiHome: {
+        home: "MIA",
+        away: "DET",
+        modelHome: round4(homeShare(miamiHome)),
+        meanMargin: round4(miamiHome.meanMargin),
+      },
+      detroitHome: {
+        home: "DET",
+        away: "MIA",
+        modelHome: round4(homeShare(detroitHome)),
+        meanMargin: round4(detroitHome.meanMargin),
+      },
+    },
+  };
+  writeFileSync(path.join(PUBLIC, "nfl", "week9-check.json"), `${JSON.stringify(payload, null, 2)}\n`);
+  console.log(`week 9 flagged ${payload.flagged.length}: ${payload.flagged.join(", ") || "none"}`);
+  console.log("MIA home", payload.miaDet.miamiHome, "DET home", payload.miaDet.detroitHome);
 }
 
 function calibrateRuns() {

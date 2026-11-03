@@ -361,7 +361,9 @@ function detailFor(props: Props, away: string, home: string, profile: "current" 
     const factors = props.factors as PointsFactors;
     const homeTeam = factors.teams[home];
     const awayTeam = factors.teams[away];
-    return `${props.names?.[away] ?? away} scores ${awayTeam.off.toFixed(1)} and allows ${awayTeam.def.toFixed(1)}. ${props.names?.[home] ?? home} scores ${homeTeam.off.toFixed(1)} and allows ${homeTeam.def.toFixed(1)}. Home edge ${factors.homeAdvantage.toFixed(1)} points.`;
+    const games = (team: { seasonGames?: number; games: number }) =>
+      team.seasonGames != null ? `${team.seasonGames} games this season, shrunk toward last season` : `${team.games} games`;
+    return `${props.names?.[away] ?? away} scores ${awayTeam.off.toFixed(1)} and allows ${awayTeam.def.toFixed(1)} (${games(awayTeam)}). ${props.names?.[home] ?? home} scores ${homeTeam.off.toFixed(1)} and allows ${homeTeam.def.toFixed(1)} (${games(homeTeam)}). Home edge ${factors.homeAdvantage.toFixed(1)} points.`;
   }
   if (props.kind === "mlb") {
     const factors = props.factors as RunsFactors;
@@ -390,7 +392,7 @@ function copyFor(kind: Props["kind"]) {
     return {
       kicker: "NFL",
       title: "Game simulator",
-      lede: "Points model. Home and away scoring are shrunk team rates plus home advantage. Margin and total are normal, so a tie is possible. The spread is positive when the home team lays points.",
+      lede: "Points model. Each team is this season's scoring, shrunk toward last season. There is no quarterback or injury input. Margin and total are normal, so a tie is possible. The spread is positive when the home team lays points.",
       draw: "Tie",
       unit: "points",
     };

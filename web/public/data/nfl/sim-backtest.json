@@ -2,64 +2,64 @@
   "schemaVersion": 1,
   "sport": "nfl",
   "model": "points",
-  "generatedAt": "2026-11-03T19:52:45.363Z",
+  "generatedAt": "2026-11-03T22:27:18.005Z",
   "beatsMarket": false,
-  "statement": "Does not beat the closing line on every scored market. nfl moneyline trails the closing line. Brier 0.2405 versus 0.2111. Log loss 0.6739 versus 0.6096. The 5% rule returned -3.4% on 4359 bets across 5,171 games. nfl spread trails the closing line. Brier 0.2687 versus 0.2501. Log loss 0.7369 versus 0.6934. The 5% rule returned -0.0% on 5410 bets across 6,854 games. nfl total trails the closing line. Brier 0.2646 versus 0.2501. Log loss 0.7261 versus 0.6934. The 5% rule returned -0.2% on 3947 bets across 5,113 games.",
+  "statement": "Does not beat the closing line on every scored market. nfl moneyline trails the closing line. Brier 0.2228 versus 0.2111. Log loss 0.6364 versus 0.6096. The 5% rule returned -4.3% on 3562 bets across 5,171 games. nfl spread trails the closing line. Brier 0.2624 versus 0.2501. Log loss 0.7205 versus 0.6934. The 5% rule returned -2.5% on 4862 bets across 6,854 games. nfl total trails the closing line. Brier 0.2645 versus 0.2501. Log loss 0.7251 versus 0.6934. The 5% rule returned -2.6% on 3838 bets across 5,113 games.",
   "markets": {
     "moneyline": {
       "games": 5171,
       "model": {
-        "brier": 0.2405,
-        "logLoss": 0.6739
+        "brier": 0.2228,
+        "logLoss": 0.6364
       },
       "market": {
         "brier": 0.2111,
         "logLoss": 0.6096
       },
       "roiEdge5": {
-        "bets": 4359,
-        "wins": 1516,
-        "staked": 4359,
-        "profit": -146.161,
-        "roi": -0.0335
+        "bets": 3562,
+        "wins": 1426,
+        "staked": 3562,
+        "profit": -154.198,
+        "roi": -0.0433
       },
       "beatsMarket": false
     },
     "spread": {
       "games": 6854,
       "model": {
-        "brier": 0.2687,
-        "logLoss": 0.7369
+        "brier": 0.2624,
+        "logLoss": 0.7205
       },
       "market": {
         "brier": 0.2501,
         "logLoss": 0.6934
       },
       "roiEdge5": {
-        "bets": 5410,
-        "wins": 2791,
-        "staked": 5410,
-        "profit": -1.321,
-        "roi": -0.0002
+        "bets": 4862,
+        "wins": 2432,
+        "staked": 4862,
+        "profit": -122.961,
+        "roi": -0.0253
       },
       "beatsMarket": false
     },
     "total": {
       "games": 5113,
       "model": {
-        "brier": 0.2646,
-        "logLoss": 0.7261
+        "brier": 0.2645,
+        "logLoss": 0.7251
       },
       "market": {
         "brier": 0.2501,
         "logLoss": 0.6934
       },
       "roiEdge5": {
-        "bets": 3947,
-        "wins": 2021,
-        "staked": 3947,
-        "profit": -9.456,
-        "roi": -0.0024
+        "bets": 3838,
+        "wins": 1920,
+        "staked": 3838,
+        "profit": -101.147,
+        "roi": -0.0264
       },
       "beatsMarket": false
     }

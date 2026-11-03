@@ -28,7 +28,7 @@ export type FootballFactors = {
   leagues: Record<string, FootballLeague>;
 };
 
-export type PointsTeam = { off: number; def: number; games: number };
+export type PointsTeam = { off: number; def: number; games: number; seasonGames?: number; priorSeason?: number };
 
 export type PointsFactors = {
   schemaVersion: number;

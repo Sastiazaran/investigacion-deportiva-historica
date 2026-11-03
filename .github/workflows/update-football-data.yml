@@ -79,6 +79,7 @@ jobs:
             web/public/data/football/sim-backtest.json \
             web/public/data/nfl/sim-factors.json \
             web/public/data/nfl/sim-backtest.json \
+            web/public/data/nfl/week9-check.json \
             web/public/data/mlb/sim-factors.json \
             web/public/data/mlb/sim-backtest.json \
             web/public/data/nba/team-factors.json \

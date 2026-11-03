@@ -79,7 +79,7 @@ The Friday Action re-downloads nflverse, the two Kaggle files, and the ESPN gaps
 
 `/football/simulator`, `/nba/simulator`, `/nfl/simulator`, and `/mlb/simulator` use the same page. Each one shows win, draw or tie, and loss probabilities first, then fair decimal odds, then the minimum price at fair times 1.05. The spread is positive when the home side lays. The total is the over/under. The odds toggle switches the prices between decimal and American.
 
-Football is a Dixon-Coles score matrix, fit separately for each league. NFL is a normal model of points. NBA is the possession Monte Carlo below. MLB is a Poisson runs model, with a regulation tie broken by one extra run.
+Football is a Dixon-Coles score matrix, fit separately for each league. NFL is a normal model of points from this season, shrunk toward last season. NBA is the possession Monte Carlo below. MLB is a Poisson runs model, with a regulation tie broken by one extra run.
 
 The page prints the walk-forward backtest against the closing line. A lower Brier score and a lower log loss are better. The model beats a market only when both are better. None of the simulators beats the close on every scored market. Numbers are in `web/public/data/<sport>/sim-backtest.json`.
 
