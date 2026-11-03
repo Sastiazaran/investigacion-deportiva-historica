@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "sport": "nfl",
+  "model": "points",
+  "generatedAt": "2026-11-03T19:52:45.363Z",
+  "beatsMarket": false,
+  "statement": "Does not beat the closing line on every scored market. nfl moneyline trails the closing line. Brier 0.2405 versus 0.2111. Log loss 0.6739 versus 0.6096. The 5% rule returned -3.4% on 4359 bets across 5,171 games. nfl spread trails the closing line. Brier 0.2687 versus 0.2501. Log loss 0.7369 versus 0.6934. The 5% rule returned -0.0% on 5410 bets across 6,854 games. nfl total trails the closing line. Brier 0.2646 versus 0.2501. Log loss 0.7261 versus 0.6934. The 5% rule returned -0.2% on 3947 bets across 5,113 games.",
+  "markets": {
+    "moneyline": {
+      "games": 5171,
+      "model": {
+        "brier": 0.2405,
+        "logLoss": 0.6739
+      },
+      "market": {
+        "brier": 0.2111,
+        "logLoss": 0.6096
+      },
+      "roiEdge5": {
+        "bets": 4359,
+        "wins": 1516,
+        "staked": 4359,
+        "profit": -146.161,
+        "roi": -0.0335
+      },
+      "beatsMarket": false
+    },
+    "spread": {
+      "games": 6854,
+      "model": {
+        "brier": 0.2687,
+        "logLoss": 0.7369
+      },
+      "market": {
+        "brier": 0.2501,
+        "logLoss": 0.6934
+      },
+      "roiEdge5": {
+        "bets": 5410,
+        "wins": 2791,
+        "staked": 5410,
+        "profit": -1.321,
+        "roi": -0.0002
+      },
+      "beatsMarket": false
+    },
+    "total": {
+      "games": 5113,
+      "model": {
+        "brier": 0.2646,
+        "logLoss": 0.7261
+      },
+      "market": {
+        "brier": 0.2501,
+        "logLoss": 0.6934
+      },
+      "roiEdge5": {
+        "bets": 3947,
+        "wins": 2021,
+        "staked": 3947,
+        "profit": -9.456,
+        "roi": -0.0024
+      },
+      "beatsMarket": false
+    }
+  },
+  "notes": [
+    "Regular season only. The first 40 games start the averages and are not scored.",
+    "Moneyline probabilities drop the model's tie mass and are compared with the two-way de-vigged close. Tied games are left out, matching a refund.",
+    "Spread and total pushes are left out. Home spread is positive when home is laying points.",
+    "A market beats the model when its Brier score or its log loss is lower. Both have to be worse for the model to trail that market. The headline beats the close only when every scored market does."
+  ]
+}

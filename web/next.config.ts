@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      { source: "/calibration", destination: "/football/calibration", permanent: false },
+      { source: "/team/:slug", destination: "/football/team/:slug", permanent: false },
+    ];
+  },
   async rewrites() {
     return [
       { source: "/api/summary", destination: "/data/summary.json" },

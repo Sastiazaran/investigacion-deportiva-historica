@@ -18,7 +18,6 @@ import { formatComboOdds, withOddsQuery } from "../lib/odds-format";
 import { clubSlug } from "../lib/metrics";
 import type { SeasonRecord, ViewTab } from "../lib/types";
 import { useOddsFormat } from "./OddsFormatProvider";
-import SiteNav from "./SiteNav";
 
 type Props = {
   records: SeasonRecord[];
@@ -127,10 +126,10 @@ export default function Dashboard({
   };
 
   return (
-    <main className="dashboard">
-      <SiteNav />
+    <>
       <header className="page-header">
-        <h1>European Accumulator Analysis</h1>
+        <p className="eyebrow">Football</p>
+        <h1>Overview</h1>
         <p className="lede">
           Win% is <strong>won / played</strong> across La Liga, Premier League,
           Bundesliga, Ligue 1, Serie A, Eredivisie, Primeira Liga, and Liga MX.
@@ -284,7 +283,7 @@ export default function Dashboard({
                     <td>
                       <Link
                         className="club-link"
-                        href={withOddsQuery(`/team/${clubSlug(c.club)}`, format)}
+                        href={withOddsQuery(`/football/team/${clubSlug(c.club)}`, format)}
                       >
                         {c.club}
                       </Link>
@@ -409,6 +408,6 @@ export default function Dashboard({
           </aside>
         </section>
       )}
-    </main>
+    </>
   );
 }

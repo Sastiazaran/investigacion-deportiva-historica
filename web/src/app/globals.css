@@ -44,10 +44,105 @@ body {
   line-height: 1.45;
 }
 
+.eyebrow {
+  margin: 0 0 0.35rem;
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(244, 246, 248, 0.92);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+}
+
+.app-header-inner {
+  width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 0.75rem 0 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.brand {
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 750;
+  letter-spacing: -0.04em;
+  font-size: 1.15rem;
+}
+
+.sport-select,
+.section-nav {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.sport-select {
+  background: #e7edf3;
+  border-radius: 12px;
+  padding: 0.2rem;
+}
+
+.sport-select a,
+.section-nav a {
+  color: var(--ink);
+  text-decoration: none;
+  text-align: center;
+  border-radius: 10px;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.92rem;
+}
+
+.sport-select a {
+  flex: 1;
+}
+
+.sport-select a[aria-current="page"],
+.section-nav a[aria-current="page"] {
+  background: var(--accent);
+  color: #fff;
+}
+
+.section-nav a {
+  background: #fff;
+  border: 1px solid var(--line);
+}
+
+.freshness {
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.line-grid input {
+  font: inherit;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  width: 100%;
+}
+
 .dashboard {
   width: min(1120px, calc(100% - 2rem));
   margin: 0 auto;
-  padding: 2rem 0 4rem;
+  padding: 1.5rem 0 4rem;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -499,6 +594,20 @@ tbody tr:last-child td {
 }
 
 @media (max-width: 800px) {
+  .app-header-inner,
+  .dashboard {
+    width: min(100%, calc(100% - 1.25rem));
+  }
+
+  .sport-select,
+  .section-nav {
+    overflow-x: auto;
+  }
+
+  .section-nav a,
+  .sport-select a {
+    flex: 0 0 auto;
+  }
   .stat-row,
   .split-grid,
   .matchup-grid {

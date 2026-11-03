@@ -54,18 +54,13 @@ export default function UsSportView({ sport, summary }: { sport: UsSport; summar
   return (
     <>
       <header className="page-header">
-        <h1>{sportLabel(sport)}</h1>
+        <p className="eyebrow">{sportLabel(sport)}</p>
+        <h1>Overview</h1>
         <p className="lede">
           Flat 1-unit closing moneyline, split by home and away
           {marketName ? ` and ${marketName}` : ""}. Regular season and playoffs are separate.
           Prices stay decimal in the math. {seasonLabel(sport, start)} – {seasonLabel(sport, end)}.
         </p>
-        {sport === "nba" ? (
-          <p className="lede">
-            <Link href={withOddsQuery("/nba/simulator", format)}>Game simulator</Link>
-            {" "}for one matchup: 5,000 possessions, win probability, and a minimum price at fair odds times 1.05.
-          </p>
-        ) : null}
       </header>
 
       <div className="preset-row">

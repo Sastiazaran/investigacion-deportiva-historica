@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import SiteNav from "../../../../components/SiteNav";
 import UsTeamView from "../../../../components/UsTeamView";
 import { loadUsSummary } from "../../../../lib/load-us-summary";
 import { isUsSport, sportLabel, US_SPORTS } from "../../../../lib/us-types";
@@ -42,10 +41,5 @@ export default async function UsTeamPage({
   const summary = loadUsSummary(sport);
   const team = summary.teams.find((row) => row.slug === slug);
   if (!team) notFound();
-  return (
-    <main className="dashboard">
-      <SiteNav />
-      <UsTeamView sport={sport} spreadMarket={summary.spreadMarket} team={team} />
-    </main>
-  );
+  return <UsTeamView sport={sport} spreadMarket={summary.spreadMarket} team={team} />;
 }

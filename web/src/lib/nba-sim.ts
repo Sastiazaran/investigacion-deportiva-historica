@@ -100,6 +100,8 @@ export type SimResult = {
   awayPoints: DistSummary;
   marginHist: HistBin[];
   totalHist: HistBin[];
+  homeScores: number[];
+  awayScores: number[];
 };
 
 export type ScoreRow = { p: number; y: 0 | 1 };
@@ -591,6 +593,8 @@ export function simulateGame(input: {
     awayPoints: summarize(awayPoints),
     marginHist: asHist(MARGIN_LABELS, marginCounts, n),
     totalHist: asHist(TOTAL_LABELS, totalCounts, n),
+    homeScores: Array.from(homePoints),
+    awayScores: Array.from(awayPoints),
   };
 }
 

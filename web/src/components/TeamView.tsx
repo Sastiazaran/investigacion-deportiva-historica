@@ -74,9 +74,10 @@ export default function TeamView({ team }: Props) {
   return (
     <>
       <p className="muted small">
-        <Link href={withOddsQuery("/", format)}>All clubs</Link>
+        <Link href={withOddsQuery("/football", format)}>All clubs</Link>
       </p>
       <header className="page-header">
+        <p className="eyebrow">Football</p>
         <h1>{team.club}</h1>
         <p className="lede">
           {team.leagues.join(", ")}. Home and away records are split, and ROI is a

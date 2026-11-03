@@ -61,6 +61,7 @@ export default function UsTeamView({
         <Link href={withOddsQuery(`/${sport}`, format)}>All {sport.toUpperCase()} teams</Link>
       </p>
       <header className="page-header">
+        <p className="eyebrow">{sport.toUpperCase()}</p>
         <h1>{team.team}</h1>
         <p className="lede">{verdict}</p>
       </header>
