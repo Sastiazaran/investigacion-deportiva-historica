@@ -321,15 +321,33 @@ def attach_pbp(games: list[dict]) -> dict:
     }
 
 
+def skipped_pbp() -> dict:
+    """Summary written when the weekly job skips the play-by-play download.
+
+    Possession stats are not computed on this path, so `mismatches` and
+    `pointsPerPossession` are omitted rather than reported as zero.
+    """
+    return {
+        "note": "Play-by-play refresh was skipped. Box scores and closing prices were refreshed.",
+        "keptGames": 0,
+        "requestedGames": 0,
+    }
+
+
+def pbp_log(pbp: dict) -> str:
+    """One status line for either the full sample or the skipped summary."""
+    return (
+        f"pbp kept={pbp.get('keptGames')} "
+        f"mismatches={pbp.get('mismatches')} "
+        f"ppp={pbp.get('pointsPerPossession')}"
+    )
+
+
 def main() -> None:
     games = load_games()
     attach_odds(games)
     if os.environ.get("NBA_SIM_SKIP_PBP") == "1":
-        pbp = {
-            "note": "Play-by-play refresh was skipped. Box scores and closing prices were refreshed.",
-            "keptGames": 0,
-            "requestedGames": 0,
-        }
+        pbp = skipped_pbp()
     else:
         pbp = attach_pbp(games)
     # Drop display names from the cache file; the backtest script has the codes.
@@ -375,7 +393,7 @@ def main() -> None:
     dest = CACHE / "games.json"
     dest.write_text(json.dumps(payload))
     print(f"wrote {dest} games={len(slim)} closes={with_close} through_gap={through_gap}")
-    print(f"pbp kept={pbp['keptGames']} mismatches={pbp['mismatches']} ppp={pbp['pointsPerPossession']}")
+    print(pbp_log(pbp))
 
 
 if __name__ == "__main__":
