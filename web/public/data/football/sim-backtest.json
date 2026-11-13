@@ -2,26 +2,26 @@
   "schemaVersion": 1,
   "sport": "football",
   "model": "Dixon-Coles",
-  "generatedAt": "2026-11-03T19:55:37.053Z",
+  "generatedAt": "2026-11-13T14:31:36.282Z",
   "beatsMarket": false,
-  "statement": "Does not beat the closing line on every scored market. football result trails the closing line. Brier 0.5951 versus 0.5779. Log loss 0.9965 versus 0.9710. The 5% rule returned -7.2% on 56787 bets across 62,745 games.",
+  "statement": "Does not beat the closing line on every scored market. football result trails the closing line. Brier 0.5951 versus 0.5778. Log loss 0.9965 versus 0.9709. The 5% rule returned -7.3% on 56859 bets across 62,819 games.",
   "markets": {
     "result": {
-      "games": 62745,
+      "games": 62819,
       "model": {
         "brier": 0.5951,
         "logLoss": 0.9965
       },
       "market": {
-        "brier": 0.5779,
-        "logLoss": 0.971
+        "brier": 0.5778,
+        "logLoss": 0.9709
       },
       "roiEdge5": {
-        "bets": 56787,
-        "wins": 14488,
-        "staked": 56787,
-        "profit": -4101.98,
-        "roi": -0.0722
+        "bets": 56859,
+        "wins": 14500,
+        "staked": 56859,
+        "profit": -4134.57,
+        "roi": -0.0727
       },
       "beatsMarket": false
     }

@@ -3,181 +3,181 @@
     {
       "start": 2000,
       "label": "2000 → current",
-      "games": 67449,
+      "games": 67523,
       "backtest": null
     },
     {
       "start": 2001,
       "label": "2001 → current",
-      "games": 65159,
+      "games": 65233,
       "backtest": null
     },
     {
       "start": 2002,
       "label": "2002 → current",
-      "games": 62869,
+      "games": 62943,
       "backtest": null
     },
     {
       "start": 2003,
       "label": "2003 → current",
-      "games": 60505,
+      "games": 60579,
       "backtest": null
     },
     {
       "start": 2004,
       "label": "2004 → current",
-      "games": 58141,
+      "games": 58215,
       "backtest": null
     },
     {
       "start": 2005,
       "label": "2005 → current",
-      "games": 55703,
+      "games": 55777,
       "backtest": null
     },
     {
       "start": 2006,
       "label": "2006 → current",
-      "games": 53265,
+      "games": 53339,
       "backtest": null
     },
     {
       "start": 2007,
       "label": "2007 → current",
-      "games": 50893,
+      "games": 50967,
       "backtest": null
     },
     {
       "start": 2008,
       "label": "2008 → current",
-      "games": 48521,
+      "games": 48595,
       "backtest": null
     },
     {
       "start": 2009,
       "label": "2009 → current",
-      "games": 46149,
+      "games": 46223,
       "backtest": null
     },
     {
       "start": 2010,
       "label": "2010 → current",
-      "games": 43777,
+      "games": 43851,
       "backtest": null
     },
     {
       "start": 2011,
       "label": "2011 → current",
-      "games": 41405,
+      "games": 41479,
       "backtest": null
     },
     {
       "start": 2012,
       "label": "2012 → current",
-      "games": 39033,
+      "games": 39107,
       "backtest": null
     },
     {
       "start": 2013,
       "label": "2013 → current",
-      "games": 36327,
+      "games": 36401,
       "backtest": null
     },
     {
       "start": 2014,
       "label": "2014 → current",
-      "games": 33621,
+      "games": 33695,
       "backtest": null
     },
     {
       "start": 2015,
       "label": "2015 → current",
-      "games": 30849,
+      "games": 30923,
       "backtest": null
     },
     {
       "start": 2016,
       "label": "2016 → current",
-      "games": 28077,
+      "games": 28151,
       "backtest": null
     },
     {
       "start": 2017,
       "label": "2017 → current",
-      "games": 25305,
+      "games": 25379,
       "backtest": null
     },
     {
       "start": 2018,
       "label": "2018 → current",
-      "games": 22533,
+      "games": 22607,
       "backtest": null
     },
     {
       "start": 2019,
       "label": "2019 → current",
-      "games": 19761,
+      "games": 19835,
       "backtest": null
     },
     {
       "start": 2020,
       "label": "2020 → current",
-      "games": 17223,
+      "games": 17297,
       "backtest": null
     },
     {
       "start": 2021,
       "label": "2021 → current",
-      "games": 14443,
+      "games": 14517,
       "backtest": null
     },
     {
       "start": 2022,
       "label": "2022 → current",
-      "games": 11663,
+      "games": 11737,
       "backtest": null
     },
     {
       "start": 2023,
       "label": "2023 → current",
-      "games": 8883,
+      "games": 8957,
       "backtest": null
     },
     {
       "start": 2024,
       "label": "2024 → current",
-      "games": 6179,
+      "games": 6253,
       "backtest": {
-        "games": 775,
-        "modelBrier": 0.5924,
-        "modelLogLoss": 0.9943,
-        "marketBrier": 0.5825,
-        "marketLogLoss": 0.979
+        "games": 849,
+        "modelBrier": 0.5893,
+        "modelLogLoss": 0.9901,
+        "marketBrier": 0.5781,
+        "marketLogLoss": 0.9727
       }
     },
     {
       "start": 2025,
       "label": "2025 → current",
-      "games": 3475,
+      "games": 3549,
       "backtest": {
-        "games": 775,
-        "modelBrier": 0.5952,
-        "modelLogLoss": 0.9983,
-        "marketBrier": 0.5825,
-        "marketLogLoss": 0.979
+        "games": 849,
+        "modelBrier": 0.5926,
+        "modelLogLoss": 0.9947,
+        "marketBrier": 0.5781,
+        "marketLogLoss": 0.9727
       }
     },
     {
       "start": 2026,
       "label": "Current season only",
-      "games": 775,
+      "games": 849,
       "backtest": {
-        "games": 775,
-        "modelBrier": 0.626,
-        "modelLogLoss": 1.0414,
-        "marketBrier": 0.5825,
-        "marketLogLoss": 0.979
+        "games": 849,
+        "modelBrier": 0.6221,
+        "modelLogLoss": 1.036,
+        "marketBrier": 0.5781,
+        "marketLogLoss": 0.9727
       }
     }
   ],
@@ -185,244 +185,244 @@
     {
       "start": 1999,
       "label": "1999 → current",
-      "games": 7088,
+      "games": 7104,
       "backtest": null,
-      "miaHome": 0.6021,
-      "margin": 3.4413
+      "miaHome": 0.6004,
+      "margin": 3.3793
     },
     {
       "start": 2000,
       "label": "2000 → current",
-      "games": 6840,
+      "games": 6856,
       "backtest": null,
-      "miaHome": 0.6031,
-      "margin": 3.4762
+      "miaHome": 0.6013,
+      "margin": 3.4119
     },
     {
       "start": 2001,
       "label": "2001 → current",
-      "games": 6592,
+      "games": 6608,
       "backtest": null,
-      "miaHome": 0.5972,
-      "margin": 3.2704
+      "miaHome": 0.5953,
+      "margin": 3.2042
     },
     {
       "start": 2002,
       "label": "2002 → current",
-      "games": 6344,
+      "games": 6360,
       "backtest": null,
-      "miaHome": 0.5836,
-      "margin": 2.8055
+      "miaHome": 0.5816,
+      "margin": 2.7377
     },
     {
       "start": 2003,
       "label": "2003 → current",
-      "games": 6088,
+      "games": 6104,
       "backtest": null,
-      "miaHome": 0.5674,
-      "margin": 2.2562
+      "miaHome": 0.5654,
+      "margin": 2.1872
     },
     {
       "start": 2004,
       "label": "2004 → current",
-      "games": 5832,
+      "games": 5848,
       "backtest": null,
-      "miaHome": 0.553,
-      "margin": 1.7719
+      "miaHome": 0.5509,
+      "margin": 1.701
     },
     {
       "start": 2005,
       "label": "2005 → current",
-      "games": 5576,
+      "games": 5592,
       "backtest": null,
-      "miaHome": 0.5541,
-      "margin": 1.8085
+      "miaHome": 0.5519,
+      "margin": 1.7345
     },
     {
       "start": 2006,
       "label": "2006 → current",
-      "games": 5320,
+      "games": 5336,
       "backtest": null,
-      "miaHome": 0.5434,
-      "margin": 1.4497
+      "miaHome": 0.5412,
+      "margin": 1.3732
     },
     {
       "start": 2007,
       "label": "2007 → current",
-      "games": 5064,
+      "games": 5080,
       "backtest": null,
-      "miaHome": 0.5379,
-      "margin": 1.2647
+      "miaHome": 0.5355,
+      "margin": 1.1849
     },
     {
       "start": 2008,
       "label": "2008 → current",
-      "games": 4808,
+      "games": 4824,
       "backtest": null,
-      "miaHome": 0.5424,
-      "margin": 1.4142
+      "miaHome": 0.5399,
+      "margin": 1.3299
     },
     {
       "start": 2009,
       "label": "2009 → current",
-      "games": 4552,
+      "games": 4568,
       "backtest": null,
-      "miaHome": 0.5121,
-      "margin": 0.4021
+      "miaHome": 0.5095,
+      "margin": 0.3166
     },
     {
       "start": 2010,
       "label": "2010 → current",
-      "games": 4296,
+      "games": 4312,
       "backtest": null,
-      "miaHome": 0.487,
-      "margin": -0.4348
+      "miaHome": 0.4843,
+      "margin": -0.5224
     },
     {
       "start": 2011,
       "label": "2011 → current",
-      "games": 4040,
+      "games": 4056,
       "backtest": null,
-      "miaHome": 0.4888,
-      "margin": -0.3742
+      "miaHome": 0.486,
+      "margin": -0.4674
     },
     {
       "start": 2012,
       "label": "2012 → current",
-      "games": 3784,
+      "games": 3800,
       "backtest": null,
-      "miaHome": 0.4903,
-      "margin": -0.3245
+      "miaHome": 0.4873,
+      "margin": -0.4241
     },
     {
       "start": 2013,
       "label": "2013 → current",
-      "games": 3528,
+      "games": 3544,
       "backtest": null,
-      "miaHome": 0.4797,
-      "margin": -0.6772
+      "miaHome": 0.4765,
+      "margin": -0.7822
     },
     {
       "start": 2014,
       "label": "2014 → current",
-      "games": 3272,
+      "games": 3288,
       "backtest": null,
-      "miaHome": 0.4762,
-      "margin": -0.7917
+      "miaHome": 0.4729,
+      "margin": -0.904
     },
     {
       "start": 2015,
       "label": "2015 → current",
-      "games": 3016,
+      "games": 3032,
       "backtest": null,
-      "miaHome": 0.4718,
-      "margin": -0.9393
+      "miaHome": 0.4682,
+      "margin": -1.0603
     },
     {
       "start": 2016,
       "label": "2016 → current",
-      "games": 2760,
+      "games": 2776,
       "backtest": null,
-      "miaHome": 0.4713,
-      "margin": -0.9557
+      "miaHome": 0.4674,
+      "margin": -1.0873
     },
     {
       "start": 2017,
       "label": "2017 → current",
-      "games": 2504,
+      "games": 2520,
       "backtest": null,
-      "miaHome": 0.4618,
-      "margin": -1.2729
+      "miaHome": 0.4576,
+      "margin": -1.4153
     },
     {
       "start": 2018,
       "label": "2018 → current",
-      "games": 2248,
+      "games": 2264,
       "backtest": null,
-      "miaHome": 0.4791,
-      "margin": -0.6975
+      "miaHome": 0.4742,
+      "margin": -0.8594
     },
     {
       "start": 2019,
       "label": "2019 → current",
-      "games": 1992,
+      "games": 2008,
       "backtest": null,
-      "miaHome": 0.4861,
-      "margin": -0.4632
+      "miaHome": 0.4806,
+      "margin": -0.6466
     },
     {
       "start": 2020,
       "label": "2020 → current",
-      "games": 1736,
+      "games": 1752,
       "backtest": null,
-      "miaHome": 0.5126,
-      "margin": 0.421
+      "miaHome": 0.5061,
+      "margin": 0.2046
     },
     {
       "start": 2021,
       "label": "2021 → current",
-      "games": 1480,
+      "games": 1496,
       "backtest": null,
-      "miaHome": 0.4527,
-      "margin": -1.5795
+      "miaHome": 0.4458,
+      "margin": -1.8114
     },
     {
       "start": 2022,
       "label": "2022 → current",
-      "games": 1208,
+      "games": 1224,
       "backtest": null,
-      "miaHome": 0.394,
-      "margin": -3.5745
+      "miaHome": 0.3865,
+      "margin": -3.8312
     },
     {
       "start": 2023,
       "label": "2023 → current",
-      "games": 937,
+      "games": 953,
       "backtest": null,
-      "miaHome": 0.3652,
-      "margin": -4.5801
+      "miaHome": 0.3565,
+      "margin": -4.8894
     },
     {
       "start": 2024,
       "label": "2024 → current",
-      "games": 665,
+      "games": 681,
       "backtest": {
-        "games": 120,
-        "modelBrier": 0.2405,
-        "modelLogLoss": 0.6769,
-        "marketBrier": 0.227,
-        "marketLogLoss": 0.6479
+        "games": 136,
+        "modelBrier": 0.2364,
+        "modelLogLoss": 0.6676,
+        "marketBrier": 0.2156,
+        "marketLogLoss": 0.6232
       },
-      "miaHome": 0.2754,
-      "margin": -7.9388
+      "miaHome": 0.2666,
+      "margin": -8.2917
     },
     {
       "start": 2025,
       "label": "2025 → current",
-      "games": 393,
+      "games": 409,
       "backtest": {
-        "games": 120,
-        "modelBrier": 0.2349,
-        "modelLogLoss": 0.6621,
-        "marketBrier": 0.227,
-        "marketLogLoss": 0.6479
+        "games": 136,
+        "modelBrier": 0.2294,
+        "modelLogLoss": 0.6497,
+        "marketBrier": 0.2156,
+        "marketLogLoss": 0.6232
       },
-      "miaHome": 0.3357,
-      "margin": -5.6419
+      "miaHome": 0.3187,
+      "margin": -6.2672
     },
     {
       "start": 2026,
       "label": "Current season only",
-      "games": 121,
+      "games": 137,
       "backtest": {
-        "games": 120,
-        "modelBrier": 0.2457,
-        "modelLogLoss": 0.684,
-        "marketBrier": 0.227,
-        "marketLogLoss": 0.6479
+        "games": 136,
+        "modelBrier": 0.2379,
+        "modelLogLoss": 0.6681,
+        "marketBrier": 0.2156,
+        "marketLogLoss": 0.6232
       },
-      "miaHome": 0.3471,
-      "margin": -5.2299
+      "miaHome": 0.3069,
+      "margin": -6.7094
     }
   ],
   "mlb": [
@@ -551,79 +551,79 @@
     {
       "start": 2017,
       "label": "2017 → current",
-      "games": 10858,
+      "games": 10925,
       "backtest": null
     },
     {
       "start": 2018,
       "label": "2018 → current",
-      "games": 9629,
+      "games": 9696,
       "backtest": null
     },
     {
       "start": 2019,
       "label": "2019 → current",
-      "games": 8399,
+      "games": 8466,
       "backtest": null
     },
     {
       "start": 2020,
       "label": "2020 → current",
-      "games": 7340,
+      "games": 7407,
       "backtest": null
     },
     {
       "start": 2021,
       "label": "2021 → current",
-      "games": 6260,
+      "games": 6327,
       "backtest": null
     },
     {
       "start": 2022,
       "label": "2022 → current",
-      "games": 5030,
+      "games": 5097,
       "backtest": null
     },
     {
       "start": 2023,
       "label": "2023 → current",
-      "games": 3800,
+      "games": 3867,
       "backtest": null
     },
     {
       "start": 2024,
       "label": "2024 → current",
-      "games": 2569,
+      "games": 2636,
       "backtest": {
-        "games": 107,
-        "modelBrier": 0.2386,
-        "modelLogLoss": 0.6707,
-        "marketBrier": 0.1927,
-        "marketLogLoss": 0.5643
+        "games": 174,
+        "modelBrier": 0.2208,
+        "modelLogLoss": 0.6301,
+        "marketBrier": 0.1798,
+        "marketLogLoss": 0.5368
       }
     },
     {
       "start": 2025,
       "label": "2025 → current",
-      "games": 1338,
+      "games": 1405,
       "backtest": {
-        "games": 107,
-        "modelBrier": 0.2292,
-        "modelLogLoss": 0.6458,
-        "marketBrier": 0.1927,
-        "marketLogLoss": 0.5643
+        "games": 174,
+        "modelBrier": 0.2141,
+        "modelLogLoss": 0.6133,
+        "marketBrier": 0.1798,
+        "marketLogLoss": 0.5368
       }
     },
     {
       "start": 2026,
       "label": "Current season only",
-      "games": 107,
+      "games": 174,
       "backtest": {
-        "games": 91,
-        "modelBrier": 0.2358,
-        "modelLogLoss": 0.6647,
-        "marketBrier": 0.1932,
-        "marketLogLoss": 0.5642
+        "games": 158,
+        "modelBrier": 0.2379,
+        "modelLogLoss": 0.6688,
+        "marketBrier": 0.1788,
+        "marketLogLoss": 0.534
       }
     }
   ]

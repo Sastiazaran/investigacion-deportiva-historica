@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "sport": "mlb",
   "model": "runs",
-  "generatedAt": "2026-11-03T19:54:04.829Z",
+  "generatedAt": "2026-11-13T14:31:37.133Z",
   "beatsMarket": false,
   "statement": "Does not beat the closing line on every scored market. mlb moneyline trails the closing line. Brier 0.2486 versus 0.2396. Log loss 0.6907 versus 0.6715. The 5% rule returned -4.1% on 26182 bets across 40,147 games. mlb spread trails the closing line. Brier 0.2569 versus 0.2409. Log loss 0.7109 versus 0.6748. The 5% rule returned -3.5% on 23418 bets across 30,272 games. mlb total trails the closing line. Brier 0.2678 versus 0.2494. Log loss 0.7344 versus 0.6920. The 5% rule returned -3.8% on 2217 bets across 2,983 games.",
   "markets": {
@@ -68,6 +68,7 @@
     "Walk-forward on final scores. The first 60 games start the averages and are not scored.",
     "2010-2020 playoff games are inside the regular-season file and are included. From 2021, postseason games are included too.",
     "The run line uses the same home-spread sign as the NFL: positive means the home team lays runs.",
+    "Archive rows whose spread is outside -2.5 to 2.5 are not scored. Those numbers are not run lines.",
     "Totals are scored only when the source has a total and a price. The frozen archives often have a run line and no total."
   ]
 }

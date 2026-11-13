@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sport": "mlb",
-  "generatedAt": "2026-11-03T19:55:07Z",
+  "generatedAt": "2026-11-13T14:31:25Z",
   "spreadMarket": "runLine",
   "credits": [
     {
@@ -305,7 +305,7 @@
         "espn-close:DraftKings": 40
       },
       "latestDate": "2026-10-28",
-      "partial": true
+      "partial": false
     },
     {
       "season": 2026,
@@ -317,7 +317,7 @@
         "espn-close:DraftKings": 2428
       },
       "latestDate": "2026-09-27",
-      "partial": true
+      "partial": false
     }
   ],
   "calibration": {

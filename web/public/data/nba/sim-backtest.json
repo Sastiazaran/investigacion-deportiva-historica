@@ -2,43 +2,43 @@
   "schemaVersion": 1,
   "season": 2025,
   "n": 5000,
-  "generatedAt": "2026-10-21T20:28:05.234Z",
+  "generatedAt": "2026-11-13T14:34:40.030Z",
   "closeSources": {
-    "espn-bet-close": 298,
+    "espn-close:ESPN BET": 298,
     "espn-close:DraftKings": 932
   },
   "closingSource": "ESPN odds close.moneyLine.decimal. ESPN BET (provider 58) through November 2025; DraftKings (provider 100) after that.",
   "repoMoneylineGap": "The site's NBA summary has no moneyline after 2026-02-12. That file's prices are BetMGM through that date. This backtest could not re-download the Kaggle extracts (the public download URL returned 404 without credentials). It uses the close ESPN publishes and splits the sample on 2026-02-12.",
   "beatsMarket": false,
-  "statement": "The simulator does not beat the closing line. On 1,230 regular-season games the simulator's Brier score is 0.2079 and its log loss is 0.6043. The de-vigged closing line is 0.1948 and 0.5710. Flat 1-unit bets taken only when the close was at least the model's fair price times 1.05 returned -16.8% on 853 bets.",
+  "statement": "The simulator does not beat the closing line. On 1,230 regular-season games the simulator's Brier score is 0.2089 and its log loss is 0.6066. The de-vigged closing line is 0.1948 and 0.5710. Flat 1-unit bets taken only when the close was at least the model's fair price times 1.05 returned -14.8% on 877 bets.",
   "missingClose": 1,
   "full": {
     "games": 1230,
     "homeWins": 682,
     "homeWinRate": 0.5545,
-    "meanModelHomeProb": 0.5345,
+    "meanModelHomeProb": 0.5368,
     "meanMarketHomeProb": 0.5489,
     "model": {
-      "brier": 0.2079,
-      "logLoss": 0.6043
+      "brier": 0.2089,
+      "logLoss": 0.6066
     },
     "market": {
       "brier": 0.1948,
       "logLoss": 0.571
     },
     "roiEdge5": {
-      "bets": 853,
-      "wins": 261,
-      "staked": 853,
-      "profit": -142.958,
-      "roi": -0.1676
+      "bets": 877,
+      "wins": 260,
+      "staked": 877,
+      "profit": -129.79,
+      "roi": -0.148
     },
     "roiAnyEdge": {
-      "bets": 1025,
-      "wins": 351,
-      "staked": 1025,
-      "profit": -134.107,
-      "roi": -0.1308
+      "bets": 1049,
+      "wins": 343,
+      "staked": 1049,
+      "profit": -135.814,
+      "roi": -0.1295
     },
     "beatsMarket": false
   },
@@ -46,29 +46,29 @@
     "games": 819,
     "homeWins": 447,
     "homeWinRate": 0.5458,
-    "meanModelHomeProb": 0.5322,
+    "meanModelHomeProb": 0.5348,
     "meanMarketHomeProb": 0.5493,
     "model": {
-      "brier": 0.2212,
-      "logLoss": 0.6343
+      "brier": 0.2206,
+      "logLoss": 0.6325
     },
     "market": {
       "brier": 0.2141,
       "logLoss": 0.6169
     },
     "roiEdge5": {
-      "bets": 525,
-      "wins": 192,
-      "staked": 525,
-      "profit": -19.608,
-      "roi": -0.0373
+      "bets": 540,
+      "wins": 191,
+      "staked": 540,
+      "profit": -6.31,
+      "roi": -0.0117
     },
     "roiAnyEdge": {
-      "bets": 659,
+      "bets": 682,
       "wins": 264,
-      "staked": 659,
-      "profit": -16.857,
-      "roi": -0.0256
+      "staked": 682,
+      "profit": -0.674,
+      "roi": -0.001
     },
     "beatsMarket": false
   },
@@ -76,29 +76,29 @@
     "games": 411,
     "homeWins": 235,
     "homeWinRate": 0.5718,
-    "meanModelHomeProb": 0.5392,
+    "meanModelHomeProb": 0.5408,
     "meanMarketHomeProb": 0.5482,
     "model": {
-      "brier": 0.1813,
-      "logLoss": 0.5446
+      "brier": 0.1856,
+      "logLoss": 0.5551
     },
     "market": {
       "brier": 0.1563,
       "logLoss": 0.4795
     },
     "roiEdge5": {
-      "bets": 328,
+      "bets": 337,
       "wins": 69,
-      "staked": 328,
-      "profit": -123.35,
-      "roi": -0.3761
+      "staked": 337,
+      "profit": -123.48,
+      "roi": -0.3664
     },
     "roiAnyEdge": {
-      "bets": 366,
-      "wins": 87,
-      "staked": 366,
-      "profit": -117.25,
-      "roi": -0.3204
+      "bets": 367,
+      "wins": 79,
+      "staked": 367,
+      "profit": -135.14,
+      "roi": -0.3682
     },
     "beatsMarket": false
   }
