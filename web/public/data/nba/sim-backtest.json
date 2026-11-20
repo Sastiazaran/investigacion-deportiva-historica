@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "season": 2025,
   "n": 5000,
-  "generatedAt": "2026-11-13T14:34:40.030Z",
+  "generatedAt": "2026-11-20T15:27:36.663Z",
   "closeSources": {
     "espn-close:ESPN BET": 298,
-    "espn-close:DraftKings": 932
+    "espn-close:Draft Kings": 932
   },
   "closingSource": "ESPN odds close.moneyLine.decimal. ESPN BET (provider 58) through November 2025; DraftKings (provider 100) after that.",
   "repoMoneylineGap": "The site's NBA summary has no moneyline after 2026-02-12. That file's prices are BetMGM through that date. This backtest could not re-download the Kaggle extracts (the public download URL returned 404 without credentials). It uses the close ESPN publishes and splits the sample on 2026-02-12.",

@@ -14,9 +14,9 @@
       "away": "JAX",
       "home": "BAL",
       "spread": -8.5,
-      "modelHome": 0.3071,
+      "modelHome": 0.2935,
       "marketHome": 0.2133,
-      "gap": 0.0938,
+      "gap": 0.0803,
       "flagged": false
     },
     {
@@ -24,9 +24,9 @@
       "away": "CIN",
       "home": "ATL",
       "spread": -3,
-      "modelHome": 0.4796,
+      "modelHome": 0.4399,
       "marketHome": 0.3836,
-      "gap": 0.0961,
+      "gap": 0.0564,
       "flagged": false
     },
     {
@@ -34,9 +34,9 @@
       "away": "DEN",
       "home": "CAR",
       "spread": -3,
-      "modelHome": 0.3723,
+      "modelHome": 0.3722,
       "marketHome": 0.417,
-      "gap": 0.0447,
+      "gap": 0.0448,
       "flagged": false
     },
     {
@@ -44,9 +44,9 @@
       "away": "DAL",
       "home": "IND",
       "spread": -4.5,
-      "modelHome": 0.5577,
+      "modelHome": 0.5401,
       "marketHome": 0.3425,
-      "gap": 0.2152,
+      "gap": 0.1976,
       "flagged": true
     },
     {
@@ -54,9 +54,9 @@
       "away": "NYJ",
       "home": "KC",
       "spread": 9.5,
-      "modelHome": 0.8032,
+      "modelHome": 0.818,
       "marketHome": 0.8043,
-      "gap": 0.0011,
+      "gap": 0.0137,
       "flagged": false
     },
     {
@@ -64,9 +64,9 @@
       "away": "DET",
       "home": "MIA",
       "spread": -6.5,
-      "modelHome": 0.3187,
+      "modelHome": 0.2991,
       "marketHome": 0.2779,
-      "gap": 0.0408,
+      "gap": 0.0212,
       "flagged": false
     },
     {
@@ -74,9 +74,9 @@
       "away": "CLE",
       "home": "NO",
       "spread": 4.5,
-      "modelHome": 0.5618,
+      "modelHome": 0.5511,
       "marketHome": 0.6636,
-      "gap": 0.1018,
+      "gap": 0.1126,
       "flagged": false
     },
     {
@@ -84,9 +84,9 @@
       "away": "NYG",
       "home": "PHI",
       "spread": -3,
-      "modelHome": 0.569,
+      "modelHome": 0.564,
       "marketHome": 0.4066,
-      "gap": 0.1624,
+      "gap": 0.1574,
       "flagged": true
     },
     {
@@ -94,9 +94,9 @@
       "away": "LA",
       "home": "WAS",
       "spread": -4.5,
-      "modelHome": 0.2676,
+      "modelHome": 0.2483,
       "marketHome": 0.3364,
-      "gap": 0.0687,
+      "gap": 0.088,
       "flagged": false
     },
     {
@@ -104,9 +104,9 @@
       "away": "HOU",
       "home": "LAC",
       "spread": -5.5,
-      "modelHome": 0.3655,
+      "modelHome": 0.355,
       "marketHome": 0.331,
-      "gap": 0.0345,
+      "gap": 0.024,
       "flagged": false
     },
     {
@@ -114,9 +114,9 @@
       "away": "GB",
       "home": "NE",
       "spread": 3,
-      "modelHome": 0.6421,
+      "modelHome": 0.6305,
       "marketHome": 0.6225,
-      "gap": 0.0197,
+      "gap": 0.008,
       "flagged": false
     },
     {
@@ -124,9 +124,9 @@
       "away": "ARI",
       "home": "SEA",
       "spread": 8.5,
-      "modelHome": 0.8587,
+      "modelHome": 0.8667,
       "marketHome": 0.7867,
-      "gap": 0.072,
+      "gap": 0.08,
       "flagged": false
     },
     {
@@ -134,9 +134,9 @@
       "away": "LV",
       "home": "SF",
       "spread": 8.5,
-      "modelHome": 0.8212,
+      "modelHome": 0.8197,
       "marketHome": 0.7715,
-      "gap": 0.0497,
+      "gap": 0.0482,
       "flagged": false
     },
     {
@@ -144,9 +144,9 @@
       "away": "TB",
       "home": "CHI",
       "spread": 6.5,
-      "modelHome": 0.6188,
+      "modelHome": 0.6139,
       "marketHome": 0.7136,
-      "gap": 0.0948,
+      "gap": 0.0997,
       "flagged": false
     },
     {
@@ -154,9 +154,9 @@
       "away": "BUF",
       "home": "MIN",
       "spread": -3,
-      "modelHome": 0.4108,
+      "modelHome": 0.4105,
       "marketHome": 0.3775,
-      "gap": 0.0333,
+      "gap": 0.0329,
       "flagged": false
     }
   ],
@@ -164,7 +164,7 @@
     "miamiHome": {
       "home": "MIA",
       "away": "DET",
-      "modelHome": 0.3187
+      "modelHome": 0.2991
     }
   }
 }
