@@ -5,7 +5,18 @@ from __future__ import annotations
 import unittest
 from datetime import date
 
-from freshness import assess, assess_all, europe_in_season, liga_mx_in_season, mlb_in_season, nba_in_season, nfl_in_season, stale_rows
+from check_freshness import summary_text, warning_command
+from freshness import (
+    COMPETITIONS,
+    assess,
+    assess_all,
+    europe_in_season,
+    liga_mx_in_season,
+    mlb_in_season,
+    nba_in_season,
+    nfl_in_season,
+    stale_rows,
+)
 
 
 class FreshnessTest(unittest.TestCase):
@@ -50,6 +61,66 @@ class FreshnessTest(unittest.TestCase):
         )
         names = [row["competition"] for row in stale_rows(rows)]
         self.assertEqual(names, ["NBA", "MLB"])
+
+    def test_europe_allows_an_international_break_plus_a_cup_weekend(self):
+        thresholds = {name: days for name, _predicate, days in COMPETITIONS}
+        europe = (
+            "Premier League",
+            "La Liga",
+            "Serie A",
+            "Bundesliga",
+            "Ligue 1",
+            "Eredivisie",
+            "Primeira Liga",
+        )
+        for name in europe:
+            self.assertEqual(thresholds[name], 25)
+        self.assertEqual(thresholds["Liga MX"], 16)
+        self.assertEqual(thresholds["NFL"], 11)
+        self.assertEqual(thresholds["NBA"], 10)
+        self.assertEqual(thresholds["MLB"], 8)
+
+        # Friday 2026-11-27: Primeira Liga last played 2026-11-08 (19 days).
+        # That is inside 25 and outside the old 18-day limit.
+        row = assess(
+            "Primeira Liga",
+            date(2026, 11, 8),
+            date(2026, 11, 27),
+            europe_in_season,
+            thresholds["Primeira Liga"],
+        )
+        self.assertEqual(row["ageDays"], 19)
+        self.assertEqual(row["status"], "fresh")
+        on_the_limit = assess(
+            "Primeira Liga",
+            date(2026, 11, 2),
+            date(2026, 11, 27),
+            europe_in_season,
+            thresholds["Primeira Liga"],
+        )
+        self.assertEqual(on_the_limit["ageDays"], 25)
+        self.assertEqual(on_the_limit["status"], "fresh")
+        past_the_limit = assess(
+            "Primeira Liga",
+            date(2026, 11, 1),
+            date(2026, 11, 27),
+            europe_in_season,
+            thresholds["Primeira Liga"],
+        )
+        self.assertEqual(past_the_limit["ageDays"], 26)
+        self.assertEqual(past_the_limit["status"], "stale")
+
+    def test_stale_rows_are_warnings_and_not_a_failed_build(self):
+        stale = assess("Primeira Liga", date(2026, 11, 1), date(2026, 11, 27), europe_in_season, 25)
+        fresh = assess("NFL", date(2026, 11, 26), date(2026, 11, 27), nfl_in_season, 11)
+        self.assertTrue(warning_command(stale).startswith("::warning title=Stale competition::"))
+        self.assertIn("Primeira Liga", warning_command(stale))
+        text = summary_text([stale, fresh])
+        self.assertIn("## Freshness", text)
+        self.assertIn("warning only", text)
+        self.assertIn("Primeira Liga", text)
+        self.assertNotIn("NFL", text)
+        self.assertIn("inside the freshness threshold", summary_text([fresh]))
 
 
 if __name__ == "__main__":

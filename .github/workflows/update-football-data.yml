@@ -64,7 +64,11 @@ jobs:
         working-directory: web
         run: node --experimental-strip-types scripts/rating-windows.ts
 
-      - name: Fail if an in-season competition is stale
+      # Stale leagues are warnings (annotation + job summary) and do not
+      # skip the commit below. A broken rebuild fails in an earlier step,
+      # or in this step when the built files are missing or unreadable,
+      # so those runs never reach the push.
+      - name: Report stale in-season competitions
         run: python3 scripts/check_freshness.py
 
       - name: Commit and push when the files changed
