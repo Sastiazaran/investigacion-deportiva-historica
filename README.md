@@ -46,7 +46,7 @@ cd web && npm test && npm run build
 
 ## Weekly update
 
-`.github/workflows/update-football-data.yml` runs every Friday at 06:00 UTC (and on demand). It downloads the CSVs, rebuilds the JSON, retrains the simulators, and commits to the default branch when something changed. The job then checks freshness and fails if an in-season competition's latest final, or its closing line, is older than the threshold in `scripts/freshness.py`.
+`.github/workflows/update-football-data.yml` runs every Friday at 06:00 UTC (and on demand). It downloads the CSVs, rebuilds the JSON, retrains the simulators, and commits to the default branch when something changed. It then checks freshness against `scripts/freshness.py`. An in-season competition whose latest final, or whose closing line, is past the threshold is a warning: a workflow annotation and a note in the job summary. That warning does not skip the commit, so the other competitions still deploy. European leagues allow 25 days, which covers an international break plus a cup weekend. The job fails only when a rebuild breaks, or when the built match file is missing or unreadable, and that failure happens before the push.
 
 A Vercel cron is a poor fit: the dataset is static JSON in `public/`, and a cron invocation cannot commit that file or replace the copy the CDN is already serving. The Action commits the files; the push to the default branch is what redeploys production so Friday’s reader sees new numbers. Do not merge feature PRs by hand if a push to `main` would deploy them — the weekly job is the path that is supposed to update `main`.
 

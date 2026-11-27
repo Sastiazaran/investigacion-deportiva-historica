@@ -1,8 +1,12 @@
 """Season windows and the staleness rule for the Friday data job.
 
-A competition fails when today falls inside its season and the latest
-final is older than the threshold. Offseason silence is not a failure.
-International breaks and the All-Star gap sit inside the thresholds.
+A competition is stale when today falls inside its season and the latest
+final is older than the threshold. Offseason silence is not stale.
+The Friday job records stale competitions as warnings and still publishes
+the rebuilt files. A broken build is the only hard failure.
+
+The European threshold is 25 days so it covers an international break
+plus a cup weekend. The All-Star gap sits inside the NBA threshold.
 """
 
 from __future__ import annotations
@@ -42,15 +46,18 @@ def mlb_in_season(day: date) -> bool:
     return _on_or_after(day, 3, 18) and _on_or_before(day, 11, 6)
 
 
+# 25 days covers an international break plus a cup weekend.
+EUROPE_STALE_DAYS = 25
+
 # name, in-season predicate, maximum age of the latest final in days
 COMPETITIONS = (
-    ("Premier League", europe_in_season, 18),
-    ("La Liga", europe_in_season, 18),
-    ("Serie A", europe_in_season, 18),
-    ("Bundesliga", europe_in_season, 18),
-    ("Ligue 1", europe_in_season, 18),
-    ("Eredivisie", europe_in_season, 18),
-    ("Primeira Liga", europe_in_season, 18),
+    ("Premier League", europe_in_season, EUROPE_STALE_DAYS),
+    ("La Liga", europe_in_season, EUROPE_STALE_DAYS),
+    ("Serie A", europe_in_season, EUROPE_STALE_DAYS),
+    ("Bundesliga", europe_in_season, EUROPE_STALE_DAYS),
+    ("Ligue 1", europe_in_season, EUROPE_STALE_DAYS),
+    ("Eredivisie", europe_in_season, EUROPE_STALE_DAYS),
+    ("Primeira Liga", europe_in_season, EUROPE_STALE_DAYS),
     ("Liga MX", liga_mx_in_season, 16),
     ("NFL", nfl_in_season, 11),
     ("NBA", nba_in_season, 10),
